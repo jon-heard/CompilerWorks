@@ -1,0 +1,13 @@
+
+fill in op enums with rest of ops
+	add tests for op enums
+	add op enums to codebuilder
+	add new op enum types to methodparser
+add interface functionality
+	InterfaceMethodRef (id=11, like field and method)
+add exception functionality
+add inner class functionality
+add anonyimous inner class functionality
+
+IDEAS:
+	databuffer can also have setString(int index, String value).  It will look up the string already in that place, remove it, then insert the new string there
