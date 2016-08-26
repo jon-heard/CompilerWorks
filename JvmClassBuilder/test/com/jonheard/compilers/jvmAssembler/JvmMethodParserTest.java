@@ -40,7 +40,7 @@ public class JvmMethodParserTest
 		);
 		
 		DataBuffer data = rep.serialize();
-		data.resetIteration(10);
+		data.setIterator(10);
 		assertEquals(18, data.nextInt());
 		assertEquals(0, data.nextShort());
 		assertEquals(1, data.nextShort());
@@ -70,7 +70,7 @@ public class JvmMethodParserTest
 		);
 
 		DataBuffer data = rep.serialize();
-		data.resetIteration(10);
+		data.setIterator(10);
 		assertEquals(29, data.nextInt());
 		assertEquals(2, data.nextShort());
 		assertEquals(1, data.nextShort());

@@ -370,7 +370,7 @@ public class ConstantPoolTest
 		pool.addDouble(18.25);
 		buffer.add(pool);
 
-		buffer.resetIteration();
+		buffer.resetIterator();
 		buffer.nextString();
 		buffer.nextInt();
 		ConstantPool pool2 = ConstantPool.nextConstantPool(buffer);

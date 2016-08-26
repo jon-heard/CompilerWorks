@@ -202,14 +202,14 @@ public class DataBufferTest
 		assertEquals("hello", buffer.nextString());
 		assertFalse(buffer.hasNext());
 
-		buffer.resetIteration();
+		buffer.resetIterator();
 		assertTrue(buffer.hasNext());
 		assertEquals(-123, buffer.nextByte());
 		buffer.nextString(8);
 		assertEquals("hello", buffer.nextString(5));
 		assertFalse(buffer.hasNext());
 		
-		buffer.resetIteration(3);
+		buffer.setIterator(3);
 		buffer.add(-1234567890);
 	}
 
@@ -246,7 +246,8 @@ public class DataBufferTest
 			}
 		}
 		return false;
-	}	
+	}
+
 	@Test
 	public void InvalidDataIndexException()
 	{
@@ -340,7 +341,7 @@ public class DataBufferTest
 			assertTrue (throwsException(method, 5, "hi"));
 			assertTrue (throwsException(method, 6, "hi"));
 			method = db.getClass().getMethod("nextByte");
-			db.resetIteration();
+			db.resetIterator();
 			assertFalse(throwsException(method, null, null));
 			assertFalse(throwsException(method, null, null));
 			assertFalse(throwsException(method, null, null));
@@ -348,16 +349,16 @@ public class DataBufferTest
 			assertFalse(throwsException(method, null, null));
 			assertTrue (throwsException(method, null, null));
 			method = db.getClass().getMethod("nextShort");
-			db.resetIteration();
+			db.resetIterator();
 			assertFalse(throwsException(method, null, null));
 			assertFalse(throwsException(method, null, null));
 			assertTrue (throwsException(method, null, null));
 			method = db.getClass().getMethod("nextInt");
-			db.resetIteration();
+			db.resetIterator();
 			assertFalse(throwsException(method, null, null));
 			assertTrue (throwsException(method, null, null));
 			method = db.getClass().getMethod("nextString", int.class);
-			db.resetIteration();
+			db.resetIterator();
 			assertFalse(throwsException(method, 2, null));
 			assertFalse(throwsException(method, 2, null));
 			assertTrue (throwsException(method, 2, null));

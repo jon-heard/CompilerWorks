@@ -56,7 +56,7 @@ public class MethodCodeBuilderTest
 		DataBuffer data = rep.serialize();
 		assertEquals(19, data.getInt(10));
 		assertEquals(7, data.getInt(18));
-		data.resetIteration(22);
+		data.setIterator(22);
 		/// See line 3 for an explanation of bitwise anding
 		assertEquals(0xa7, data.nextByte() & 0xff);
 		assertEquals(0x06, data.nextShort());
@@ -171,7 +171,7 @@ public class MethodCodeBuilderTest
 		DataBuffer data = rep.serialize();
 		assertEquals(Op_NoArg.values().length + 12, data.getInt(10));
 		assertEquals(Op_NoArg.values().length, data.getInt(18));
-		data.resetIteration(22);
+		data.setIterator(22);
 		/// See line 3 for an explanation of bitwise anding
 		assertEquals(0x00, data.nextByte() & 0xff); /// nop
 		assertEquals(0x59, data.nextByte() & 0xff); /// dup
@@ -214,7 +214,7 @@ public class MethodCodeBuilderTest
 		DataBuffer data = rep.serialize();
 		assertEquals(Op_Class.values().length*3 + 12, data.getInt(10));
 		assertEquals(Op_Class.values().length*3, data.getInt(18));
-		data.resetIteration(22);
+		data.setIterator(22);
 		/// See line 3 for an explanation of bitwise anding
 		assertEquals(0xbb, data.nextByte() & 0xff); /// new
 		short expected = constantPool.addClass("java/lang/Object");
@@ -237,7 +237,7 @@ public class MethodCodeBuilderTest
 		DataBuffer data = rep.serialize();
 		assertEquals(Op_Byte.values().length*2 + 12, data.getInt(10));
 		assertEquals(Op_Byte.values().length*2, data.getInt(18));
-		data.resetIteration(22);
+		data.setIterator(22);
 		/// See line 3 for an explanation of bitwise anding
 		assertEquals(0xbc, data.nextByte() & 0xff); /// newarray
 		assertEquals(12, data.nextByte() & 0xff); /// newarray param
@@ -266,7 +266,7 @@ public class MethodCodeBuilderTest
 		DataBuffer data = rep.serialize();
 		assertEquals(Op_Label.values().length*3 + 12, data.getInt(10));
 		assertEquals(Op_Label.values().length*3, data.getInt(18));
-		data.resetIteration(22);
+		data.setIterator(22);
 		/// See line 3 for an explanation of bitwise anding
 		assertEquals(0x9f, data.nextByte() & 0xff); /// if_icmpeq
 		assertEquals(12, data.nextShort()); /// if_icmpeq data
@@ -313,7 +313,7 @@ public class MethodCodeBuilderTest
 		DataBuffer data = rep.serialize();
 		assertEquals(Op_Method.values().length*3 + 12, data.getInt(10));
 		assertEquals(Op_Method.values().length*3, data.getInt(18));
-		data.resetIteration(22);
+		data.setIterator(22);
 		/// See line 3 for an explanation of bitwise anding
 		assertEquals(0xb6, data.nextByte() & 0xff); /// invokevirtual
 		assertEquals(
@@ -345,7 +345,7 @@ public class MethodCodeBuilderTest
 		DataBuffer data = rep.serialize();
 		assertEquals(Op_Field.values().length*3 + 12, data.getInt(10));
 		assertEquals(Op_Field.values().length*3, data.getInt(18));
-		data.resetIteration(22);
+		data.setIterator(22);
 		/// See line 3 for an explanation of bitwise anding
 		assertEquals(0xb2, data.nextByte() & 0xff); /// getstatic
 		assertEquals(
@@ -371,7 +371,7 @@ public class MethodCodeBuilderTest
 		DataBuffer data = rep.serialize();
 		assertEquals(Op_String.values().length*2 + 12, data.getInt(10));
 		assertEquals(Op_String.values().length*2, data.getInt(18));
-		data.resetIteration(22);
+		data.setIterator(22);
 		/// See line 3 for an explanation of bitwise anding
 		assertEquals(0x12, data.nextByte() & 0xff); /// ldc
 		assertEquals(
