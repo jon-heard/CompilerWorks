@@ -8,6 +8,8 @@ import com.jonheard.compilers.jvmClassBuilder.DataBuffer;
 
 public class DataBufferTest
 {
+	private DataBuffer db;
+
 	@Test
 	public void equals()
 	{
@@ -32,27 +34,30 @@ public class DataBufferTest
 	@Test
 	public void sizeAndClear()
 	{
-		DataBuffer a = new DataBuffer();
-		assertEquals(0, a.size());
-		a.add((byte)1);
-		assertEquals(1, a.size());
-		a.add((short)1);
-		assertEquals(3, a.size());
-		a.add(1);
-		assertEquals(7, a.size());
-		a.clear();
-		assertEquals(0, a.size());
+		db = new DataBuffer();
+		assertEquals(0, db.size());
+		db.add((byte)1);
+		assertEquals(1, db.size());
+		db.add((short)1);
+		assertEquals(3, db.size());
+		db.add(1);
+		assertEquals(7, db.size());
+		db.clear();
+		assertEquals(0, db.size());
 	}
+
+
+
 
 	@Test
 	public void basicAddMethods_toByteArray()
 	{
-		DataBuffer a = new DataBuffer();
-		int i1 = a.add((byte)1);
-		int i2 = a.add((short)2);
-		int i3 = a.add(3);
-		int i4 = a.add("hi");
-		int i5 = a.add("yo", false);
+		db = new DataBuffer();
+		int i1 = db.add((byte)1);
+		int i2 = db.add((short)2);
+		int i3 = db.add(3);
+		int i4 = db.add("hi");
+		int i5 = db.add("yo", false);
 
 		/// check given indices
 		assertEquals(0, i1);
@@ -63,25 +68,40 @@ public class DataBufferTest
 
 		/// toByteArray
 		byte[] expected = {1, 0, 2, 0, 0, 0, 3, 0, 2, 'h', 'i', 'y', 'o'};
-		byte[] actual = a.toByteArray();
+		byte[] actual = db.toByteArray();
 		assertArrayEquals(expected, actual);
 	}
 	
 	@Test
 	public void addByteArray()
 	{
-		DataBuffer a = new DataBuffer();
+		db = new DataBuffer();
 		byte[] toAdd =
 		{
 			0, 50, 13, -25	
 		};
-		int index = a.add(toAdd);
+		int index = db.add(toAdd);
 		assertEquals(0, index);
-		assertEquals(50, a.getShort(0));
-		assertEquals(13, a.getByte(2));
-		assertEquals(-25, a.getByte(3));
+		assertEquals(50, db.getShort(0));
+		assertEquals(13, db.getByte(2));
+		assertEquals(-25, db.getByte(3));
 	}
 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	@Test
 	public void addDataBuffer()
 	{
@@ -106,21 +126,35 @@ public class DataBufferTest
 	@Test
 	public void addSerializable()
 	{
+		db = new DataBuffer();
 		TestSerializable toAdd = new TestSerializable(67, "tester");
-		DataBuffer toHold = new DataBuffer();
-		toHold.add((short)45);
-		toHold.add((byte)100);
+		db.add((short)45);
+		db.add((byte)100);
 		
-		int i3 = toHold.add(toAdd);
-		int i4 = toHold.add((byte)81);
+		int i3 = db.add(toAdd);
+		int i4 = db.add((byte)81);
 		
 		assertEquals(3, i3);
 		assertEquals(12, i4);
 		
 		byte[] expected =
 				{0, 45, 100, 67, 0, 6, 't', 'e', 's', 't', 'e', 'r', 81};
-		assertArrayEquals(expected, toHold.toByteArray());		
+		assertArrayEquals(expected, db.toByteArray());		
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	class TestSerializable implements DataBuffer.Serializable
 	{
 		byte a;
@@ -143,77 +177,90 @@ public class DataBufferTest
 	@Test
 	public void getMethods()
 	{
-		DataBuffer a = new DataBuffer();
-		int i1 = a.add((byte)123);
-		int i2 = a.add((short)12345);
-		int i3 = a.add(1234567890);
-		int i4 = a.add("hi");
-		int i5 = a.add("yo", false);
-		int i6 = a.add((byte)-123);
-		int i7 = a.add((short)-12345);
-		int i8 = a.add(-1234567890);
+		db = new DataBuffer();
+		int i1 = db.add((byte)123);
+		int i2 = db.add((short)12345);
+		int i3 = db.add(1234567890);
+		int i4 = db.add("hi");
+		int i5 = db.add("yo", false);
+		int i6 = db.add((byte)-123);
+		int i7 = db.add((short)-12345);
+		int i8 = db.add(-1234567890);
 	
-		assertEquals(123, a.getByte(i1));
-		assertEquals(12345, a.getShort(i2));
-		assertEquals(1234567890, a.getInt(i3));
-		assertEquals("hi", a.getString(i4));
-		assertEquals("yo", a.getString(i5, 2));
-		assertEquals(-123, a.getByte(i6));
-		assertEquals(-12345, a.getShort(i7));
-		assertEquals(-1234567890, a.getInt(i8));
+		assertEquals(123, db.getByte(i1));
+		assertEquals(12345, db.getShort(i2));
+		assertEquals(1234567890, db.getInt(i3));
+		assertEquals("hi", db.getString(i4));
+		assertEquals("yo", db.getString(i5, 2));
+		assertEquals(-123, db.getByte(i6));
+		assertEquals(-12345, db.getShort(i7));
+		assertEquals(-1234567890, db.getInt(i8));
 	}
 	
+
+
+
+
+
+
+
+
+
+
+
 	@Test
 	public void setMethods()
 	{
-		DataBuffer a = new DataBuffer();
-		a.add((byte)1);
-		a.add((short)2);
-		a.add(3);
-		a.add("hi");
-		a.add("yo", false);
+		db = new DataBuffer();
+		db.add((byte)1);
+		db.add((short)2);
+		db.add(3);
+		db.add("hi");
+		db.add("yo", false);
 		
-		a.setByte(0, (byte)5);
-		a.setShort(1, (short)520);
-		a.setInt(3, 525);
-		a.setString(7, "yup");
-		a.setStringWithoutSize(12, "a");
+		db.setByte(0, (byte)5);
+		db.setShort(1, (short)520);
+		db.setInt(3, 525);
+		db.setString(7, "yup");
+		db.setStringWithoutSize(12, "a");
 		
 		byte[] expected = {5, 2, 8, 0, 0, 2, 13, 0, 3, 'y', 'u', 'p', 'a'};
-		byte[] actual = a.toByteArray();
+		byte[] actual = db.toByteArray();
 		assertArrayEquals(expected, actual);
 	}
 	
 	@Test
 	public void Iteration()
 	{
-		DataBuffer buffer = new DataBuffer();
-		assertFalse(buffer.hasNext());
-		buffer.add((byte)-123);
-		assertTrue(buffer.hasNext());
-		buffer.add((short)-12345);
-		buffer.add(-1234567890);
-		buffer.add("hello");
-		assertTrue(buffer.hasNext());
+		db = new DataBuffer();
+		assertFalse(db.hasNext());
+		db.add((byte)-123);
+		assertTrue(db.hasNext());
+		db.add((short)-12345);
+		db.add(-1234567890);
+		db.add("hello");
+		assertTrue(db.hasNext());
 
-		assertEquals(-123, buffer.nextByte());
-		assertEquals(-12345, buffer.nextShort());
-		assertEquals(-1234567890, buffer.nextInt());
-		assertEquals("hello", buffer.nextString());
-		assertFalse(buffer.hasNext());
+		assertEquals(-123, db.nextByte());
+		assertEquals(-12345, db.nextShort());
+		assertEquals(-1234567890, db.nextInt());
+		assertEquals("hello", db.nextString());
+		assertFalse(db.hasNext());
 
-		buffer.resetIterator();
-		assertTrue(buffer.hasNext());
-		assertEquals(-123, buffer.nextByte());
-		buffer.nextString(8);
-		assertEquals("hello", buffer.nextString(5));
-		assertFalse(buffer.hasNext());
+		db.resetIterator();
+		assertTrue(db.hasNext());
+		assertEquals(-123, db.nextByte());
+		db.nextString(8);
+		assertEquals("hello", db.nextString(5));
+		assertFalse(db.hasNext());
 		
-		buffer.setIterator(3);
-		buffer.add(-1234567890);
+		db.setIterator(3);
+		db.add(-1234567890);
 	}
 
-	private DataBuffer db;
+
+
+
 	///	Predicate to determine if calling the given method with the given
 	/// parameters will throw an "InvalidDataIndexException"
 	public boolean throwsException(Method method, Object param1,Object param2)
@@ -284,7 +331,8 @@ public class DataBufferTest
 			assertTrue (throwsException(method, 4, null));
 			assertTrue (throwsException(method, 5, null));
 			assertTrue (throwsException(method, 6, null));
-			method = db.getClass().getMethod("getString", int.class, int.class);
+			method = db.getClass().getMethod(
+				"getString", int.class, int.class);
 			assertTrue (throwsException(method, -1, 3));
 			assertFalse(throwsException(method, 0, 3));
 			assertFalse(throwsException(method, 1, 3));
@@ -293,7 +341,8 @@ public class DataBufferTest
 			assertTrue(throwsException(method, 4, 3));
 			assertTrue (throwsException(method, 5, 3));
 			assertTrue (throwsException(method, 6, 3));
-			method = db.getClass().getMethod("setByte", int.class, byte.class);
+			method = db.getClass().getMethod(
+				"setByte", int.class, byte.class);
 			assertTrue (throwsException(method, -1, (byte)0));
 			assertFalse(throwsException(method, 0, (byte)0));
 			assertFalse(throwsException(method, 1, (byte)0));
@@ -302,7 +351,8 @@ public class DataBufferTest
 			assertFalse(throwsException(method, 4, (byte)0));
 			assertTrue (throwsException(method, 5, (byte)0));
 			assertTrue (throwsException(method, 6, (byte)0));
-			method = db.getClass().getMethod("setShort", int.class,short.class);
+			method = db.getClass().getMethod(
+				"setShort", int.class,short.class);
 			assertTrue (throwsException(method, -1, (short)0));
 			assertFalse(throwsException(method, 0, (short)0));
 			assertFalse(throwsException(method, 1, (short)0));
@@ -331,7 +381,7 @@ public class DataBufferTest
 			assertTrue (throwsException(method, 5, "hi"));
 			assertTrue (throwsException(method, 6, "hi"));
 			method = db.getClass().getMethod(
-					"setStringWithoutSize", int.class, String.class);
+				"setStringWithoutSize", int.class, String.class);
 			assertTrue (throwsException(method, -1, "hi"));
 			assertFalse(throwsException(method, 0, "hi"));
 			assertFalse(throwsException(method, 1, "hi"));
