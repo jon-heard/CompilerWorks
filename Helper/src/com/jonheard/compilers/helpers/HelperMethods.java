@@ -51,7 +51,9 @@ public class HelperMethods
 		FileOutputStream out;
 		try
 		{
-			out = new FileOutputStream(filename);
+			File file = new File(filename);
+			if(file.exists()) file.delete();
+			out = new FileOutputStream(file);
 			out.write(data);
 			out.close();
 		}

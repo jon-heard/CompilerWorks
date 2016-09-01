@@ -1,4 +1,4 @@
-package com.jonheard.compilers.tokenizer;
+package com.jonheard.compilers.javaTokenizer;
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public class JavaToken
 		}
 		else
 		{
-			return type.toString() + " : " + text;
+			return type.toString() + ":" + text;
 		}
 	}
 }
@@ -95,6 +95,8 @@ enum JavaTokenType
 	CURL_BRACE_RIGHT,
 	SQUARE_BRACE_LEFT,
 	SQUARE_BRACE_RIGHT,
+	PAREN_LEFT,
+	PAREN_RIGHT,
 
 	_ABSTRACT,
 	_ASSERT,

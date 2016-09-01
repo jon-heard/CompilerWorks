@@ -156,6 +156,7 @@ public class DataBuffer
 	/// Exception thrown when data is requested with an invalid index
 	public class InvalidDataIndexException extends RuntimeException
 	{
+		private static final long serialVersionUID = 1087233952509149221L;
 		public InvalidDataIndexException(int index)
 		{
 			super("DataBuffer does not have data for index: " + index);

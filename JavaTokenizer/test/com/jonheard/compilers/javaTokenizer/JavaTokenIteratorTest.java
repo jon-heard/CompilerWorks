@@ -1,9 +1,13 @@
 
-package com.jonheard.compilers.tokenizer;
+package com.jonheard.compilers.javaTokenizer;
 
 import static org.junit.Assert.*;
 import java.util.List;
 import org.junit.Test;
+
+import com.jonheard.compilers.javaTokenizer.JavaToken;
+import com.jonheard.compilers.javaTokenizer.JavaTokenType;
+import com.jonheard.compilers.javaTokenizer.JavaTokenizer;
 
 public class JavaTokenIteratorTest
 {
@@ -11,8 +15,8 @@ public class JavaTokenIteratorTest
 	public void basic()
 	{
 		String source = "public class private";
-		JavaTokenIterator iterator = new JavaTokenIterator(source);
-		List<JavaToken> tokens = iterator.makeTokenList();
+		JavaTokenizer iterator = new JavaTokenizer(source);
+		List<JavaToken> tokens = iterator.tokenize();
 		assertEquals(3, tokens.size());
 		assertEquals(JavaTokenType._PUBLIC,			tokens.get(0).getType());
 		assertEquals(JavaTokenType._CLASS,			tokens.get(1).getType());
@@ -24,8 +28,8 @@ public class JavaTokenIteratorTest
 	{
 		String source = "public  classprivate\tprotected\rpublic\nclass " +
 				"\n\r\t\r\n\t private";
-		JavaTokenIterator iterator = new JavaTokenIterator(source);
-		List<JavaToken> tokens = iterator.makeTokenList();
+		JavaTokenizer iterator = new JavaTokenizer(source);
+		List<JavaToken> tokens = iterator.tokenize();
 		assertEquals(7, tokens.size());
 		assertEquals(JavaTokenType._PUBLIC,			tokens.get(0).getType());
 		assertEquals(JavaTokenType._CLASS,			tokens.get(1).getType());
@@ -39,9 +43,10 @@ public class JavaTokenIteratorTest
 	@Test
 	public void comments()
 	{
-		String source = "public//1\nclass//2\rprivate//3\r\nprotected//\tclass\n/*4*/public";
-		JavaTokenIterator iterator = new JavaTokenIterator(source);
-		List<JavaToken> tokens = iterator.makeTokenList();
+		String source = "public//1\nclass//2\rprivate//3\r\nprotected//\t" +
+				"class\n/*4*/public";
+		JavaTokenizer iterator = new JavaTokenizer(source);
+		List<JavaToken> tokens = iterator.tokenize();
 		assertEquals(5, tokens.size());
 		assertEquals(JavaTokenType._PUBLIC,			tokens.get(0).getType());
 		assertEquals(JavaTokenType._CLASS,			tokens.get(1).getType());
@@ -54,8 +59,8 @@ public class JavaTokenIteratorTest
 	public void identifiersAndOperators()
 	{
 		String source = "public=t+class/test;";
-		JavaTokenIterator iterator = new JavaTokenIterator(source);
-		List<JavaToken> tokens = iterator.makeTokenList();
+		JavaTokenizer iterator = new JavaTokenizer(source);
+		List<JavaToken> tokens = iterator.tokenize();
 		assertEquals(8, tokens.size());
 		assertEquals(JavaTokenType._PUBLIC,			tokens.get(0).getType());
 		assertEquals(JavaTokenType.EQUAL,			tokens.get(1).getType());
@@ -73,10 +78,10 @@ public class JavaTokenIteratorTest
 	public void TextOutput()
 	{
 		String source = "public=t+class/test;";
-		JavaTokenIterator iterator = new JavaTokenIterator(source);
-		String expected = "public\nequal\nidentifier : t\nplus\nclass\n" +
-				"slash\nidentifier : test\nsemicolon\n";
-		String actual = iterator.makeTokenListString();
+		JavaTokenizer iterator = new JavaTokenizer(source);
+		String expected = "public\nequal\nidentifier:t\nplus\nclass\n" +
+				"slash\nidentifier:test\nsemicolon\n";
+		String actual = iterator.tokenizeToString();
 		assertEquals(expected, actual);
 	}
 
@@ -84,8 +89,8 @@ public class JavaTokenIteratorTest
 	public void CharAndString()
 	{
 		String source = "'a' '~' '\n' \"hello\" \"\" \"\n\"";
-		JavaTokenIterator iterator = new JavaTokenIterator(source);
-		List<JavaToken> tokens = iterator.makeTokenList();
+		JavaTokenizer iterator = new JavaTokenizer(source);
+		List<JavaToken> tokens = iterator.tokenize();
 		assertEquals(6, tokens.size());
 		assertEquals(JavaTokenType.CHAR,			tokens.get(0).getType());
 			assertEquals("a",						tokens.get(0).getText());
@@ -105,8 +110,8 @@ public class JavaTokenIteratorTest
 	public void integers()
 	{
 		String source = "56 56l 056 056L 0x56 0x56l 0 0L";
-		JavaTokenIterator iterator = new JavaTokenIterator(source);
-		List<JavaToken> tokens = iterator.makeTokenList();
+		JavaTokenizer iterator = new JavaTokenizer(source);
+		List<JavaToken> tokens = iterator.tokenize();
 		assertEquals(8, tokens.size());
 		assertEquals(JavaTokenType.INTEGER,			tokens.get(0).getType());
 			assertEquals("56",						tokens.get(0).getText());
@@ -132,8 +137,8 @@ public class JavaTokenIteratorTest
 		String source = "56f 56d 056F 056D " +
 				"0.5f, 0.5 5e7f 5e7 5.1e7f 5.1e7 " +
 				".5f .5";
-		JavaTokenIterator iterator = new JavaTokenIterator(source);
-		List<JavaToken> tokens = iterator.makeTokenList();
+		JavaTokenizer iterator = new JavaTokenizer(source);
+		List<JavaToken> tokens = iterator.tokenize();
 		assertEquals(12, tokens.size());
 		assertEquals(JavaTokenType.FLOAT,			tokens.get( 0).getType());
 			assertEquals("56.0",					tokens.get( 0).getText());
@@ -172,10 +177,10 @@ public class JavaTokenIteratorTest
 	{
 		String source = "++ -- + - ~ ! * / % << >> >>> < > <= >= == != & ^ " +
 				"| && || ? : = += -= *= /= %= &= ^= |= <<= >>= >>>= . ; { } " +
-				"[ ]";
-		JavaTokenIterator iterator = new JavaTokenIterator(source);
-		List<JavaToken> tokens = iterator.makeTokenList();
-		assertEquals(43, tokens.size());
+				"[ ] ( )";
+		JavaTokenizer iterator = new JavaTokenizer(source);
+		List<JavaToken> tokens = iterator.tokenize();
+		assertEquals(45, tokens.size());
 		assertEquals(JavaTokenType.PLUS_PLUS,		tokens.get( 0).getType());
 		assertEquals(JavaTokenType.DASH_DASH,		tokens.get( 1).getType());
 		assertEquals(JavaTokenType.PLUS,			tokens.get( 2).getType());
@@ -187,7 +192,7 @@ public class JavaTokenIteratorTest
 		assertEquals(JavaTokenType.PERCENT,			tokens.get( 8).getType());
 		assertEquals(JavaTokenType.LEFT_LEFT,		tokens.get( 9).getType());
 		assertEquals(JavaTokenType.RIGHT_RIGHT,		tokens.get(10).getType());
-		assertEquals(JavaTokenType.RIGHT_RIGHT_RIGHT, tokens.get(11).getType());
+		assertEquals(JavaTokenType.RIGHT_RIGHT_RIGHT,tokens.get(11).getType());
 		assertEquals(JavaTokenType.LEFT,			tokens.get(12).getType());
 		assertEquals(JavaTokenType.RIGHT,			tokens.get(13).getType());
 		assertEquals(JavaTokenType.LEFT_EQUAL,		tokens.get(14).getType());
@@ -211,14 +216,18 @@ public class JavaTokenIteratorTest
 		assertEquals(JavaTokenType.CARAT_EQUAL,		tokens.get(32).getType());
 		assertEquals(JavaTokenType.PIPE_EQUAL,		tokens.get(33).getType());
 		assertEquals(JavaTokenType.LEFT_LEFT_EQUAL,	tokens.get(34).getType());
-		assertEquals(JavaTokenType.RIGHT_RIGHT_EQUAL, tokens.get(35).getType());
-		assertEquals(JavaTokenType.RIGHT_RIGHT_RIGHT_EQUAL, tokens.get(36).getType());
+		assertEquals(JavaTokenType.RIGHT_RIGHT_EQUAL,tokens.get(35).getType());
+		assertEquals(
+				JavaTokenType.RIGHT_RIGHT_RIGHT_EQUAL,
+				tokens.get(36).getType());
 		assertEquals(JavaTokenType.DOT,				tokens.get(37).getType());
 		assertEquals(JavaTokenType.SEMICOLON,		tokens.get(38).getType());
 		assertEquals(JavaTokenType.CURL_BRACE_LEFT,	tokens.get(39).getType());
-		assertEquals(JavaTokenType.CURL_BRACE_RIGHT,  tokens.get(40).getType());
-		assertEquals(JavaTokenType.SQUARE_BRACE_LEFT, tokens.get(41).getType());
+		assertEquals(JavaTokenType.CURL_BRACE_RIGHT,tokens.get(40).getType());
+		assertEquals(JavaTokenType.SQUARE_BRACE_LEFT,tokens.get(41).getType());
 		assertEquals(JavaTokenType.SQUARE_BRACE_RIGHT,tokens.get(42).getType());
+		assertEquals(JavaTokenType.PAREN_LEFT,      tokens.get(43).getType());
+		assertEquals(JavaTokenType.PAREN_RIGHT,     tokens.get(44).getType());
 	}
 
 	@Test
@@ -231,8 +240,8 @@ public class JavaTokenIteratorTest
 				"protected public return short static strictfp super switch " +
 				"synchronized this throw throws transient true try void " +
 				"volatile while";
-		JavaTokenIterator iterator = new JavaTokenIterator(source);
-		List<JavaToken> tokens = iterator.makeTokenList();
+		JavaTokenizer iterator = new JavaTokenizer(source);
+		List<JavaToken> tokens = iterator.tokenize();
 		assertEquals(52, tokens.size());
 		assertEquals(JavaTokenType._ABSTRACT,		tokens.get( 0).getType());
 		assertEquals(JavaTokenType._ASSERT,			tokens.get( 1).getType());

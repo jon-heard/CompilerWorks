@@ -1,12 +1,12 @@
-package com.jonheard.compilers.tokenizer;
+package com.jonheard.compilers.javaTokenizer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaTokenIterator
+public class JavaTokenizer
 {
-	public JavaTokenIterator() {}
-	public JavaTokenIterator(String source)
+	public JavaTokenizer() {}
+	public JavaTokenizer(String source)
 	{
 		setSource(source);
 	}
@@ -22,7 +22,7 @@ public class JavaTokenIterator
 		this.sourceLength = source.length();
 	}
 
-	public List<JavaToken> makeTokenList()
+	public List<JavaToken> tokenize()
 	{
 		List<JavaToken> result = new ArrayList<JavaToken>();
 		currentIndex = 0;
@@ -59,6 +59,12 @@ public class JavaTokenIterator
 					break;
 				case ']':
 					toAdd = new JavaToken(JavaTokenType.SQUARE_BRACE_RIGHT);
+					break;
+				case '(':
+					toAdd = new JavaToken(JavaTokenType.PAREN_LEFT);
+					break;
+				case ')':
+					toAdd = new JavaToken(JavaTokenType.PAREN_RIGHT);
 					break;
 				case '\'':
 					toAdd = handleChar();
@@ -122,9 +128,9 @@ public class JavaTokenIterator
 		return result;
 	}
 
-	public String makeTokenListString()
+	public String tokenizeToString()
 	{
-		List<JavaToken> tokenList = makeTokenList();
+		List<JavaToken> tokenList = tokenize();
 		StringBuffer result = new StringBuffer();
 		for(JavaToken token : tokenList)
 		{
@@ -141,9 +147,9 @@ public class JavaTokenIterator
 	private boolean isAlpha(String source, int index)
 	{
 		char current = source.charAt(index);
-		return	(current >= 'A' &&
-				 current <= 'z') ||
-				 current == '_';
+		return	(current >= 'A' && current <= 'Z') ||
+				(current >= 'a' && current <= 'z') ||
+				(current == '_');
 	}
 	private boolean isNumeric(String source, int index, int radix)
 	{
@@ -484,7 +490,6 @@ public class JavaTokenIterator
 		boolean isFloat = false;
 		boolean isLong = false;
 		boolean hasTypeExtension = false;
-		int floatStep = 0;
 		while(	endIndex < source.length() &&
 				isNumeric(source, endIndex, radix))
 		{
