@@ -1,4 +1,4 @@
-package com.jonheard.compilers.helpers;
+package com.jonheard.util;
 
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;

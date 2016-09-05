@@ -29,10 +29,10 @@ public class JavaCTest
 		String expectedTokens = JavaC.HEADER_TEXT +
 				"package\nidentifier:first\ndot\nidentifier:second\n" +
 				"semicolon\nimport\nidentifier:java\ndot\nidentifier:util\n" +
-				"dot\nidentifier:List\nsemicolon\nimport\nidentifier:java\n" +
-				"dot\nidentifier:swing\ndot\nstar\nsemicolon\npublic\n" +
-				"class\nidentifier:Test1\ncurl_brace_left\npublic\nstatic\n" +
-				"identifier:void\nidentifier:main\nparen_left\n" +
+				"dot\nstar\nsemicolon\nimport\nidentifier:javax\ndot\n" +
+				"identifier:swing\ndot\nidentifier:JLabel\nsemicolon\n" +
+				"public\nclass\nidentifier:Test1\ncurl_brace_left\npublic\n" +
+				"static\nidentifier:void\nidentifier:main\nparen_left\n" +
 				"identifier:String\nsquare_brace_left\nsquare_brace_right\n" +
 				"identifier:args\nparen_right\ncurl_brace_left\n" +
 				"identifier:System\ndot\nidentifier:out\ndot\n" +
@@ -46,8 +46,8 @@ public class JavaCTest
 		String expectedParsed = JavaC.HEADER_TEXT + 
 				"<CompilationUnit importCount='2' typeCount='1'>\n" +
 				"	<PackageDeclaration identifier='first.second'/>\n" +
-				"	<ImportDeclaration isOnDemaned='false' isStatic='false' identifier='java.util.List'/>\n" +
-				"	<ImportDeclaration isOnDemaned='true' isStatic='false' identifier='java.swing'/>\n" +
+				"	<ImportDeclaration isOnDemaned='true' isStatic='false' identifier='java.util'/>\n" +
+				"	<ImportDeclaration isOnDemaned='false' isStatic='false' identifier='javax.swing.JLabel'/>\n" +
 				"	<ClassDeclaration name='Test1' modifiers='public'>\n" +
 				"		<MemberDeclaration name='main' type='void'  modifiers='public static' isMethod='true'>\n" +
 				"			<MethodPart>\n" +

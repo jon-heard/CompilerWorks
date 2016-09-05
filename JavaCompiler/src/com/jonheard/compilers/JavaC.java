@@ -69,7 +69,7 @@ public class JavaC
 			result.append("ERROR: Invalid filename: " + sourceFile);
 			return result.toString();
 		}
-		JavaTokenizer t = new JavaTokenizer(source);
+		JavaTokenizer t = new JavaTokenizer(sourceFile, source);
 		if(finalStage == Stage.tokenize)
 		{
 			result.append(t.tokenizeToString());

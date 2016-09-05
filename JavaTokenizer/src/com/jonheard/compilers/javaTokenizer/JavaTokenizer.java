@@ -647,7 +647,7 @@ public class JavaTokenizer
 			if(i.isIdentifier())
 			{
 				String name = i.toString();
-				tokenTypeMap.add(name, i);
+				tokenTypeMap.put(name, i);
 			}
         }
 	}

@@ -8,7 +8,7 @@ public class Trie <T>
 			new HashMap<Character, Trie<T>>();
 	private T value = null;
 	
-	public void add(String key, T value)
+	public void put(String key, T value)
 	{
 		int currentIndex = 0;
 		Trie<T> currentTrie = this;
