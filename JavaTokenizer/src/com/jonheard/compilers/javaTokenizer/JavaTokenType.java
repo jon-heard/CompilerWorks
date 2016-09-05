@@ -83,6 +83,7 @@ public enum JavaTokenType
 	_INTERFACE,
 	_NATIVE,
 	_NEW,
+	_NULL,
 	_PACKAGE,
 	_PRIVATE,
 	_PROTECTED,

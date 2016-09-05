@@ -1,4 +1,4 @@
-- Tokenizer: tests: error handling (shouldn't need to check spacing of illegal character)
+- Tokenizer: tests: error handling
 - Parser: remove System.out.println in test
 - ClassBuilder: shift to using logger
 - Parser: add statement declaration

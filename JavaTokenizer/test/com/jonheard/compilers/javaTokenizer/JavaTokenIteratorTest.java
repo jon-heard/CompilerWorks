@@ -14,6 +14,8 @@ import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.compilers.javaTokenizer.JavaTokenizer;
 import com.jonheard.util.Logger;
 
+import sun.rmi.runtime.Log;
+
 public class JavaTokenIteratorTest
 {
 	@Test
@@ -208,28 +210,18 @@ public class JavaTokenIteratorTest
 	@Test
 	public void errors()
 	{
-		ByteArrayOutputStream buf = new ByteArrayOutputStream();
-		Logger.setPrintStream(new PrintStream(buf));
-		String source, expected, actual;
+		String source, expected;
 		JavaTokenizer iterator;
 		
-		buf.reset();
+		Logger.clearLogs();
 		source = "#";
 		iterator = new JavaTokenizer("Test1.java", source);
 		iterator.tokenize();
 		expected =
 				"Test1.java:1: error: illegal character: #\n\t#\n\t^\n";
-		actual = new String(buf.toByteArray(), StandardCharsets.UTF_8);
-		assertEquals(expected, actual);
+		assertEquals(expected, Logger.getLogs());
 
-		buf.reset();
-		source = "  #";
-		iterator = new JavaTokenizer("Test1.java", source);
-		iterator.tokenize();
-		expected =
-				"Test1.java:1: error: illegal character: #\n\t  #\n\t  ^\n";
-		actual = new String(buf.toByteArray(), StandardCharsets.UTF_8);
-		assertEquals(expected, actual);
+		
 	}
 
 	@Test
@@ -297,13 +289,13 @@ public class JavaTokenIteratorTest
 		String source = "abstract assert break case catch " +
 				"class const continue default do else enum extends " +
 				"false final finally for goto if implements import " +
-				"instanceof interface native new package private " +
+				"instanceof interface native new null package private " +
 				"protected public return static strictfp super switch " +
 				"synchronized this throw throws transient true try " +
 				"volatile while";
 		JavaTokenizer iterator = new JavaTokenizer("", source);
 		List<JavaToken> tokens = iterator.tokenize();
-		assertEquals(43, tokens.size());
+		assertEquals(44, tokens.size());
 		assertEquals(JavaTokenType._ABSTRACT,		tokens.get( 0).getType());
 		assertEquals(JavaTokenType._ASSERT,			tokens.get( 1).getType());
 		assertEquals(JavaTokenType._BREAK,			tokens.get( 2).getType());
@@ -329,23 +321,24 @@ public class JavaTokenIteratorTest
 		assertEquals(JavaTokenType._INTERFACE,		tokens.get(22).getType());
 		assertEquals(JavaTokenType._NATIVE,			tokens.get(23).getType());
 		assertEquals(JavaTokenType._NEW,			tokens.get(24).getType());
-		assertEquals(JavaTokenType._PACKAGE,		tokens.get(25).getType());
-		assertEquals(JavaTokenType._PRIVATE,		tokens.get(26).getType());
-		assertEquals(JavaTokenType._PROTECTED,		tokens.get(27).getType());
-		assertEquals(JavaTokenType._PUBLIC,			tokens.get(28).getType());
-		assertEquals(JavaTokenType._RETURN,			tokens.get(29).getType());
-		assertEquals(JavaTokenType._STATIC,			tokens.get(30).getType());
-		assertEquals(JavaTokenType._STRICTFP,		tokens.get(31).getType());
-		assertEquals(JavaTokenType._SUPER,			tokens.get(32).getType());
-		assertEquals(JavaTokenType._SWITCH,			tokens.get(33).getType());
-		assertEquals(JavaTokenType._SYNCHRONIZED,	tokens.get(34).getType());
-		assertEquals(JavaTokenType._THIS,			tokens.get(35).getType());
-		assertEquals(JavaTokenType._THROW,			tokens.get(36).getType());
-		assertEquals(JavaTokenType._THROWS,			tokens.get(37).getType());
-		assertEquals(JavaTokenType._TRANSIENT,		tokens.get(38).getType());
-		assertEquals(JavaTokenType._TRUE,			tokens.get(39).getType());
-		assertEquals(JavaTokenType._TRY,			tokens.get(40).getType());
-		assertEquals(JavaTokenType._VOLATILE,		tokens.get(41).getType());
-		assertEquals(JavaTokenType._WHILE,			tokens.get(42).getType());
+		assertEquals(JavaTokenType._NULL,			tokens.get(25).getType());
+		assertEquals(JavaTokenType._PACKAGE,		tokens.get(26).getType());
+		assertEquals(JavaTokenType._PRIVATE,		tokens.get(27).getType());
+		assertEquals(JavaTokenType._PROTECTED,		tokens.get(28).getType());
+		assertEquals(JavaTokenType._PUBLIC,			tokens.get(29).getType());
+		assertEquals(JavaTokenType._RETURN,			tokens.get(30).getType());
+		assertEquals(JavaTokenType._STATIC,			tokens.get(31).getType());
+		assertEquals(JavaTokenType._STRICTFP,		tokens.get(32).getType());
+		assertEquals(JavaTokenType._SUPER,			tokens.get(33).getType());
+		assertEquals(JavaTokenType._SWITCH,			tokens.get(34).getType());
+		assertEquals(JavaTokenType._SYNCHRONIZED,	tokens.get(35).getType());
+		assertEquals(JavaTokenType._THIS,			tokens.get(36).getType());
+		assertEquals(JavaTokenType._THROW,			tokens.get(37).getType());
+		assertEquals(JavaTokenType._THROWS,			tokens.get(38).getType());
+		assertEquals(JavaTokenType._TRANSIENT,		tokens.get(39).getType());
+		assertEquals(JavaTokenType._TRUE,			tokens.get(40).getType());
+		assertEquals(JavaTokenType._TRY,			tokens.get(41).getType());
+		assertEquals(JavaTokenType._VOLATILE,		tokens.get(42).getType());
+		assertEquals(JavaTokenType._WHILE,			tokens.get(43).getType());
 	}
 }
