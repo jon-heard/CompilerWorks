@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.jonheard.compilers.helpers.HelperMethods;
+import com.jonheard.util.HelperMethods;
 
 /*
  * MethodCodeBuilder - A class holding functionality to write the code data for

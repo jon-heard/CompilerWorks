@@ -11,9 +11,11 @@ import java.util.Scanner;
 
 import org.junit.Test;
 
+import com.jonheard.util.HelperMethods;
+
 public class HelperMethodsTest
 {
-	final boolean INCLUDE_FILEIO_TESTS = false;
+	final boolean INCLUDE_FILEIO_TESTS = true;
 
 	private static final String TEST_FILENAME_1 = "test1.txt";
 	private static final String TEST_FILENAME_2 = "test2.txt";

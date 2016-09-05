@@ -3,7 +3,7 @@ package com.jonheard.compilers.jvmClassBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.jonheard.compilers.helpers.HelperMethods;
+import com.jonheard.util.HelperMethods;
 
 /*
  * ClassRep - Represents the class being built for writing to a class file.

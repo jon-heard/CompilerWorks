@@ -1,0 +1,12 @@
+- Util: tests: Trie
+- Util: tests: Logger
+- Tokenizer: tests: error handling (shouldn't need to check spacing of illegal character)
+- Tokenizer: comment THE HECK out of it
+- Parser: add statement declaration
+- Parser: add expression
+- Parser: incorporate expression into varDeclaration
+
+- interfaces
+- exceptions
+- Nested types
+- annotations

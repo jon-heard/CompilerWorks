@@ -1,24 +1,23 @@
 
 package com.jonheard.compilers;
 
-import java.util.List;
-
-import com.jonheard.compilers.helpers.HelperMethods;
-import com.jonheard.compilers.javaTokenizer.JavaToken;
+import com.jonheard.compilers.javaParser.JavaParser;
 import com.jonheard.compilers.javaTokenizer.JavaTokenizer;
+import com.jonheard.util.HelperMethods;
 
 public class JavaC
 {
 	public static final String HEADER_TEXT =  
 			"------------------------------------------------\n" +
-			" Java Compiler by Jonathan Heard v.0.3.000\n" +
+			" Java Compiler by Jonathan Heard v.0.04.000\n" +
 			"------------------------------------------------\n";
 
 	public static final String HELP_TEXT =
 			"Usage: javac <source file> <options>\n" +
 			"where possible options include:\n" +
-			"-help (-h)        Print this help panel and quit\n" +
-			"-tokenize (-t)    Run the tokizer step only, printing results";
+			"-help (-h)      Print this help panel and quit\n" +
+			"-tokenize (-t)  Run the tokenizer step only, printing results" +
+			"-parse (-p)     Run up to the parser step only, printing results";
 	
 	public static void main(String[] args)
 	{
@@ -47,6 +46,10 @@ public class JavaC
 			case "-t":
 				finalStage = Stage.tokenize;
 				break;
+			case "-parse":
+			case "-p":
+				finalStage = Stage.parse;
+				break;
 			default:
 				sourceFile = args[i];
 				break;
@@ -72,7 +75,12 @@ public class JavaC
 			result.append(t.tokenizeToString());
 			return result.toString();
 		}
-		List<JavaToken> tokens = t.tokenize();
+		JavaParser parser = new JavaParser(t.tokenize());
+		if(finalStage == Stage.parse)
+		{
+			result.append(parser.parseToString());
+			return result.toString();
+		}
 		return result.toString();
 	}
 

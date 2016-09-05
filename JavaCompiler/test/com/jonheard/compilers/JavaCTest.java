@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.jonheard.compilers.helpers.HelperMethods;
+import com.jonheard.util.HelperMethods;
 
 public class JavaCTest
 {
@@ -13,8 +13,8 @@ public class JavaCTest
 	{
 		String source =
 				"package first.second;\n" +
-				"import java.util.List;\n" +
-				"import java.swing.*;\n" +
+				"import java.util.*;\n" +
+				"import javax.swing.JLabel;\n" +
 				"public class Test1\n" +
 				"{\n" +
 				"	public static void main(String[] args)\n" +
@@ -25,21 +25,43 @@ public class JavaCTest
 		HelperMethods.stringToFile(source, "Test1.java");
 		JavaC compiler = new JavaC();
 
+		/// Tokenizing
 		String expectedTokens = JavaC.HEADER_TEXT +
 				"package\nidentifier:first\ndot\nidentifier:second\n" +
 				"semicolon\nimport\nidentifier:java\ndot\nidentifier:util\n" +
 				"dot\nidentifier:List\nsemicolon\nimport\nidentifier:java\n" +
 				"dot\nidentifier:swing\ndot\nstar\nsemicolon\npublic\n" +
 				"class\nidentifier:Test1\ncurl_brace_left\npublic\nstatic\n" +
-				"void\nidentifier:main\nparen_left\nidentifier:String\n" +
-				"square_brace_left\nsquare_brace_right\nidentifier:args\n" +
-				"paren_right\ncurl_brace_left\nidentifier:System\ndot\n" +
-				"identifier:out\ndot\nidentifier:println\nparen_left\n" +
-				"string:Hello world\nparen_right\nsemicolon\n" +
-				"curl_brace_right\ncurl_brace_right\n";
+				"identifier:void\nidentifier:main\nparen_left\n" +
+				"identifier:String\nsquare_brace_left\nsquare_brace_right\n" +
+				"identifier:args\nparen_right\ncurl_brace_left\n" +
+				"identifier:System\ndot\nidentifier:out\ndot\n" +
+				"identifier:println\nparen_left\nstring:Hello world\n" +
+				"paren_right\nsemicolon\ncurl_brace_right\ncurl_brace_right\n";
 		String actualTokens =
 				compiler.compile(new String[] {"Test1.java", "-t"});
 		assertEquals(expectedTokens, actualTokens);
+		
+		/// Parsing
+		String expectedParsed = JavaC.HEADER_TEXT + 
+				"<CompilationUnit importCount='2' typeCount='1'>\n" +
+				"	<PackageDeclaration identifier='first.second'/>\n" +
+				"	<ImportDeclaration isOnDemaned='false' isStatic='false' identifier='java.util.List'/>\n" +
+				"	<ImportDeclaration isOnDemaned='true' isStatic='false' identifier='java.swing'/>\n" +
+				"	<ClassDeclaration name='Test1' modifiers='public'>\n" +
+				"		<MemberDeclaration name='main' type='void'  modifiers='public static' isMethod='true'>\n" +
+				"			<MethodPart>\n" +
+				"				<List_FormalParameters>\n" +
+				"					<VariableDeclaration name='args' type='String' arrayDimensions='1'/>\n" +
+				"				</List_FormalParameters>\n" +
+				"				<CodeBlock/>\n" +
+				"			</MethodPart>\n" +
+				"		</MemberDeclaration>\n" +
+				"	</ClassDeclaration>\n" +
+				"</CompilationUnit>\n";
+		String actualParsed =
+				compiler.compile(new String[] {"Test1.java", "-p"});
+		assertEquals(expectedParsed, actualParsed);
 	}
 	
 	@Test

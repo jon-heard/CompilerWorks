@@ -2,8 +2,8 @@ package com.jonheard.compilers.jvmAssembler;
 
 import java.io.File;
 
-import com.jonheard.compilers.helpers.HelperMethods;
 import com.jonheard.compilers.jvmClassBuilder.ClassRep;
+import com.jonheard.util.HelperMethods;
 
 /// The driver class for JvmAsm - the sourcefile assembly system
 public class JvmAssembler

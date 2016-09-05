@@ -1,6 +1,6 @@
 package first.second;
-import java.util.List;
-import java.swing.*;
+import java.util.*;
+import javax.swing.JLabel;
 public class Test1
 {
 	public static void main(String[] args)

@@ -1,76 +1,104 @@
 package com.jonheard.compilers.javaTokenizer;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+
+import com.jonheard.util.Logger;
+import com.jonheard.util.Trie;
 
 public class JavaTokenizer
 {
 	public JavaTokenizer() {}
-	public JavaTokenizer(String source)
+	public JavaTokenizer(String filename, String sourcCode)
 	{
-		setSource(source);
+		setFilename(filename);
+		setSourceCode(sourcCode);
 	}
 
-	public String getSource()
+	public String getFilename() { return filename; }
+	public void setFilename(String filename) { this.filename = filename; }
+	public String getSourceCode() { return sourceCode; }
+	public void setSourceCode(String sourceCode)
 	{
-		return source;
-	}
-
-	public void setSource(String source)
-	{
-		this.source = source;
-		this.sourceLength = source.length();
+		this.sourceCode = sourceCode;
+		this.sourceLength = sourceCode.length();
 	}
 
 	public List<JavaToken> tokenize()
 	{
 		List<JavaToken> result = new ArrayList<JavaToken>();
+		
+		sourceLines = new ArrayList<String>();
+		sourceLines.add(getLine(sourceCode, currentIndex));
+		JavaToken.setCurrentSourceLines(sourceLines);
+		JavaToken.setCurrentRow(1);
+		
+		if(tokenTypeMap == null) initTokenMap();
 		currentIndex = 0;
 		while(currentIndex < sourceLength)
 		{
 			JavaToken toAdd = null;
-			switch(source.charAt(currentIndex))
+			switch(sourceCode.charAt(currentIndex))
 			{
 				case ' ':
 				case '\t':
+					break;
 				case '\r':
 				case '\n':
+					handleLineBreak();
 					break;
 				case '~':
-					toAdd = new JavaToken(JavaTokenType.TILDE);
+					toAdd = new JavaToken(JavaTokenType.TILDE, getCol());
 					break;
 				case ';':
-					toAdd = new JavaToken(JavaTokenType.SEMICOLON);
+					toAdd = new JavaToken(JavaTokenType.SEMICOLON, getCol());
 					break;
 				case '?':
-					toAdd = new JavaToken(JavaTokenType.QUESTION);
+					toAdd = new JavaToken(JavaTokenType.QUESTION, getCol());
 					break;
 				case ':':
-					toAdd = new JavaToken(JavaTokenType.COLON);
+					toAdd = new JavaToken(JavaTokenType.COLON, getCol());
 					break;
-				case '{':
-					toAdd = new JavaToken(JavaTokenType.CURL_BRACE_LEFT);
-					break;
-				case '}':
-					toAdd = new JavaToken(JavaTokenType.CURL_BRACE_RIGHT);
-					break;
-				case '[':
-					toAdd = new JavaToken(JavaTokenType.SQUARE_BRACE_LEFT);
-					break;
-				case ']':
-					toAdd = new JavaToken(JavaTokenType.SQUARE_BRACE_RIGHT);
+				case ',':
+					toAdd = new JavaToken(JavaTokenType.COMMA, getCol());
 					break;
 				case '(':
-					toAdd = new JavaToken(JavaTokenType.PAREN_LEFT);
+					toAdd = new JavaToken(JavaTokenType.PAREN_LEFT, getCol());
 					break;
 				case ')':
-					toAdd = new JavaToken(JavaTokenType.PAREN_RIGHT);
+					toAdd = new JavaToken(JavaTokenType.PAREN_RIGHT, getCol());
 					break;
-				case '\'':
-					toAdd = handleChar();
+				case '{':
+					toAdd = new JavaToken(
+							JavaTokenType.CURL_BRACE_LEFT, getCol());
 					break;
-				case '\"':
-					toAdd = handleString();
+				case '}':
+					toAdd = new JavaToken(
+							JavaTokenType.CURL_BRACE_RIGHT, getCol());
+					break;
+				case '[':
+					toAdd = new JavaToken(
+							JavaTokenType.SQUARE_BRACE_LEFT, getCol());
+					break;
+				case ']':
+					toAdd = new JavaToken(
+							JavaTokenType.SQUARE_BRACE_RIGHT, getCol());
+					break;
+				case '=':
+					toAdd = handleEqual();
+					break;					
+				case '!':
+					toAdd = handleExclaim();
+					break;
+				case '*':
+					toAdd = handleStar();
+					break;
+				case '%':
+					toAdd = handlePercent();
+					break;
+				case '^':
+					toAdd = handleCarat();
 					break;
 				case '+':
 					toAdd = handlePlus();
@@ -78,17 +106,11 @@ public class JavaTokenizer
 				case '-':
 					toAdd = handleDash();
 					break;
-				case '!':
-					toAdd = handleExclaim();
+				case '&':
+					toAdd = handleAnd();
 					break;
-				case '*':
-					toAdd = handleStar();
-					break;
-				case '/':
-					toAdd = handleSlash();
-					break;
-				case '%':
-					toAdd = handlePercent();
+				case '|':
+					toAdd = handlePipe();
 					break;
 				case '<':
 					toAdd = handleLeft();
@@ -96,22 +118,19 @@ public class JavaTokenizer
 				case '>':
 					toAdd = handleRight();
 					break;
-				case '=':
-					toAdd = handleEqual();
+				case '/':
+					toAdd = handleSlash();
 					break;
-				case '&':
-					toAdd = handleAnd();
+				case '\'':
+					toAdd = handleChar();
 					break;
-				case '^':
-					toAdd = handleCarat();
-					break;
-				case '|':
-					toAdd = handlePipe();
+				case '\"':
+					toAdd = handleString();
 					break;
 				case '.':
-					if(!isNumeric(source, currentIndex+1, 10))
+					if(!isNumeric(sourceCode, currentIndex+1, 10))
 					{
-						toAdd = new JavaToken(JavaTokenType.DOT);
+						toAdd = new JavaToken(JavaTokenType.DOT, getCol());
 						break;
 					}
 				case '0': case '1': case '2': case '3': case '4':
@@ -119,7 +138,20 @@ public class JavaTokenizer
 					toAdd = handleNumeric();
 					break;
 				default:
-					toAdd = handleIdentifier();
+					if(isAlpha(sourceCode, currentIndex))
+					{
+						toAdd = handleIdentifier();
+					}
+					else
+					{
+						Logger.error(
+								"illegal character: " +
+										sourceCode.charAt(currentIndex),
+								filename,
+								JavaToken.getCurrentRow(),
+								getCol(),
+								sourceLines.get(JavaToken.getCurrentRow()-1));
+					}
 					break;
 			}
 			if(toAdd != null) result.add(toAdd);
@@ -140,9 +172,30 @@ public class JavaTokenizer
 		return result.toString();
 	}
 
-	private String source;
+
+	private String filename;
+	private String sourceCode;
 	private int sourceLength;
 	private int currentIndex;
+	private List<String> sourceLines;
+	private int colStart = 0;
+
+	private int getCol()
+	{
+		return currentIndex - colStart;
+	}
+	private String getLine(String source, int index)
+	{
+		int rhs =
+				Math.min(
+						source.indexOf("\r", index+1),
+						source.indexOf("\n", index+1));
+		if(rhs == -1)
+		{
+			rhs = source.length();
+		}
+		return source.substring(index, rhs);
+	}
 
 	private boolean isAlpha(String source, int index)
 	{
@@ -154,6 +207,10 @@ public class JavaTokenizer
 	private boolean isNumeric(String source, int index, int radix)
 	{
 		char current = source.charAt(index);
+		if(radix == 2)
+		{
+			return	current == '0' || current <= '1';
+		}
 		if(radix == 8)
 		{
 			return	current >= '0' && current <= '7';
@@ -180,211 +237,225 @@ public class JavaTokenizer
 		return	current == '.' || current == 'e' || current == 'E';
 	}
 
+	private void handleLineBreak()
+	{
+		while(	currentIndex+1 < sourceCode.length() && 
+				(sourceCode.charAt(currentIndex+1) == '\r' ||
+				sourceCode.charAt(currentIndex+1) == '\n'))
+		{
+			currentIndex++;
+		}
+		sourceLines.add(getLine(sourceCode, currentIndex+1));
+		colStart = currentIndex+1;
+		JavaToken.incCurrentRow();
+	}
 	private JavaToken handleEqual()
 	{
 		if(	currentIndex >= sourceLength-1 ||
-			source.charAt(currentIndex+1) != '=')
+			sourceCode.charAt(currentIndex+1) != '=')
 		{
-			return new JavaToken(JavaTokenType.EQUAL);			
+			return new JavaToken(JavaTokenType.EQUAL, getCol());
 		}
 		currentIndex++;
-		return new JavaToken(JavaTokenType.EQUAL_EQUAL);
+		return new JavaToken(JavaTokenType.EQUAL_EQUAL, getCol());
 	}
 	private JavaToken handleExclaim()
 	{
 		if(	currentIndex >= sourceLength-1 ||
-			source.charAt(currentIndex+1) != '=')
+			sourceCode.charAt(currentIndex+1) != '=')
 		{
-			return new JavaToken(JavaTokenType.EXCLAIM);			
+			return new JavaToken(JavaTokenType.EXCLAIM, getCol());
 		}
 		currentIndex++;
-		return new JavaToken(JavaTokenType.EXCLAIM_EQUAL);
+		return new JavaToken(JavaTokenType.EXCLAIM_EQUAL, getCol());
 	}
 	private JavaToken handleStar()
 	{
 		if(	currentIndex >= sourceLength-1 ||
-			source.charAt(currentIndex+1) != '=')
+			sourceCode.charAt(currentIndex+1) != '=')
 		{
-			return new JavaToken(JavaTokenType.STAR);			
+			return new JavaToken(JavaTokenType.STAR, getCol());
 		}
 		currentIndex++;
-		return new JavaToken(JavaTokenType.STAR_EQUAL);
+		return new JavaToken(JavaTokenType.STAR_EQUAL, getCol());
 	}
 	private JavaToken handlePercent()
 	{
 		if(	currentIndex >= sourceLength-1 ||
-			source.charAt(currentIndex+1) != '=')
+			sourceCode.charAt(currentIndex+1) != '=')
 		{
-			return new JavaToken(JavaTokenType.PERCENT);			
+			return new JavaToken(JavaTokenType.PERCENT, getCol());
 		}
 		currentIndex++;
-		return new JavaToken(JavaTokenType.PERCENT_EQUAL);
+		return new JavaToken(JavaTokenType.PERCENT_EQUAL, getCol());
 	}
 	private JavaToken handleCarat()
 	{
 		if(	currentIndex >= sourceLength-1 ||
-			source.charAt(currentIndex+1) != '=')
+			sourceCode.charAt(currentIndex+1) != '=')
 		{
-			return new JavaToken(JavaTokenType.CARAT);
+			return new JavaToken(JavaTokenType.CARAT, getCol());
 		}
 		currentIndex++;
-		return new JavaToken(JavaTokenType.CARAT_EQUAL);
+		return new JavaToken(JavaTokenType.CARAT_EQUAL, getCol());
 	}
 	private JavaToken handlePlus()
 	{
 		if(currentIndex >= sourceLength-1)
 		{
-			return new JavaToken(JavaTokenType.PLUS);
+			return new JavaToken(JavaTokenType.PLUS, getCol());
 		}
-		int nextChar = source.charAt(currentIndex+1);
+		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.PLUS_EQUAL);
+			return new JavaToken(JavaTokenType.PLUS_EQUAL, getCol());
 		}
 		if(nextChar == '+')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.PLUS_PLUS);
+			return new JavaToken(JavaTokenType.PLUS_PLUS, getCol());
 		}
-		return new JavaToken(JavaTokenType.PLUS);
+		return new JavaToken(JavaTokenType.PLUS, getCol());
 	}
 	private JavaToken handleDash()
 	{
 		if(currentIndex >= sourceLength-1)
 		{
-			return new JavaToken(JavaTokenType.DASH);
+			return new JavaToken(JavaTokenType.DASH, getCol());
 		}
-		int nextChar = source.charAt(currentIndex+1);
+		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.DASH_EQUAL);
+			return new JavaToken(JavaTokenType.DASH_EQUAL, getCol());
 		}
 		if(nextChar == '-')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.DASH_DASH);
+			return new JavaToken(JavaTokenType.DASH_DASH, getCol());
 		}
-		return new JavaToken(JavaTokenType.DASH);
+		return new JavaToken(JavaTokenType.DASH, getCol());
 	}
 	private JavaToken handleAnd()
 	{
 		if(currentIndex >= sourceLength-1)
 		{
-			return new JavaToken(JavaTokenType.AND);
+			return new JavaToken(JavaTokenType.AND, getCol());
 		}
-		int nextChar = source.charAt(currentIndex+1);
+		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.AND_EQUAL);
+			return new JavaToken(JavaTokenType.AND_EQUAL, getCol());
 		}
 		if(nextChar == '&')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.AND_AND);
+			return new JavaToken(JavaTokenType.AND_AND, getCol());
 		}
-		return new JavaToken(JavaTokenType.AND);
+		return new JavaToken(JavaTokenType.AND, getCol());
 	}
 	private JavaToken handlePipe()
 	{
 		if(currentIndex >= sourceLength-1)
 		{
-			return new JavaToken(JavaTokenType.PIPE);
+			return new JavaToken(JavaTokenType.PIPE, getCol());
 		}
-		int nextChar = source.charAt(currentIndex+1);
+		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.PIPE_EQUAL);
+			return new JavaToken(JavaTokenType.PIPE_EQUAL, getCol());
 		}
 		if(nextChar == '|')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.PIPE_PIPE);
+			return new JavaToken(JavaTokenType.PIPE_PIPE, getCol());
 		}
-		return new JavaToken(JavaTokenType.PIPE);
+		return new JavaToken(JavaTokenType.PIPE, getCol());
 	}
 	private JavaToken handleLeft()
 	{
 		if(currentIndex >= sourceLength-1)
 		{
-			return new JavaToken(JavaTokenType.LEFT);
+			return new JavaToken(JavaTokenType.LEFT, getCol());
 		}
-		int nextChar = source.charAt(currentIndex+1);
+		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.LEFT_EQUAL);
+			return new JavaToken(JavaTokenType.LEFT_EQUAL, getCol());
 		}
 		if(nextChar == '<')
 		{
 			currentIndex++;
 			if(	currentIndex >= sourceLength-1 ||
-					source.charAt(currentIndex+1) != '=')
+					sourceCode.charAt(currentIndex+1) != '=')
 			{
-				return new JavaToken(JavaTokenType.LEFT_LEFT);			
+				return new JavaToken(JavaTokenType.LEFT_LEFT, getCol());
 			}
 			currentIndex++;
-			return new JavaToken(JavaTokenType.LEFT_LEFT_EQUAL);
+			return new JavaToken(JavaTokenType.LEFT_LEFT_EQUAL, getCol());
 		}
-		return new JavaToken(JavaTokenType.LEFT);
+		return new JavaToken(JavaTokenType.LEFT, getCol());
 	}
 	private JavaToken handleRight()
 	{
 		if(currentIndex >= sourceLength-1)
 		{
-			return new JavaToken(JavaTokenType.RIGHT);
+			return new JavaToken(JavaTokenType.RIGHT, getCol());
 		}
-		int nextChar = source.charAt(currentIndex+1);
+		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.RIGHT_EQUAL);
+			return new JavaToken(JavaTokenType.RIGHT_EQUAL, getCol());
 		}
 		if(nextChar == '>')
 		{
 			currentIndex++;
 			if(currentIndex >= sourceLength-1)
 			{
-				return new JavaToken(JavaTokenType.RIGHT_RIGHT);
+				return new JavaToken(JavaTokenType.RIGHT_RIGHT, getCol());
 			}
-			nextChar = source.charAt(currentIndex+1);
+			nextChar = sourceCode.charAt(currentIndex+1);
 			if(nextChar == '=')
 			{
 				currentIndex++;
-				return new JavaToken(JavaTokenType.RIGHT_RIGHT_EQUAL);
+				return new JavaToken(JavaTokenType.RIGHT_RIGHT_EQUAL, getCol());
 			}
 			if(nextChar == '>')
 			{
 				currentIndex++;
 				if(	currentIndex >= sourceLength-1 ||
-						source.charAt(currentIndex+1) != '=')
+						sourceCode.charAt(currentIndex+1) != '=')
 				{
-					return new JavaToken(JavaTokenType.RIGHT_RIGHT_RIGHT);
+					return new JavaToken(
+							JavaTokenType.RIGHT_RIGHT_RIGHT, getCol());
 				}
 				currentIndex++;
-				return new JavaToken(JavaTokenType.RIGHT_RIGHT_RIGHT_EQUAL);
+				return new JavaToken(
+						JavaTokenType.RIGHT_RIGHT_RIGHT_EQUAL, getCol());
 			}
-			return new JavaToken(JavaTokenType.RIGHT_RIGHT);
+			return new JavaToken(JavaTokenType.RIGHT_RIGHT, getCol());
 		}
-		return new JavaToken(JavaTokenType.RIGHT);
+		return new JavaToken(JavaTokenType.RIGHT, getCol());
 	}
 	private JavaToken handleSlash()
 	{		
 		if(currentIndex >= sourceLength-1)
 		{
-			return new JavaToken(JavaTokenType.SLASH);
+			return new JavaToken(JavaTokenType.SLASH, getCol());
 		}
-		int nextChar = source.charAt(currentIndex+1);
+		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '/')
 		{
 			while(currentIndex < sourceLength)
 			{
 				currentIndex++;
-				if(	source.charAt(currentIndex)=='\r' ||
-					source.charAt(currentIndex)=='\n')
+				if(	sourceCode.charAt(currentIndex)=='\r' ||
+					sourceCode.charAt(currentIndex)=='\n')
 				{
 					break;
 				}
@@ -397,10 +468,10 @@ public class JavaTokenizer
 			while(currentIndex < sourceLength)
 			{
 				currentIndex++;
-				if(source.charAt(currentIndex) == '*')
+				if(sourceCode.charAt(currentIndex) == '*')
 				{
 					if(	currentIndex+1 < sourceLength &&
-						source.charAt(currentIndex+1) == '/')
+						sourceCode.charAt(currentIndex+1) == '/')
 					{
 						currentIndex++;
 						break;
@@ -412,58 +483,61 @@ public class JavaTokenizer
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new JavaToken(JavaTokenType.SLASH_EQUAL);
+			return new JavaToken(JavaTokenType.SLASH_EQUAL, getCol());
 		}
-		return new JavaToken(JavaTokenType.SLASH);
+		return new JavaToken(JavaTokenType.SLASH, getCol());
 	}
 	
 	private JavaToken handleChar()
 	{
 		currentIndex++;
 		StringBuffer text = new StringBuffer();
-		text.append(source.charAt(currentIndex));
+		text.append(sourceCode.charAt(currentIndex));
 		if(text.equals("\\"))
 		{
 			currentIndex++;
-			text.append(source.charAt(currentIndex));
+			text.append(sourceCode.charAt(currentIndex));
 		}
 		currentIndex++;
-		return new JavaToken(JavaTokenType.CHAR, text.toString());
+		return new JavaToken(JavaTokenType.CHAR, text.toString(), getCol());
 	}
 	
 	private JavaToken handleString()
 	{
 		currentIndex++;
 		StringBuffer text = new StringBuffer();
-		while(source.charAt(currentIndex) != '\"')
+		while(sourceCode.charAt(currentIndex) != '\"')
 		{
-			text.append(source.charAt(currentIndex));
+			text.append(sourceCode.charAt(currentIndex));
 			currentIndex++;
 		}
-		return new JavaToken(JavaTokenType.STRING, text.toString());
+		return new JavaToken(JavaTokenType.STRING, text.toString(), getCol());
 	}
 	
 	private JavaToken handleIdentifier()
 	{
 		JavaToken result = null;
-		if(isAlpha(source, currentIndex))
+		if(isAlpha(sourceCode, currentIndex))
 		{
-			result = JavaTokenType.GetNextToken(source, currentIndex);
-			if(result != null)
+			JavaTokenType type =
+					tokenTypeMap.getFromEmbeddedKey(sourceCode, currentIndex);
+			if(type != null)
 			{
+				result = new JavaToken(type, getCol());
 				currentIndex +=
 						result.toString().length() - 1;
 			}
 			else
 			{
 				int identifierEnd = currentIndex+1;
-				while(isAlphaNumeric(source, identifierEnd))
+				while(isAlphaNumeric(sourceCode, identifierEnd))
 				{
 					identifierEnd++;
 				}
 				result = new JavaToken(
 					JavaTokenType.IDENTIFIER,
-					source.substring(currentIndex, identifierEnd));
+					sourceCode.substring(currentIndex, identifierEnd),
+					getCol());
 				currentIndex=identifierEnd-1;
 			}
 		}
@@ -473,12 +547,12 @@ public class JavaTokenizer
 	private JavaToken handleNumeric()
 	{
 		int radix = 10;
-		if(source.charAt(currentIndex) == '0')
+		if(sourceCode.charAt(currentIndex) == '0')
 		{
 			radix = 8;
-			if(currentIndex+1 < source.length())
+			if(currentIndex+1 < sourceCode.length())
 			{
-				char next = source.charAt(currentIndex+1);
+				char next = sourceCode.charAt(currentIndex+1);
 				if(next == 'x' || next == 'X')
 				{
 					radix = 16;
@@ -490,21 +564,21 @@ public class JavaTokenizer
 		boolean isFloat = false;
 		boolean isLong = false;
 		boolean hasTypeExtension = false;
-		while(	endIndex < source.length() &&
-				isNumeric(source, endIndex, radix))
+		while(	endIndex < sourceCode.length() &&
+				isNumeric(sourceCode, endIndex, radix))
 		{
 			endIndex++;
 		}
-		while(	endIndex < source.length() &&
-				isFloatingNumeric(source, endIndex, radix))
+		while(	endIndex < sourceCode.length() &&
+				isFloatingNumeric(sourceCode, endIndex, radix))
 		{
 			isFloat = true;
 			isLong = true;
 			endIndex++;
 		}
-		if(endIndex < source.length())
+		if(endIndex < sourceCode.length())
 		{
-			char lastChar = source.charAt(endIndex);
+			char lastChar = sourceCode.charAt(endIndex);
 			if(lastChar == 'f' || lastChar == 'F')
 			{
 				isFloat = true;
@@ -527,7 +601,7 @@ public class JavaTokenizer
 				hasTypeExtension = true;
 			}
 		}
-		String numberString = source.substring(currentIndex, endIndex);
+		String numberString = sourceCode.substring(currentIndex, endIndex);
 		currentIndex = endIndex;
 		if(hasTypeExtension) currentIndex++;
 		if(isFloat)
@@ -536,13 +610,13 @@ public class JavaTokenizer
 			{
 				double value = Double.parseDouble(numberString);
 				return new JavaToken(
-						JavaTokenType.DOUBLE, Double.toString(value));
+						JavaTokenType.DOUBLE, Double.toString(value), getCol());
 			}
 			else
 			{
 				float value = Float.parseFloat(numberString);
 				return new JavaToken(
-						JavaTokenType.FLOAT, Float.toString(value));
+						JavaTokenType.FLOAT, Float.toString(value), getCol());
 			}
 		}
 		else
@@ -550,15 +624,31 @@ public class JavaTokenizer
 			if(isLong)
 			{
 				long value = Long.parseLong(numberString, radix);
-				return new JavaToken(JavaTokenType.LONG, Long.toString(value));
+				return new JavaToken(
+						JavaTokenType.LONG, Long.toString(value), getCol());
 			}
 			else
 			{
 				int value = Integer.parseInt(numberString, radix);
 				return new JavaToken(
 						JavaTokenType.INTEGER,
-						Integer.toString(value));
+						Integer.toString(value),
+						getCol());
 			}
 		}
+	}
+	
+	private static Trie<JavaTokenType> tokenTypeMap = null;
+	private static void initTokenMap()
+	{
+		tokenTypeMap = new Trie<JavaTokenType>();
+		for (JavaTokenType i : EnumSet.allOf(JavaTokenType.class))
+        {
+			if(i.isIdentifier())
+			{
+				String name = i.toString();
+				tokenTypeMap.add(name, i);
+			}
+        }
 	}
 }

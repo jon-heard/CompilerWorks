@@ -2,7 +2,6 @@ package com.jonheard.compilers.jvmAssembler;
 
 import java.util.List;
 
-import com.jonheard.compilers.helpers.HelperMethods;
 import com.jonheard.compilers.jvmClassBuilder.MethodCodeBuilder;
 import com.jonheard.compilers.jvmClassBuilder.MethodCodeBuilder.Op_Byte;
 import com.jonheard.compilers.jvmClassBuilder.MethodCodeBuilder.Op_Class;
@@ -11,6 +10,7 @@ import com.jonheard.compilers.jvmClassBuilder.MethodCodeBuilder.Op_Label;
 import com.jonheard.compilers.jvmClassBuilder.MethodCodeBuilder.Op_Method;
 import com.jonheard.compilers.jvmClassBuilder.MethodCodeBuilder.Op_NoArg;
 import com.jonheard.compilers.jvmClassBuilder.MethodCodeBuilder.Op_String;
+import com.jonheard.util.HelperMethods;
 
 /// Used to deserialize a MethodRep's code attribute based upon a source string
 /// following JvmAsm conventions.

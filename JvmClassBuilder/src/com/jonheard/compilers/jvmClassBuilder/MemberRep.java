@@ -2,7 +2,7 @@ package com.jonheard.compilers.jvmClassBuilder;
 
 import java.util.Collection;
 
-import com.jonheard.compilers.helpers.HelperMethods;
+import com.jonheard.util.HelperMethods;
 
 /*
  * MemberRep - Represents a member (field or method) of a class
