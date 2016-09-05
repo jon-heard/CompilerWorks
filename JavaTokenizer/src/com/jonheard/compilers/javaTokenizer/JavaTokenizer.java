@@ -186,10 +186,10 @@ public class JavaTokenizer
 	}
 	private String getLine(String source, int index)
 	{
-		int rhs =
-				Math.min(
-						source.indexOf("\r", index+1),
-						source.indexOf("\n", index+1));
+		int rhsR = source.indexOf("\r", index+1);
+		int rhsN = source.indexOf("\n", index+1);
+		int rhs = rhsR;
+		if(rhs == -1 || rhsN < rhs) rhs = rhsN;
 		if(rhs == -1)
 		{
 			rhs = source.length();
@@ -490,26 +490,74 @@ public class JavaTokenizer
 	
 	private JavaToken handleChar()
 	{
+		if(currentIndex > sourceCode.length()-3)
+		{
+			Logger.error(
+					"unclosed character literal", filename,
+					JavaToken.getCurrentRow(), getCol(),
+					sourceLines.get(JavaToken.getCurrentRow()-1));
+			currentIndex+= 3;
+			return null;
+		}
 		currentIndex++;
 		StringBuffer text = new StringBuffer();
 		text.append(sourceCode.charAt(currentIndex));
-		if(text.equals("\\"))
+		if(text.toString().equals("\\"))
 		{
+			if(currentIndex > sourceCode.length()-3)
+			{
+				Logger.error(
+						"unclosed character literal", filename,
+						JavaToken.getCurrentRow(), getCol(),
+						sourceLines.get(JavaToken.getCurrentRow()-1));
+				currentIndex+= 2;
+				return null;
+			}
 			currentIndex++;
 			text.append(sourceCode.charAt(currentIndex));
 		}
 		currentIndex++;
+		if(sourceCode.charAt(currentIndex) != '\'')
+		{
+			Logger.error(
+					"unclosed character literal", filename,
+					JavaToken.getCurrentRow(), getCol(),
+					sourceLines.get(JavaToken.getCurrentRow()-1));
+		}
 		return new JavaToken(JavaTokenType.CHAR, text.toString(), getCol());
 	}
 	
 	private JavaToken handleString()
 	{
+		int col = getCol();
 		currentIndex++;
-		StringBuffer text = new StringBuffer();
-		while(sourceCode.charAt(currentIndex) != '\"')
+		if(currentIndex > sourceCode.length()-1)
 		{
-			text.append(sourceCode.charAt(currentIndex));
+			Logger.error(
+					"unclosed string literal", filename,
+					JavaToken.getCurrentRow(), col,
+					sourceLines.get(JavaToken.getCurrentRow()-1));
+			return null;
+		}
+		StringBuffer text = new StringBuffer();
+		char curChar = sourceCode.charAt(currentIndex);
+		while(curChar != '\r' && curChar != '\n' && curChar != '\"')
+		{
+			text.append(curChar);
 			currentIndex++;
+			if(currentIndex > sourceCode.length()-1)
+			{
+				break;
+			}
+			curChar = sourceCode.charAt(currentIndex);
+		}
+		if(curChar != '\"')
+		{
+			Logger.error(
+					"unclosed string literal", filename,
+					JavaToken.getCurrentRow(), col,
+					sourceLines.get(JavaToken.getCurrentRow()-1));
+			currentIndex+= 3;
 		}
 		return new JavaToken(JavaTokenType.STRING, text.toString(), getCol());
 	}

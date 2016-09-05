@@ -129,7 +129,7 @@ public class JavaTokenIteratorTest
 	@Test
 	public void CharAndString()
 	{
-		String source = "'a' '~' '\n' \"hello\" \"\" \"\n\"";
+		String source = "'a' '~' '\n' \"hello\" \"\" \"\\n\"";
 		JavaTokenizer iterator = new JavaTokenizer("", source);
 		List<JavaToken> tokens = iterator.tokenize();
 		assertEquals(6, tokens.size());
@@ -144,7 +144,7 @@ public class JavaTokenIteratorTest
 		assertEquals(JavaTokenType.STRING,			tokens.get(4).getType());
 			assertEquals("",						tokens.get(4).getText());
 		assertEquals(JavaTokenType.STRING,			tokens.get(5).getType());
-			assertEquals("\n",						tokens.get(5).getText());
+			assertEquals("\\n",						tokens.get(5).getText());
 	}
 
 	@Test
@@ -208,20 +208,111 @@ public class JavaTokenIteratorTest
 	}
 	
 	@Test
-	public void errors()
+	public void errors_illegalCharacter()
+	{
+		Logger.clearLogs();
+		String source = "#";
+		JavaTokenizer iterator = new JavaTokenizer("Test1.java", source);
+		iterator.tokenize();
+		String expected =
+				"Test1.java:1: error: illegal character: #\n\t#\n\t^\n";
+		assertEquals(expected, Logger.getLogs());
+	}
+	
+	@Test
+	public void errors_unclosedCharacterLiteral()
 	{
 		String source, expected;
 		JavaTokenizer iterator;
-		
+
 		Logger.clearLogs();
-		source = "#";
+		source = "a'";
 		iterator = new JavaTokenizer("Test1.java", source);
 		iterator.tokenize();
 		expected =
-				"Test1.java:1: error: illegal character: #\n\t#\n\t^\n";
+				"Test1.java:1: error: " +
+				"unclosed character literal\n\ta'\n\t ^\n";
 		assertEquals(expected, Logger.getLogs());
 
+		Logger.clearLogs();
+		source = "'a";
+		iterator = new JavaTokenizer("Test1.java", source);
+		iterator.tokenize();
+		expected =
+				"Test1.java:1: error: " +
+				"unclosed character literal\n\t'a\n\t^\n";
+		assertEquals(expected, Logger.getLogs());
+
+		Logger.clearLogs();
+		source = "'aa";
+		iterator = new JavaTokenizer("Test1.java", source);
+		iterator.tokenize();
+		expected =
+				"Test1.java:1: error: " +
+				"unclosed character literal\n\t'aa\n\t  ^\n";
+		assertEquals(expected, Logger.getLogs());
 		
+		Logger.clearLogs();
+		source = "'\\";
+		iterator = new JavaTokenizer("Test1.java", source);
+		iterator.tokenize();
+		expected =
+				"Test1.java:1: error: " +
+				"unclosed character literal\n\t'\\\n\t^\n";
+		assertEquals(expected, Logger.getLogs());
+
+		Logger.clearLogs();
+		source = "'\\n";
+		iterator = new JavaTokenizer("Test1.java", source);
+		iterator.tokenize();
+		expected =
+				"Test1.java:1: error: " +
+				"unclosed character literal\n\t'\\n\n\t ^\n";
+		assertEquals(expected, Logger.getLogs());
+		
+		Logger.clearLogs();
+		source = "'\\na";
+		iterator = new JavaTokenizer("Test1.java", source);
+		iterator.tokenize();
+		expected =
+				"Test1.java:1: error: " +
+				"unclosed character literal\n\t'\\na\n\t   ^\n";
+		assertEquals(expected, Logger.getLogs());
+	}
+	
+	
+	@Test
+	public void errors_unclosedStringLiteral()
+	{
+		String source, expected;
+		JavaTokenizer iterator;
+
+		Logger.clearLogs();
+		source = "\"abc\n\"";
+		iterator = new JavaTokenizer("Test1.java", source);
+		iterator.tokenize();
+		expected =
+				"Test1.java:1: error: " +
+				"unclosed string literal\n\t\"abc\n\t^\n";
+		assertEquals(expected, Logger.getLogs());
+
+		Logger.clearLogs();
+		source = "\"abc";
+		iterator = new JavaTokenizer("Test1.java", source);
+		iterator.tokenize();
+		expected =
+				"Test1.java:1: error: " +
+				"unclosed string literal\n\t\"abc\n\t^\n";
+		assertEquals(expected, Logger.getLogs());
+		
+		Logger.clearLogs();
+		source = "\"";
+		iterator = new JavaTokenizer("Test1.java", source);
+		iterator.tokenize();
+		expected =
+				"Test1.java:1: error: " +
+				"unclosed string literal\n\t\"\n\t^\n";
+		assertEquals(expected, Logger.getLogs());
 	}
 
 	@Test
