@@ -128,14 +128,12 @@ public class JavaTokenizer
 					toAdd = handleString();
 					break;
 				case '.':
-					if(!isNumeric(sourceCode, currentIndex+1, 10))
-					{
-						toAdd = new JavaToken(JavaTokenType.DOT, getCol());
-						break;
-					}
-				case '0': case '1': case '2': case '3': case '4':
-				case '5': case '6': case '7': case '8': case '9':
-					toAdd = handleNumeric();
+					toAdd = handleDot();
+				case '0':
+					toAdd = handleZero();
+				case '1': case '2': case '3': case '4': case '5':
+				case '6': case '7': case '8': case '9':
+					toAdd = handleNumber(10);
 					break;
 				default:
 					if(isAlpha(sourceCode, currentIndex))
@@ -147,9 +145,7 @@ public class JavaTokenizer
 						Logger.error(
 								"illegal character: " +
 										sourceCode.charAt(currentIndex),
-								filename,
-								JavaToken.getCurrentRow(),
-								getCol(),
+								filename, JavaToken.getCurrentRow(), getCol(),
 								sourceLines.get(JavaToken.getCurrentRow()-1));
 					}
 					break;
@@ -209,7 +205,7 @@ public class JavaTokenizer
 		char current = source.charAt(index);
 		if(radix == 2)
 		{
-			return	current == '0' || current <= '1';
+			return	current == '0' || current == '1';
 		}
 		if(radix == 8)
 		{
@@ -493,8 +489,8 @@ public class JavaTokenizer
 		if(currentIndex > sourceCode.length()-3)
 		{
 			Logger.error(
-					"unclosed character literal", filename,
-					JavaToken.getCurrentRow(), getCol(),
+					"unclosed character literal",
+					filename, JavaToken.getCurrentRow(), getCol(),
 					sourceLines.get(JavaToken.getCurrentRow()-1));
 			currentIndex+= 3;
 			return null;
@@ -507,8 +503,8 @@ public class JavaTokenizer
 			if(currentIndex > sourceCode.length()-3)
 			{
 				Logger.error(
-						"unclosed character literal", filename,
-						JavaToken.getCurrentRow(), getCol(),
+						"unclosed character literal", 
+						filename, JavaToken.getCurrentRow(), getCol(),
 						sourceLines.get(JavaToken.getCurrentRow()-1));
 				currentIndex+= 2;
 				return null;
@@ -520,8 +516,8 @@ public class JavaTokenizer
 		if(sourceCode.charAt(currentIndex) != '\'')
 		{
 			Logger.error(
-					"unclosed character literal", filename,
-					JavaToken.getCurrentRow(), getCol(),
+					"unclosed character literal",
+					filename, JavaToken.getCurrentRow(), getCol(),
 					sourceLines.get(JavaToken.getCurrentRow()-1));
 		}
 		return new JavaToken(JavaTokenType.CHAR, text.toString(), getCol());
@@ -534,8 +530,8 @@ public class JavaTokenizer
 		if(currentIndex > sourceCode.length()-1)
 		{
 			Logger.error(
-					"unclosed string literal", filename,
-					JavaToken.getCurrentRow(), col,
+					"unclosed string literal",
+					filename, JavaToken.getCurrentRow(), col,
 					sourceLines.get(JavaToken.getCurrentRow()-1));
 			return null;
 		}
@@ -554,8 +550,8 @@ public class JavaTokenizer
 		if(curChar != '\"')
 		{
 			Logger.error(
-					"unclosed string literal", filename,
-					JavaToken.getCurrentRow(), col,
+					"unclosed string literal",
+					filename, JavaToken.getCurrentRow(), col,
 					sourceLines.get(JavaToken.getCurrentRow()-1));
 			currentIndex+= 3;
 		}
@@ -592,6 +588,88 @@ public class JavaTokenizer
 		return result;
 	}
 	
+	private JavaToken handleDot()
+	{
+		if(isNumeric(sourceCode, currentIndex+1, 10))
+		{
+			return handleNumber(10);
+		}
+		return new JavaToken(JavaTokenType.DOT, getCol());
+	}
+	private JavaToken handleZero()
+	{
+		char next = sourceCode.charAt(currentIndex+1);
+		if(next == 'b' || next == 'B')
+		{
+			currentIndex += 2;
+			if(	currentIndex >= sourceCode.length() ||
+				!isNumeric(sourceCode, currentIndex, 2))
+			{
+				Logger.error(
+						"binary numbers must contain at least one binary digit",
+						filename, JavaToken.getCurrentRow(), getCol(),
+						sourceLines.get(JavaToken.getCurrentRow()-1));
+				return null;
+			}
+			return handleNumber(2);
+		}
+		else if(next == 'x' || next == 'X')
+		{
+			currentIndex += 2;
+			if(	currentIndex >= sourceCode.length() ||
+				!isNumeric(sourceCode, currentIndex, 16))
+			{
+				Logger.error(
+						"binary numbers must contain at least one hex digit",
+						filename, JavaToken.getCurrentRow(), getCol(),
+						sourceLines.get(JavaToken.getCurrentRow()-1));
+				return null;
+			}
+			return handleNumber(16);
+		}
+		else if(isNumeric(sourceCode, currentIndex+1, 8))
+		{
+			currentIndex ++;
+			return handleNumber(8);
+		}
+		return new JavaToken(JavaTokenType.INTEGER, "0", getCol());
+	}
+	private JavaToken handleNumber(int base)
+	{
+		StringBuffer result = new StringBuffer();
+		boolean hasDot = false, hasE = false;
+		char current = sourceCode.charAt(currentIndex);
+		while(	isNumeric(sourceCode, currentIndex, base) ||
+				(current == '.' || current == 'e' || current == 'E'))
+		{
+			if(current == '.')
+			{
+				if(hasDot || hasE)
+				{
+					currentIndex--;
+					return new JavaToken(
+							JavaTokenType.FLOAT, result.toString(), getCol());
+				}
+				hasDot = true;
+			}
+			if(current == 'e' || current == 'E')
+			{
+				if(hasE)
+				{
+					currentIndex--;
+					return new JavaToken(
+							JavaTokenType.FLOAT, result.toString(), getCol());
+				}
+				hasE = true;
+			}
+			result.append(current);
+			currentIndex++;
+			current = sourceCode.charAt(currentIndex);
+		}
+		//if(current == 'd' || current == 'D')
+		//if(current == 'l' || current == 'L' && )
+		return new JavaToken(JavaTokenType.INTEGER, result.toString(), getCol());
+	}
 	private JavaToken handleNumeric()
 	{
 		int radix = 10;

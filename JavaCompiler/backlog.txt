@@ -1,11 +1,12 @@
-- Tokenizer: tests: error handling
+- Tokenizer: fixup numbers: fnc, errors and testing
+- error: binary & hex need at least one digit
+- Util: comment
+- Tokenizer: comment
 - Parser: remove System.out.println in test
 - ClassBuilder: shift to using logger
 - Parser: add statement declaration
 - Parser: add expression
 - Parser: incorporate expression into varDeclaration
-- Util: comment
-- Tokenizer: comment
 - ClassBuilder: comment
 - Parser: comment
 - Compiler: comment
