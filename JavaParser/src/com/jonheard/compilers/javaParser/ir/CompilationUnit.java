@@ -1,11 +1,10 @@
 package com.jonheard.compilers.javaParser.ir;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
+import com.jonheard.util.RewindableQueue;
 
 public class CompilationUnit extends BaseType
 {
@@ -14,8 +13,8 @@ public class CompilationUnit extends BaseType
 	
 	public CompilationUnit(List<JavaToken> tokenList, int index)
 	{
-		Queue<JavaToken> tokenQueue =
-				new LinkedList<JavaToken>(tokenList);
+		RewindableQueue<JavaToken> tokenQueue =
+				new RewindableQueue<JavaToken>(tokenList);
 		if(tokenQueue.peek().getType() == JavaTokenType._PACKAGE)
 		{
 			children.add(new PackageDeclaration(tokenQueue));

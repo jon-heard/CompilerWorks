@@ -3,9 +3,6 @@ package com.jonheard.compilers.javaTokenizer;
 
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.Test;
 
@@ -13,8 +10,6 @@ import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.compilers.javaTokenizer.JavaTokenizer;
 import com.jonheard.util.Logger;
-
-import sun.rmi.runtime.Log;
 
 public class JavaTokenIteratorTest
 {
@@ -176,7 +171,7 @@ public class JavaTokenIteratorTest
 	public void floatingPoint()
 	{
 		String source = "56f 56d 056F 056D " +
-				"0.5f, 0.5 5e7f 5e7 5.1e7f 5.1e7 " +
+				"0.5f 0.5 5e7f 5e7 5.1e7f 5.1e7 " +
 				".5f .5";
 		JavaTokenizer iterator = new JavaTokenizer("", source);
 		List<JavaToken> tokens = iterator.tokenize();

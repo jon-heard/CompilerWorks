@@ -1,19 +1,18 @@
 package com.jonheard.compilers.javaParser.ir;
 
-import java.util.Queue;
-
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
+import com.jonheard.util.RewindableQueue;
 
 public class QualifiedIdentifier extends BaseType
 {
-	public QualifiedIdentifier(Queue<JavaToken> tokenQueue)
+	public QualifiedIdentifier(RewindableQueue<JavaToken> tokenQueue)
 	{
 		this(tokenQueue, false);
 	}
 	
 	public QualifiedIdentifier(
-			Queue<JavaToken> tokenQueue, boolean ignoreBadEnding)
+			RewindableQueue<JavaToken> tokenQueue, boolean ignoreBadEnding)
 	{
 		JavaToken currentToken = tokenQueue.peek();
 		while(currentToken.getType() == JavaTokenType.IDENTIFIER)

@@ -1,13 +1,12 @@
 package com.jonheard.compilers.javaParser.ir;
 
-import java.util.Queue;
-
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
+import com.jonheard.util.RewindableQueue;
 
 public class MemberDeclaration extends BaseType
 {
-	public MemberDeclaration(Queue<JavaToken> tokenQueue)
+	public MemberDeclaration(RewindableQueue<JavaToken> tokenQueue)
 	{
 		children.add(new List_Modifiers(tokenQueue));
 		children.add(new QualifiedIdentifier(tokenQueue));

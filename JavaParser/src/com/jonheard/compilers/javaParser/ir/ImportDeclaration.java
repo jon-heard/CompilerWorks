@@ -1,16 +1,15 @@
 package com.jonheard.compilers.javaParser.ir;
 
-import java.util.Queue;
-
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
+import com.jonheard.util.RewindableQueue;
 
 public class ImportDeclaration extends BaseType
 {
 	boolean isStatic = false;
 	boolean isOnDemand = false;
 
-	public ImportDeclaration(Queue<JavaToken> tokenQueue)
+	public ImportDeclaration(RewindableQueue<JavaToken> tokenQueue)
 	{
 		tokenQueue.poll();
 		JavaToken next = tokenQueue.peek(); 

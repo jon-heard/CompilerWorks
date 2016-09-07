@@ -2,13 +2,15 @@ package com.jonheard.util;
 
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import org.junit.Test;
 
 public class LoggerTest
 {
+	public LoggerTest()
+	{
+		Logger.setPrintingToConsole(false);
+	}
+
 	@Test
 	public void loggingAndPrintStreamSetting()
 	{

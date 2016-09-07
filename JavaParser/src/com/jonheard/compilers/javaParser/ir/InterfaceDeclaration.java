@@ -1,14 +1,13 @@
 package com.jonheard.compilers.javaParser.ir;
 
-import java.util.Queue;
-
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
+import com.jonheard.util.RewindableQueue;
 
 public class InterfaceDeclaration extends BaseType
 {
 	public InterfaceDeclaration(
-			Queue<JavaToken> tokenQueue, List_Modifiers mods)
+			RewindableQueue<JavaToken> tokenQueue, List_Modifiers mods)
 	{
 		children.add(mods);
 		tokenQueue.poll();

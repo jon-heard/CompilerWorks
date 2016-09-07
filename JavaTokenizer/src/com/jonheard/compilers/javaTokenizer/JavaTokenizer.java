@@ -129,8 +129,10 @@ public class JavaTokenizer
 					break;
 				case '.':
 					toAdd = handleDot();
+					break;
 				case '0':
 					toAdd = handleZero();
+					break;
 				case '1': case '2': case '3': case '4': case '5':
 				case '6': case '7': case '8': case '9':
 					toAdd = handleNumber(10);
@@ -225,12 +227,6 @@ public class JavaTokenizer
 	private boolean isAlphaNumeric(String source, int index)
 	{
 		return isAlpha(source, index) || isNumeric(source, index, 10);
-	}
-	private boolean isFloatingNumeric(String source, int index, int radix)
-	{
-		if(isNumeric(source, index, radix)) return true;
-		char current = source.charAt(index);
-		return	current == '.' || current == 'e' || current == 'E';
 	}
 
 	private void handleLineBreak()
@@ -627,12 +623,30 @@ public class JavaTokenizer
 			}
 			return handleNumber(16);
 		}
-		else if(isNumeric(sourceCode, currentIndex+1, 8))
+		else if(isNumeric(sourceCode, currentIndex+1, 8) || next == '.')
 		{
 			currentIndex ++;
 			return handleNumber(8);
 		}
-		return new JavaToken(JavaTokenType.INTEGER, "0", getCol());
+		else if(next == 'd' || next == 'D')
+		{
+			currentIndex++;
+			return new JavaToken(JavaTokenType.DOUBLE, "0", getCol());
+		}
+		else if(next == 'f' || next == 'F')
+		{
+			currentIndex++;
+			return new JavaToken(JavaTokenType.FLOAT, "0", getCol());
+		}
+		else if(next == 'l' || next == 'L')
+		{
+			currentIndex++;
+			return new JavaToken(JavaTokenType.LONG, "0", getCol());
+		}
+		else
+		{
+			return new JavaToken(JavaTokenType.INTEGER, "0", getCol());
+		}
 	}
 	private JavaToken handleNumber(int base)
 	{
@@ -640,8 +654,24 @@ public class JavaTokenizer
 		boolean hasDot = false, hasE = false;
 		char current = sourceCode.charAt(currentIndex);
 		while(	isNumeric(sourceCode, currentIndex, base) ||
-				(current == '.' || current == 'e' || current == 'E'))
+				current == '_' || current == '.' |
+				current == 'e' || current == 'E')
 		{
+			if(current == '_')
+			{
+				if(	!isNumeric(sourceCode, currentIndex-1, base) &&
+					(currentIndex+1 >= sourceCode.length() ||
+					!isNumeric(sourceCode, currentIndex+1, base)))
+				{
+					Logger.error(
+							"illegal underscore",
+							filename, JavaToken.getCurrentRow(), getCol(),
+							sourceLines.get(JavaToken.getCurrentRow()-1));
+					currentIndex++;
+					break;
+				}
+				continue;
+			}
 			if(current == '.')
 			{
 				if(hasDot || hasE)
@@ -664,106 +694,60 @@ public class JavaTokenizer
 			}
 			result.append(current);
 			currentIndex++;
+			if(currentIndex >= sourceCode.length())
+			{
+				current = '\0';
+				break;
+			}
 			current = sourceCode.charAt(currentIndex);
 		}
-		//if(current == 'd' || current == 'D')
-		//if(current == 'l' || current == 'L' && )
-		return new JavaToken(JavaTokenType.INTEGER, result.toString(), getCol());
-	}
-	private JavaToken handleNumeric()
-	{
-		int radix = 10;
-		if(sourceCode.charAt(currentIndex) == '0')
+		if(hasDot || hasE)
 		{
-			radix = 8;
-			if(currentIndex+1 < sourceCode.length())
+			if(current == 'f' || current == 'F')
 			{
-				char next = sourceCode.charAt(currentIndex+1);
-				if(next == 'x' || next == 'X')
-				{
-					radix = 16;
-					currentIndex+=2;
-				}
-			}
-		}
-		int endIndex = currentIndex;
-		boolean isFloat = false;
-		boolean isLong = false;
-		boolean hasTypeExtension = false;
-		while(	endIndex < sourceCode.length() &&
-				isNumeric(sourceCode, endIndex, radix))
-		{
-			endIndex++;
-		}
-		while(	endIndex < sourceCode.length() &&
-				isFloatingNumeric(sourceCode, endIndex, radix))
-		{
-			isFloat = true;
-			isLong = true;
-			endIndex++;
-		}
-		if(endIndex < sourceCode.length())
-		{
-			char lastChar = sourceCode.charAt(endIndex);
-			if(lastChar == 'f' || lastChar == 'F')
-			{
-				isFloat = true;
-				isLong = false;
-				hasTypeExtension = true;
-			}
-			else if(lastChar == 'd' || lastChar == 'D')
-			{
-				isFloat = true;
-				isLong = true;
-				hasTypeExtension = true;
-			}
-			else if(lastChar == 'l' || lastChar == 'L')
-			{
-				if(isFloat == true)
-				{
-					// Throw error
-				}
-				isLong = true;
-				hasTypeExtension = true;
-			}
-		}
-		String numberString = sourceCode.substring(currentIndex, endIndex);
-		currentIndex = endIndex;
-		if(hasTypeExtension) currentIndex++;
-		if(isFloat)
-		{
-			if(isLong)
-			{
-				double value = Double.parseDouble(numberString);
-				return new JavaToken(
-						JavaTokenType.DOUBLE, Double.toString(value), getCol());
-			}
-			else
-			{
-				float value = Float.parseFloat(numberString);
+				current++;
+				float value = Float.parseFloat(result.toString());
 				return new JavaToken(
 						JavaTokenType.FLOAT, Float.toString(value), getCol());
 			}
+			else if(current == 'd' || current == 'D')	
+			{
+				current++;
+			}
+			double value = Double.parseDouble(result.toString());
+			return new JavaToken(
+					JavaTokenType.DOUBLE, Double.toString(value), getCol());
 		}
 		else
 		{
-			if(isLong)
+			if(current == 'l' || current == 'L')
 			{
-				long value = Long.parseLong(numberString, radix);
+				current++;
+				long value = Long.parseLong(result.toString(), base);
 				return new JavaToken(
 						JavaTokenType.LONG, Long.toString(value), getCol());
 			}
-			else
+			if(current == 'f' || current == 'F')
 			{
-				int value = Integer.parseInt(numberString, radix);
+				current++;
+				float value = Float.parseFloat(result.toString());
 				return new JavaToken(
-						JavaTokenType.INTEGER,
-						Integer.toString(value),
-						getCol());
+						JavaTokenType.FLOAT, Float.toString(value), getCol());
 			}
+			if(current == 'd' || current == 'D')
+			{
+				current++;
+				double value = Double.parseDouble(result.toString());
+				return new JavaToken(
+						JavaTokenType.DOUBLE, Double.toString(value), getCol());
+			}
+			int value = Integer.parseInt(result.toString(), base);
+			return new JavaToken(
+					JavaTokenType.INTEGER, Integer.toString(value), getCol());
 		}
 	}
-	
+
+
 	private static Trie<JavaTokenType> tokenTypeMap = null;
 	private static void initTokenMap()
 	{

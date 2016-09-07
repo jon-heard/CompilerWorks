@@ -1,12 +1,11 @@
 package com.jonheard.compilers.javaParser.ir;
 
-import java.util.Queue;
-
 import com.jonheard.compilers.javaTokenizer.JavaToken;
+import com.jonheard.util.RewindableQueue;
 
 public class PackageDeclaration extends BaseType
 {
-	PackageDeclaration(Queue<JavaToken> tokenQueue)
+	PackageDeclaration(RewindableQueue<JavaToken> tokenQueue)
 	{
 		tokenQueue.poll();
 		children.add(new QualifiedIdentifier(tokenQueue));

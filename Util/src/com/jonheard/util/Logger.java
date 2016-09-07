@@ -21,28 +21,40 @@ public class Logger
 	public static void resetCounts() { errorCount = warnCount = 0; }
 	public static int getErrorCount() { return errorCount; }
 	public static int getWarnCount() { return warnCount; }
+	public static boolean isPrintingToConsole() { return printingToConsole; }
+	public static void setPrintingToConsole(boolean value)
+	{
+		printingToConsole = value;
+	}
 
 	public static void log(String msg)
 	{
 		bufferStream.print(msg + "\n");
+		if(printingToConsole)
+		{
+			System.out.print(msg + "\n");
+		}
 	}
 	public static void error(
 			String msg, String filename, int row, int col, String line)
 	{
 		String columnSpace = new String(new char[col]).replace('\0', ' ');
-		bufferStream.printf(
-				ERROR_MSG + '\n', filename, row, msg, line, columnSpace);
+		String toLog = String.format(
+				ERROR_MSG, filename, row, msg, line, columnSpace);
+		log(toLog);
 		errorCount++;
 	}
 	public static void warn(
 			String msg, String filename, int row, int col, String line)
 	{
 		String columnSpace = new String(new char[col]).replace('\0', ' ');
-		bufferStream.printf(
-				WARN_MSG + '\n', filename, row, msg, line, columnSpace);
+		String toLog = String.format(
+				WARN_MSG, filename, row, msg, line, columnSpace);
+		log(toLog);
 		warnCount++;
 	}
 
+	private static boolean printingToConsole = true;
 	private static ByteArrayOutputStream buffer; 
 	private static PrintStream bufferStream; 
 	private static int errorCount = 0;

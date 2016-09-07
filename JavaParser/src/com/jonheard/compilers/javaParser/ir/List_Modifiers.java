@@ -1,12 +1,11 @@
 package com.jonheard.compilers.javaParser.ir;
 
-import java.util.Queue;
-
 import com.jonheard.compilers.javaTokenizer.JavaToken;
+import com.jonheard.util.RewindableQueue;
 
 public class List_Modifiers extends BaseType
 {
-	public List_Modifiers(Queue<JavaToken> tokenQueue)
+	public List_Modifiers(RewindableQueue<JavaToken> tokenQueue)
 	{
 		while(true)
 		{
