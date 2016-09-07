@@ -4,7 +4,6 @@ tmp/
 *.tmp
 *.bak
 *.swp
-*.class
 *~.nib
 local.properties
 .settings/
@@ -49,3 +48,11 @@ local.properties
 
 # Code Recommenders
 .recommenders/
+
+# All class files
+*.class
+
+# Test files
+JavaCompiler/Test1.java
+JavaCompiler/Test1.class
+Util/test1.txt
