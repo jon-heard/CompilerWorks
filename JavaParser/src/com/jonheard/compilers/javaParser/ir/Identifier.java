@@ -4,27 +4,36 @@ import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
 
-public class Identifier extends BaseType
+public class Identifier extends BaseIrType
 {
 	private String value = "";
 	
 	public Identifier(RewindableQueue<JavaToken> tokenQueue)
 	{
-		JavaToken currentToken = tokenQueue.poll();
-		if(currentToken.getType() == JavaTokenType.IDENTIFIER)
+		JavaToken currentToken = tokenQueue.peek();
+		if(mustBe(tokenQueue, JavaTokenType.IDENTIFIER))
 		{
 			value = currentToken.getText();
 		}
-	}
-	
-	public String getValue()
-	{
-		return value;
+		else
+		{
+			value = "";
+		}
 	}
 
 	@Override
 	public String getHeaderString()
 	{
-		return "value='" + value + "'";
+		return "value='" + getValue() + "'";
+	}
+
+	public String getValue()
+	{
+		return value;
+	}
+	
+	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
+	{
+		return see(tokenQueue, JavaTokenType.IDENTIFIER);
 	}
 }

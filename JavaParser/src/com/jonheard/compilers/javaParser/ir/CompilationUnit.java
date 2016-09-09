@@ -3,43 +3,48 @@ package com.jonheard.compilers.javaParser.ir;
 import java.util.List;
 
 import com.jonheard.compilers.javaTokenizer.JavaToken;
-import com.jonheard.compilers.javaTokenizer.JavaTokenType;
+import com.jonheard.util.Logger;
 import com.jonheard.util.RewindableQueue;
 
-public class CompilationUnit extends BaseType
+public class CompilationUnit extends BaseIrType
 {
-	private int importCount = 0;
-	private int typeCount = 0;
-	
 	public CompilationUnit(List<JavaToken> tokenList, int index)
 	{
+		finalToken = tokenList.get(tokenList.size()-1);
 		RewindableQueue<JavaToken> tokenQueue =
 				new RewindableQueue<JavaToken>(tokenList);
-		if(tokenQueue.peek().getType() == JavaTokenType._PACKAGE)
+
+		if(Package.isNext(tokenQueue))
 		{
-			children.add(new PackageDeclaration(tokenQueue));
+			addChild(new Package(tokenQueue));
+			unnamedPackage = false;
 		}
-		while(tokenQueue.peek().getType() == JavaTokenType._IMPORT)
+		while(Import.isNext(tokenQueue))
 		{
-			children.add(new ImportDeclaration(tokenQueue));
+			addChild(new Import(tokenQueue));
 			importCount++;
 		}
 		while(!tokenQueue.isEmpty())
 		{
-			List_Modifiers mods = new List_Modifiers(tokenQueue);
-			switch(tokenQueue.peek().getType())
+			if(Class.isNext(tokenQueue))
 			{
-			case _CLASS:
-				children.add(new ClassDeclaration(tokenQueue, mods));
-				break;
-			case _INTERFACE:
-				children.add(new InterfaceDeclaration(tokenQueue, mods));
-				break;
-			case _ENUM:
-				children.add(new EnumDeclaration(tokenQueue, mods));
-				break;
-			default:
-				break;
+				addChild(new Class(tokenQueue));
+			}
+			else if(Interface.isNext(tokenQueue))
+			{
+				addChild(new Interface(tokenQueue));
+			}
+			else if(Enum.isNext(tokenQueue))
+			{
+				addChild(new Enum(tokenQueue));
+			}
+			else
+			{
+				JavaToken next = tokenQueue.peek();
+				Logger.error(
+						"class, interface or enum expected",
+						next.getFilename(), next.getRow(), next.getCol(),
+						next.getLine());
 			}
 			typeCount++;
 		}
@@ -48,7 +53,40 @@ public class CompilationUnit extends BaseType
 	@Override
 	public String getHeaderString()
 	{
-		return  "importCount='" + importCount + "' " +
-				"typeCount='" + typeCount + "'";
+		Package p = getPackage();
+		String packageName =
+				(p == null) ? "unnamed" : p.getIdentifier().getValue();
+		return  "importCount='" + getImportCount() + "' " +
+				"typeCount='" + getTypeCount() + "' " +
+				"package='" + packageName + "'";
 	}
+	
+	@Override
+	public int getFirstPrintedChildIndex() { return 1; }
+	
+	public Package getPackage()
+	{
+		if(unnamedPackage)
+		{
+			return null;
+		}
+		else
+		{
+			return (Package)getChild(0);
+		}
+	}
+
+	public int getImportCount()
+	{
+		return importCount;
+	}
+
+	public int getTypeCount()
+	{
+		return typeCount;
+	}
+
+	private int importCount = 0;
+	private int typeCount = 0;
+	private boolean unnamedPackage = true;
 }

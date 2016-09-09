@@ -7,10 +7,10 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.jonheard.compilers.javaParser.ir.ClassDeclaration;
+import com.jonheard.compilers.javaParser.ir.Class;
 import com.jonheard.compilers.javaParser.ir.CompilationUnit;
-import com.jonheard.compilers.javaParser.ir.ImportDeclaration;
-import com.jonheard.compilers.javaParser.ir.PackageDeclaration;
+import com.jonheard.compilers.javaParser.ir.Import;
+import com.jonheard.compilers.javaParser.ir.Package;
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 
@@ -26,11 +26,11 @@ public class JavaParserTest
 		String val = cUnit.toString();
 		System.out.println(val);
 		assertEquals(5, cUnit.getChildCount());
-		assertTrue(cUnit.getChild(0) instanceof PackageDeclaration);
-		assertTrue(cUnit.getChild(1) instanceof ImportDeclaration);
-		assertTrue(cUnit.getChild(2) instanceof ImportDeclaration);
-		assertTrue(cUnit.getChild(3) instanceof ImportDeclaration);
-		assertTrue(cUnit.getChild(4) instanceof ClassDeclaration);
+		assertTrue(cUnit.getChild(0) instanceof Package);
+		assertTrue(cUnit.getChild(1) instanceof Import);
+		assertTrue(cUnit.getChild(2) instanceof Import);
+		assertTrue(cUnit.getChild(3) instanceof Import);
+		assertTrue(cUnit.getChild(4) instanceof Class);
 	}
 
 	private List<JavaToken> makeGenericTokenList()

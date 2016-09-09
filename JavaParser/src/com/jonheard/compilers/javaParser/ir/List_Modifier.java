@@ -1,11 +1,12 @@
 package com.jonheard.compilers.javaParser.ir;
 
 import com.jonheard.compilers.javaTokenizer.JavaToken;
+import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
 
-public class List_Modifiers extends BaseType
+public class List_Modifier extends BaseIrType
 {
-	public List_Modifiers(RewindableQueue<JavaToken> tokenQueue)
+	public List_Modifier(RewindableQueue<JavaToken> tokenQueue)
 	{
 		while(true)
 		{
@@ -24,6 +25,9 @@ public class List_Modifiers extends BaseType
 				case _STATIC:
 					hasStatic = true;
 					break;
+				case _FINAL:
+					hasFinal = true;
+					break;
 				default:
 					return;
 			}
@@ -34,14 +38,28 @@ public class List_Modifiers extends BaseType
 	@Override
 	public String getHeaderString()
 	{
+		return "value='" + getValue() + "'";
+	}
+	
+	public String getValue()
+	{
 		StringBuffer result = new StringBuffer();
 		if(hasPublic) result.append("public ");
 		if(hasPrivate) result.append("private ");
 		if(hasProtected) result.append("protected ");
 		if(hasStatic) result.append("static ");
-		result.deleteCharAt(result.length()-1);
+		if(hasFinal) result.append("final ");
+		if(result.length() > 0)
+		{
+			result.deleteCharAt(result.length()-1);
+		}
 		return result.toString();
 	}
 
-	private boolean hasPublic, hasPrivate, hasProtected, hasStatic;
+	private boolean hasPublic, hasPrivate, hasProtected, hasStatic, hasFinal;
+	
+	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
+	{
+		return true;
+	}
 }

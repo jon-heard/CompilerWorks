@@ -19,6 +19,7 @@ public class RewindableQueue<T> extends LinkedList<T>
 	public void remember()
 	{
 		remembering = true;
+		memory.clear();
 	}
 	
 	public void rewind()

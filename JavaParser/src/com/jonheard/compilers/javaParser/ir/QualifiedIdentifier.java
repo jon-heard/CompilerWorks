@@ -4,7 +4,7 @@ import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
 
-public class QualifiedIdentifier extends BaseType
+public class QualifiedIdentifier extends BaseIrType
 {
 	public QualifiedIdentifier(RewindableQueue<JavaToken> tokenQueue)
 	{
@@ -18,7 +18,7 @@ public class QualifiedIdentifier extends BaseType
 		while(currentToken.getType() == JavaTokenType.IDENTIFIER)
 		{
 			endedWithDot = false;
-			children.add(new Identifier(tokenQueue));
+			addChild(new Identifier(tokenQueue));
 			currentToken = tokenQueue.peek();
 			if(currentToken.getType() == JavaTokenType.DOT)
 			{
@@ -49,9 +49,9 @@ public class QualifiedIdentifier extends BaseType
 	public String getValue()
 	{
 		StringBuffer result = new StringBuffer();
-		for(BaseType child : children)
+		for(int i = 0; i < getChildCount(); i++)
 		{
-			result.append(((Identifier)child).getValue());
+			result.append(((Identifier)getChild(i)).getValue());
 			result.append(".");
 		}
 		result.deleteCharAt(result.length()-1);
@@ -61,6 +61,11 @@ public class QualifiedIdentifier extends BaseType
 	public boolean isEndedWithDot()
 	{
 		return endedWithDot;
+	}
+	
+	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
+	{
+		return see(tokenQueue, JavaTokenType.IDENTIFIER);
 	}
 
 	private boolean endedWithDot = false;

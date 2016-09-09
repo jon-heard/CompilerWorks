@@ -1,4 +1,3 @@
-- Parser: add statement declaration
 - Parser: add expression
 - Parser: incorporate expression into varDeclaration
 
@@ -15,8 +14,12 @@
 
 - Parser: comment
 
+- multiple variables in one declaration
+- declaration initializers
 - interfaces
 - enums
 - exceptions
+- abstract
 - Nested types
 - annotations
+- labels

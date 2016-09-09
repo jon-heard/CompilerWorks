@@ -4,14 +4,14 @@ import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
 
-public class List_FormalParameters extends BaseType
+public class List_Variable extends BaseIrType
 {
-	public List_FormalParameters(RewindableQueue<JavaToken> tokenQueue)
+	public List_Variable(RewindableQueue<JavaToken> tokenQueue)
 	{
 		JavaToken current = tokenQueue.peek();
 		do
 		{
-			children.add(new VariableDeclaration(tokenQueue));
+			addChild(new Variable(tokenQueue));
 		}
 		while(current.getType() == JavaTokenType.COMMA);
 	}

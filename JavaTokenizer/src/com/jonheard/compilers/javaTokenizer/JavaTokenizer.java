@@ -10,31 +10,25 @@ import com.jonheard.util.Trie;
 public class JavaTokenizer
 {
 	public JavaTokenizer() {}
-	public JavaTokenizer(String filename, String sourcCode)
+	public JavaTokenizer(String filename, String sourceCode)
 	{
-		setFilename(filename);
-		setSourceCode(sourcCode);
+		sourceFileInfo = new SourceFileInfo(filename, sourceCode);
 	}
-
-	public String getFilename() { return filename; }
-	public void setFilename(String filename) { this.filename = filename; }
-	public String getSourceCode() { return sourceCode; }
-	public void setSourceCode(String sourceCode)
-	{
-		this.sourceCode = sourceCode;
-		this.sourceLength = sourceCode.length();
-	}
+	
+	public String getFilename() { return sourceFileInfo.getFilename(); }
+	public String getSourceCode() { return sourceFileInfo.getSourcecode(); }
 
 	public List<JavaToken> tokenize()
 	{
 		List<JavaToken> result = new ArrayList<JavaToken>();
 		
-		sourceLines = new ArrayList<String>();
-		sourceLines.add(getLine(sourceCode, currentIndex));
-		JavaToken.setCurrentSourceLines(sourceLines);
+		JavaToken.setCurrentSourceFileInfo(sourceFileInfo);
 		JavaToken.setCurrentRow(1);
 		
 		if(tokenTypeMap == null) initTokenMap();
+
+		String sourceCode = sourceFileInfo.getSourcecode();
+		int sourceLength = sourceCode.length();
 		currentIndex = 0;
 		while(currentIndex < sourceLength)
 		{
@@ -144,11 +138,12 @@ public class JavaTokenizer
 					}
 					else
 					{
+						int row = JavaToken.getCurrentRow();
 						Logger.error(
 								"illegal character: " +
 										sourceCode.charAt(currentIndex),
-								filename, JavaToken.getCurrentRow(), getCol(),
-								sourceLines.get(JavaToken.getCurrentRow()-1));
+								sourceFileInfo.getFilename(), row, getCol(),
+								sourceFileInfo.getLine(row-1));
 					}
 					break;
 			}
@@ -171,28 +166,13 @@ public class JavaTokenizer
 	}
 
 
-	private String filename;
-	private String sourceCode;
-	private int sourceLength;
+	private SourceFileInfo sourceFileInfo;
 	private int currentIndex;
-	private List<String> sourceLines;
 	private int colStart = 0;
 
 	private int getCol()
 	{
 		return currentIndex - colStart;
-	}
-	private String getLine(String source, int index)
-	{
-		int rhsR = source.indexOf("\r", index+1);
-		int rhsN = source.indexOf("\n", index+1);
-		int rhs = rhsR;
-		if(rhs == -1 || rhsN < rhs) rhs = rhsN;
-		if(rhs == -1)
-		{
-			rhs = source.length();
-		}
-		return source.substring(index, rhs);
 	}
 
 	private boolean isAlpha(String source, int index)
@@ -231,19 +211,20 @@ public class JavaTokenizer
 
 	private void handleLineBreak()
 	{
+		String sourceCode = sourceFileInfo.getSourcecode();
 		while(	currentIndex+1 < sourceCode.length() && 
 				(sourceCode.charAt(currentIndex+1) == '\r' ||
 				sourceCode.charAt(currentIndex+1) == '\n'))
 		{
 			currentIndex++;
 		}
-		sourceLines.add(getLine(sourceCode, currentIndex+1));
 		colStart = currentIndex+1;
 		JavaToken.incCurrentRow();
 	}
 	private JavaToken handleEqual()
 	{
-		if(	currentIndex >= sourceLength-1 ||
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(	currentIndex >= sourceCode.length()-1 ||
 			sourceCode.charAt(currentIndex+1) != '=')
 		{
 			return new JavaToken(JavaTokenType.EQUAL, getCol());
@@ -253,7 +234,8 @@ public class JavaTokenizer
 	}
 	private JavaToken handleExclaim()
 	{
-		if(	currentIndex >= sourceLength-1 ||
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(	currentIndex >= sourceCode.length()-1 ||
 			sourceCode.charAt(currentIndex+1) != '=')
 		{
 			return new JavaToken(JavaTokenType.EXCLAIM, getCol());
@@ -263,7 +245,8 @@ public class JavaTokenizer
 	}
 	private JavaToken handleStar()
 	{
-		if(	currentIndex >= sourceLength-1 ||
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(	currentIndex >= sourceCode.length()-1 ||
 			sourceCode.charAt(currentIndex+1) != '=')
 		{
 			return new JavaToken(JavaTokenType.STAR, getCol());
@@ -273,7 +256,8 @@ public class JavaTokenizer
 	}
 	private JavaToken handlePercent()
 	{
-		if(	currentIndex >= sourceLength-1 ||
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(	currentIndex >= sourceCode.length()-1 ||
 			sourceCode.charAt(currentIndex+1) != '=')
 		{
 			return new JavaToken(JavaTokenType.PERCENT, getCol());
@@ -283,7 +267,8 @@ public class JavaTokenizer
 	}
 	private JavaToken handleCarat()
 	{
-		if(	currentIndex >= sourceLength-1 ||
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(	currentIndex >= sourceCode.length()-1 ||
 			sourceCode.charAt(currentIndex+1) != '=')
 		{
 			return new JavaToken(JavaTokenType.CARAT, getCol());
@@ -293,7 +278,8 @@ public class JavaTokenizer
 	}
 	private JavaToken handlePlus()
 	{
-		if(currentIndex >= sourceLength-1)
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(currentIndex >= sourceCode.length()-1)
 		{
 			return new JavaToken(JavaTokenType.PLUS, getCol());
 		}
@@ -312,7 +298,8 @@ public class JavaTokenizer
 	}
 	private JavaToken handleDash()
 	{
-		if(currentIndex >= sourceLength-1)
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(currentIndex >= sourceCode.length()-1)
 		{
 			return new JavaToken(JavaTokenType.DASH, getCol());
 		}
@@ -331,7 +318,8 @@ public class JavaTokenizer
 	}
 	private JavaToken handleAnd()
 	{
-		if(currentIndex >= sourceLength-1)
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(currentIndex >= sourceCode.length()-1)
 		{
 			return new JavaToken(JavaTokenType.AND, getCol());
 		}
@@ -350,7 +338,8 @@ public class JavaTokenizer
 	}
 	private JavaToken handlePipe()
 	{
-		if(currentIndex >= sourceLength-1)
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(currentIndex >= sourceCode.length()-1)
 		{
 			return new JavaToken(JavaTokenType.PIPE, getCol());
 		}
@@ -369,7 +358,8 @@ public class JavaTokenizer
 	}
 	private JavaToken handleLeft()
 	{
-		if(currentIndex >= sourceLength-1)
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(currentIndex >= sourceCode.length()-1)
 		{
 			return new JavaToken(JavaTokenType.LEFT, getCol());
 		}
@@ -382,7 +372,7 @@ public class JavaTokenizer
 		if(nextChar == '<')
 		{
 			currentIndex++;
-			if(	currentIndex >= sourceLength-1 ||
+			if(	currentIndex >= sourceCode.length()-1 ||
 					sourceCode.charAt(currentIndex+1) != '=')
 			{
 				return new JavaToken(JavaTokenType.LEFT_LEFT, getCol());
@@ -394,7 +384,8 @@ public class JavaTokenizer
 	}
 	private JavaToken handleRight()
 	{
-		if(currentIndex >= sourceLength-1)
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(currentIndex >= sourceCode.length()-1)
 		{
 			return new JavaToken(JavaTokenType.RIGHT, getCol());
 		}
@@ -407,7 +398,7 @@ public class JavaTokenizer
 		if(nextChar == '>')
 		{
 			currentIndex++;
-			if(currentIndex >= sourceLength-1)
+			if(currentIndex >= sourceCode.length()-1)
 			{
 				return new JavaToken(JavaTokenType.RIGHT_RIGHT, getCol());
 			}
@@ -420,7 +411,7 @@ public class JavaTokenizer
 			if(nextChar == '>')
 			{
 				currentIndex++;
-				if(	currentIndex >= sourceLength-1 ||
+				if(	currentIndex >= sourceCode.length()-1 ||
 						sourceCode.charAt(currentIndex+1) != '=')
 				{
 					return new JavaToken(
@@ -435,15 +426,16 @@ public class JavaTokenizer
 		return new JavaToken(JavaTokenType.RIGHT, getCol());
 	}
 	private JavaToken handleSlash()
-	{		
-		if(currentIndex >= sourceLength-1)
+	{
+		String sourceCode = sourceFileInfo.getSourcecode();
+		if(currentIndex >= sourceCode.length()-1)
 		{
 			return new JavaToken(JavaTokenType.SLASH, getCol());
 		}
 		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '/')
 		{
-			while(currentIndex < sourceLength)
+			while(currentIndex < sourceCode.length())
 			{
 				currentIndex++;
 				if(	sourceCode.charAt(currentIndex)=='\r' ||
@@ -457,12 +449,12 @@ public class JavaTokenizer
 		if(nextChar == '*')
 		{
 			currentIndex++;
-			while(currentIndex < sourceLength)
+			while(currentIndex < sourceCode.length())
 			{
 				currentIndex++;
 				if(sourceCode.charAt(currentIndex) == '*')
 				{
-					if(	currentIndex+1 < sourceLength &&
+					if(	currentIndex+1 < sourceCode.length() &&
 						sourceCode.charAt(currentIndex+1) == '/')
 					{
 						currentIndex++;
@@ -482,12 +474,13 @@ public class JavaTokenizer
 	
 	private JavaToken handleChar()
 	{
+		String sourceCode = sourceFileInfo.getSourcecode();
 		if(currentIndex > sourceCode.length()-3)
 		{
 			Logger.error(
-					"unclosed character literal",
-					filename, JavaToken.getCurrentRow(), getCol(),
-					sourceLines.get(JavaToken.getCurrentRow()-1));
+					"unclosed character literal", sourceFileInfo.getFilename(),
+					JavaToken.getCurrentRow(), getCol(),
+					sourceFileInfo.getLine(JavaToken.getCurrentRow()-1));
 			currentIndex+= 3;
 			return null;
 		}
@@ -499,9 +492,9 @@ public class JavaTokenizer
 			if(currentIndex > sourceCode.length()-3)
 			{
 				Logger.error(
-						"unclosed character literal", 
-						filename, JavaToken.getCurrentRow(), getCol(),
-						sourceLines.get(JavaToken.getCurrentRow()-1));
+					"unclosed character literal", sourceFileInfo.getFilename(),
+					JavaToken.getCurrentRow(), getCol(),
+					sourceFileInfo.getLine(JavaToken.getCurrentRow()-1));
 				currentIndex+= 2;
 				return null;
 			}
@@ -512,23 +505,23 @@ public class JavaTokenizer
 		if(sourceCode.charAt(currentIndex) != '\'')
 		{
 			Logger.error(
-					"unclosed character literal",
-					filename, JavaToken.getCurrentRow(), getCol(),
-					sourceLines.get(JavaToken.getCurrentRow()-1));
+				"unclosed character literal", sourceFileInfo.getFilename(),
+				JavaToken.getCurrentRow(), getCol(),
+				sourceFileInfo.getLine(JavaToken.getCurrentRow()-1));
 		}
 		return new JavaToken(JavaTokenType.CHAR, text.toString(), getCol());
 	}
 	
 	private JavaToken handleString()
 	{
-		int col = getCol();
+		String sourceCode = sourceFileInfo.getSourcecode();
 		currentIndex++;
 		if(currentIndex > sourceCode.length()-1)
 		{
 			Logger.error(
-					"unclosed string literal",
-					filename, JavaToken.getCurrentRow(), col,
-					sourceLines.get(JavaToken.getCurrentRow()-1));
+					"unclosed string literal", sourceFileInfo.getFilename(),
+					JavaToken.getCurrentRow(), getCol(),
+					sourceFileInfo.getLine(JavaToken.getCurrentRow()-1));
 			return null;
 		}
 		StringBuffer text = new StringBuffer();
@@ -546,9 +539,9 @@ public class JavaTokenizer
 		if(curChar != '\"')
 		{
 			Logger.error(
-					"unclosed string literal",
-					filename, JavaToken.getCurrentRow(), col,
-					sourceLines.get(JavaToken.getCurrentRow()-1));
+					"unclosed string literal", sourceFileInfo.getFilename(),
+					JavaToken.getCurrentRow(), getCol(),
+					sourceFileInfo.getLine(JavaToken.getCurrentRow()-1));
 			currentIndex+= 3;
 		}
 		return new JavaToken(JavaTokenType.STRING, text.toString(), getCol());
@@ -556,6 +549,7 @@ public class JavaTokenizer
 	
 	private JavaToken handleIdentifier()
 	{
+		String sourceCode = sourceFileInfo.getSourcecode();
 		JavaToken result = null;
 		if(isAlpha(sourceCode, currentIndex))
 		{
@@ -586,6 +580,7 @@ public class JavaTokenizer
 	
 	private JavaToken handleDot()
 	{
+		String sourceCode = sourceFileInfo.getSourcecode();
 		if(isNumeric(sourceCode, currentIndex+1, 10))
 		{
 			return handleNumber(10);
@@ -594,6 +589,7 @@ public class JavaTokenizer
 	}
 	private JavaToken handleZero()
 	{
+		String sourceCode = sourceFileInfo.getSourcecode();
 		char next = sourceCode.charAt(currentIndex+1);
 		if(next == 'b' || next == 'B')
 		{
@@ -603,8 +599,9 @@ public class JavaTokenizer
 			{
 				Logger.error(
 						"binary numbers must contain at least one binary digit",
-						filename, JavaToken.getCurrentRow(), getCol(),
-						sourceLines.get(JavaToken.getCurrentRow()-1));
+						sourceFileInfo.getFilename(),
+						JavaToken.getCurrentRow(), getCol(),
+						sourceFileInfo.getLine(JavaToken.getCurrentRow()-1));
 				return null;
 			}
 			return handleNumber(2);
@@ -617,8 +614,9 @@ public class JavaTokenizer
 			{
 				Logger.error(
 						"binary numbers must contain at least one hex digit",
-						filename, JavaToken.getCurrentRow(), getCol(),
-						sourceLines.get(JavaToken.getCurrentRow()-1));
+						sourceFileInfo.getFilename(),
+						JavaToken.getCurrentRow(), getCol(),
+						sourceFileInfo.getLine(JavaToken.getCurrentRow()-1));
 				return null;
 			}
 			return handleNumber(16);
@@ -650,6 +648,7 @@ public class JavaTokenizer
 	}
 	private JavaToken handleNumber(int base)
 	{
+		String sourceCode = sourceFileInfo.getSourcecode();
 		StringBuffer result = new StringBuffer();
 		boolean hasDot = false, hasE = false;
 		char current = sourceCode.charAt(currentIndex);
@@ -664,9 +663,9 @@ public class JavaTokenizer
 					!isNumeric(sourceCode, currentIndex+1, base)))
 				{
 					Logger.error(
-							"illegal underscore",
-							filename, JavaToken.getCurrentRow(), getCol(),
-							sourceLines.get(JavaToken.getCurrentRow()-1));
+						"illegal underscore", sourceFileInfo.getFilename(),
+						JavaToken.getCurrentRow(), getCol(),
+						sourceFileInfo.getLine(JavaToken.getCurrentRow()-1));
 					currentIndex++;
 					break;
 				}

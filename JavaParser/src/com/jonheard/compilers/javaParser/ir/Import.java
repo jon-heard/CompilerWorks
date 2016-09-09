@@ -4,38 +4,30 @@ import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
 
-public class ImportDeclaration extends BaseType
+public class Import extends BaseIrType
 {
 	boolean isStatic = false;
 	boolean isOnDemand = false;
 
-	public ImportDeclaration(RewindableQueue<JavaToken> tokenQueue)
+	public Import(RewindableQueue<JavaToken> tokenQueue)
 	{
-		tokenQueue.poll();
-		JavaToken next = tokenQueue.peek(); 
-		if(next.getType() == JavaTokenType._STATIC)
+		mustBe(tokenQueue, JavaTokenType._IMPORT);
+		if(see(tokenQueue, JavaTokenType._STATIC))
 		{
 			isStatic = true;
 			tokenQueue.poll();
-			next = tokenQueue.peek();
 		}
 		QualifiedIdentifier identifier =
 				new QualifiedIdentifier(tokenQueue, true);
-		children.add(identifier);
+		addChild(identifier);
 		if(identifier.isEndedWithDot())
 		{
-			JavaToken ending = tokenQueue.peek();
-			if(ending.getType() == JavaTokenType.STAR)
+			if(mustBe(tokenQueue, JavaTokenType.STAR))
 			{
-				tokenQueue.poll();
 				isOnDemand = true;
 			}
-			else
-			{
-				// error
-			}
 		}
-		tokenQueue.poll();
+		mustBe(tokenQueue, JavaTokenType.SEMICOLON);
 	}
 
 	@Override
@@ -43,16 +35,19 @@ public class ImportDeclaration extends BaseType
 	{
 		return	"isOnDemaned='" + isOnDemand + "' " +
 				"isStatic='" + isStatic + "' " +
-				"identifier='" + getIdentifier() + "'";
+				"identifier='" + getIdentifier().getValue() + "'";
 	}
 	
 	@Override
 	public int getFirstPrintedChildIndex() { return 1; }
 	
-	public String getIdentifier()
+	public QualifiedIdentifier getIdentifier()
 	{
-		QualifiedIdentifier nameIdentifier =
-				(QualifiedIdentifier)children.get(0);
-		return nameIdentifier.getValue();
+		return (QualifiedIdentifier)getChild(0);
+	}
+	
+	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
+	{
+		return see(tokenQueue, JavaTokenType._IMPORT);
 	}
 }
