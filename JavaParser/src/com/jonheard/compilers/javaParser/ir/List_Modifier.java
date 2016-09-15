@@ -1,13 +1,13 @@
 package com.jonheard.compilers.javaParser.ir;
 
 import com.jonheard.compilers.javaTokenizer.JavaToken;
-import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
 
 public class List_Modifier extends BaseIrType
 {
 	public List_Modifier(RewindableQueue<JavaToken> tokenQueue)
 	{
+		super(tokenQueue.peek());
 		while(true)
 		{
 			JavaToken currentToken = tokenQueue.peek();

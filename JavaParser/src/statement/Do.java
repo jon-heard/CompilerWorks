@@ -5,15 +5,19 @@ import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
 
+import expression.Parser_Expression;
+import static com.jonheard.compilers.javaParser.JavaParser.*;
+
 public class Do extends BaseIrType
 {
 	public Do(RewindableQueue<JavaToken> tokenQueue)
 	{
+		super(tokenQueue.peek());
 		mustBe(tokenQueue, JavaTokenType._DO);
-		BaseIrType body = getNextStatement(tokenQueue);
+		BaseIrType body = Parser_Statement.getNextStatement(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType._WHILE);
 		mustBe(tokenQueue, JavaTokenType.PAREN_LEFT);
-		addChild(new Expression(tokenQueue));
+		addChild(Parser_Expression.parseExpression(tokenQueue));
 		mustBe(tokenQueue, JavaTokenType.PAREN_RIGHT);
 		mustBe(tokenQueue, JavaTokenType.SEMICOLON);
 		addChild(body);

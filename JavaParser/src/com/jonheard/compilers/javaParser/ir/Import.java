@@ -3,6 +3,7 @@ package com.jonheard.compilers.javaParser.ir;
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
+import static com.jonheard.compilers.javaParser.JavaParser.*;
 
 public class Import extends BaseIrType
 {
@@ -11,6 +12,7 @@ public class Import extends BaseIrType
 
 	public Import(RewindableQueue<JavaToken> tokenQueue)
 	{
+		super(tokenQueue.peek());
 		mustBe(tokenQueue, JavaTokenType._IMPORT);
 		if(see(tokenQueue, JavaTokenType._STATIC))
 		{

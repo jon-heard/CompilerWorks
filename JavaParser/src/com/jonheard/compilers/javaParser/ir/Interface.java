@@ -3,12 +3,14 @@ package com.jonheard.compilers.javaParser.ir;
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
+import static com.jonheard.compilers.javaParser.JavaParser.*;
 
 public class Interface extends BaseIrType
 {
 	public Interface(
 			RewindableQueue<JavaToken> tokenQueue)
 	{
+		super(tokenQueue.peek());
 		addChild(new List_Modifier(tokenQueue));
 		mustBe(tokenQueue, JavaTokenType._INTERFACE);
 		addChild(new Identifier(tokenQueue));

@@ -4,11 +4,13 @@ import com.jonheard.compilers.javaParser.ir.BaseIrType;
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
+import static com.jonheard.compilers.javaParser.JavaParser.*;
 
-public class Blank extends BaseIrType
+public class Empty extends BaseIrType
 {
-	public Blank(RewindableQueue<JavaToken> tokenQueue)
+	public Empty(RewindableQueue<JavaToken> tokenQueue)
 	{
+		super(tokenQueue.peek());
 		mustBe(tokenQueue, JavaTokenType.SEMICOLON);
 	}
 

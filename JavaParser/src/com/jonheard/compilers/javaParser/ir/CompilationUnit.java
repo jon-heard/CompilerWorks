@@ -5,14 +5,16 @@ import java.util.List;
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.util.Logger;
 import com.jonheard.util.RewindableQueue;
+import static com.jonheard.compilers.javaParser.JavaParser.*;
 
 public class CompilationUnit extends BaseIrType
 {
 	public CompilationUnit(List<JavaToken> tokenList, int index)
 	{
-		finalToken = tokenList.get(tokenList.size()-1);
+		super(tokenList.get(0));
 		RewindableQueue<JavaToken> tokenQueue =
 				new RewindableQueue<JavaToken>(tokenList);
+		finalToken = tokenList.get(tokenList.size()-1);
 
 		if(Package.isNext(tokenQueue))
 		{

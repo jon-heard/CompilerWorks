@@ -19,7 +19,7 @@ public class Trie <T>
 			{
 				currentTrie.children.put(currentChar, new Trie<T>());
 			}
-			currentTrie = currentTrie.getChild(currentChar);
+			currentTrie = children.get(currentChar);
 			currentIndex++;
 		}
 		currentTrie.value = value;
@@ -36,7 +36,7 @@ public class Trie <T>
 			{
 				return null;
 			}
-			currentTrie = currentTrie.getChild(currentChar);
+			currentTrie = children.get(currentChar);
 			currentIndex++;
 		}
 		return currentTrie.value;
@@ -54,7 +54,7 @@ public class Trie <T>
 			{
 				return result;
 			}
-			currentTrie = currentTrie.getChild(currentChar);
+			currentTrie = children.get(currentChar);
 			currentIndex++;
 			if(currentTrie.value != null)
 			{

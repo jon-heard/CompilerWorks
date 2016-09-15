@@ -1,7 +1,5 @@
 package com.jonheard.compilers.javaTokenizer;
 
-import java.util.List;
-
 public class JavaToken
 {
 	public JavaToken(JavaTokenType type, int col)
@@ -59,7 +57,6 @@ public class JavaToken
 	private JavaTokenType type;
 	private String text;
 	private int row, col;
-	private String filename;
 	private SourceFileInfo sourceFileInfo;
 	
 	private static int currentRow;

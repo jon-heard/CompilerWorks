@@ -8,6 +8,7 @@ public class List_Variable extends BaseIrType
 {
 	public List_Variable(RewindableQueue<JavaToken> tokenQueue)
 	{
+		super(tokenQueue.peek());
 		JavaToken current = tokenQueue.peek();
 		do
 		{

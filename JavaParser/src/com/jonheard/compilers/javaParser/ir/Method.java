@@ -5,11 +5,13 @@ import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
 
 import statement.CodeBlock;
+import static com.jonheard.compilers.javaParser.JavaParser.*;
 
 public class Method extends BaseIrType
 {
 	public Method(RewindableQueue<JavaToken> tokenQueue)
 	{
+		super(tokenQueue.peek());
 		addChild(new List_Modifier(tokenQueue));
 		addChild(new Type(tokenQueue));
 		addChild(new Identifier(tokenQueue));
