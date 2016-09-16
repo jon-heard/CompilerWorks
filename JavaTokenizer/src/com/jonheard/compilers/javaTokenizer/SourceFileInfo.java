@@ -6,7 +6,7 @@ public class SourceFileInfo
 	{
 		this.filename = filename;
 		this.sourceCode = sourceCode;
-		lines = sourceCode.split("[\\r\\n]");
+		lines = sourceCode.replace('\t', ' ').split("[\\r\\n]");
 	}
 	
 	public String getFilename() { return filename; }

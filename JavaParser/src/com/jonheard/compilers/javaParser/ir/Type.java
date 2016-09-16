@@ -30,6 +30,7 @@ public class Type extends BaseIrType
 	public String getValue()
 	{
 		StringBuffer result = new StringBuffer();
+		result.append(getBase().getValue());
 		for(int i = 0; i < getDimensionCount(); i++)
 		{
 			result.append("[]");

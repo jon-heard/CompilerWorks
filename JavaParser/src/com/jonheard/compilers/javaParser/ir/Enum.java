@@ -38,6 +38,11 @@ public class Enum extends BaseIrType
 	
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{
-		return see(tokenQueue, JavaTokenType._ENUM);
+		boolean result = false;
+		tokenQueue.remember();
+		new List_Modifier(tokenQueue);
+		result = see(tokenQueue, JavaTokenType._ENUM);
+		tokenQueue.rewind();
+		return result;
 	}
 }

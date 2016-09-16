@@ -56,15 +56,13 @@ public class CompilationUnit extends BaseIrType
 	public String getHeaderString()
 	{
 		Package p = getPackage();
-		String packageName =
-				(p == null) ? "unnamed" : p.getIdentifier().getValue();
+
 		return  "importCount='" + getImportCount() + "' " +
-				"typeCount='" + getTypeCount() + "' " +
-				"package='" + packageName + "'";
+				"typeCount='" + getTypeCount() + "'";
 	}
 	
 	@Override
-	public int getFirstPrintedChildIndex() { return 1; }
+	public int getFirstPrintedChildIndex() { return 0; }
 	
 	public Package getPackage()
 	{

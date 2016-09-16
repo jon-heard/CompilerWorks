@@ -38,6 +38,11 @@ public class Interface extends BaseIrType
 	
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{
-		return see(tokenQueue, JavaTokenType._INTERFACE);
+		boolean result = false;
+		tokenQueue.remember();
+		new List_Modifier(tokenQueue);
+		result = see(tokenQueue, JavaTokenType._INTERFACE);
+		tokenQueue.rewind();
+		return result;
 	}
 }

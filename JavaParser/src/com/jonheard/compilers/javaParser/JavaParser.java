@@ -42,6 +42,7 @@ public class JavaParser
 		if(see(tokenQueue, type))
 		{
 			tokenQueue.poll();
+			return true;
 		}
 		return false;
 	}

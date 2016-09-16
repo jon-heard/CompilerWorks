@@ -4,15 +4,17 @@ import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.util.RewindableQueue;
 
-public class List_Variable extends BaseIrType
+import expression.Parser_Expression;
+
+public class List_Expression extends BaseIrType
 {
-	public List_Variable(RewindableQueue<JavaToken> tokenQueue)
+	public List_Expression(RewindableQueue<JavaToken> tokenQueue)
 	{
 		super(tokenQueue);
 		JavaToken current = tokenQueue.peek();
 		do
 		{
-			addChild(new Variable(tokenQueue));
+			addChild(Parser_Expression.parseExpression(tokenQueue));
 			current = tokenQueue.peek();
 		}
 		while(current.getType() == JavaTokenType.COMMA);

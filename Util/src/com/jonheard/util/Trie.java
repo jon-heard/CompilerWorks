@@ -4,10 +4,6 @@ import java.util.HashMap;
 
 public class Trie <T>
 {
-	private HashMap<Character, Trie<T>> children =
-			new HashMap<Character, Trie<T>>();
-	private T value = null;
-	
 	public void put(String key, T value)
 	{
 		int currentIndex = 0;
@@ -19,7 +15,7 @@ public class Trie <T>
 			{
 				currentTrie.children.put(currentChar, new Trie<T>());
 			}
-			currentTrie = children.get(currentChar);
+			currentTrie = currentTrie.children.get(currentChar);
 			currentIndex++;
 		}
 		currentTrie.value = value;
@@ -36,7 +32,7 @@ public class Trie <T>
 			{
 				return null;
 			}
-			currentTrie = children.get(currentChar);
+			currentTrie = currentTrie.children.get(currentChar);
 			currentIndex++;
 		}
 		return currentTrie.value;
@@ -54,7 +50,7 @@ public class Trie <T>
 			{
 				return result;
 			}
-			currentTrie = children.get(currentChar);
+			currentTrie = currentTrie.children.get(currentChar);
 			currentIndex++;
 			if(currentTrie.value != null)
 			{
@@ -63,4 +59,8 @@ public class Trie <T>
 		}
 		return result;
 	}
+	
+	private HashMap<Character, Trie<T>> children =
+			new HashMap<Character, Trie<T>>();
+	private T value = null;
 }

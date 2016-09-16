@@ -15,9 +15,9 @@ public class Method extends BaseIrType
 		addChild(new List_Modifier(tokenQueue));
 		addChild(new Type(tokenQueue));
 		addChild(new Identifier(tokenQueue));
-		tokenQueue.poll();
+		mustBe(tokenQueue, JavaTokenType.PAREN_LEFT);
 		addChild(new List_Variable(tokenQueue));
-		tokenQueue.poll();
+		mustBe(tokenQueue, JavaTokenType.PAREN_RIGHT);
 		addChild(new CodeBlock(tokenQueue));
 	}
 
@@ -26,7 +26,7 @@ public class Method extends BaseIrType
 	{
 		return	"name='" + getName().getValue() + "' " +
 				"type='" + getType().getValue() + "' " +
-				" modifiers='" + getModifiers().getValue();
+				"modifiers='" + getModifiers().getValue() + "'";
 	}
 	
 	@Override
@@ -37,9 +37,9 @@ public class Method extends BaseIrType
 		return (List_Modifier)getChild(0);
 	}
 	
-	public QualifiedIdentifier getType()
+	public Type getType()
 	{
-		return (QualifiedIdentifier)getChild(1);
+		return (Type)getChild(1);
 	}
 	
 	public Identifier getName()

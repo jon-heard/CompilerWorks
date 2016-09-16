@@ -1,14 +1,9 @@
 package expression;
 
-import com.jonheard.compilers.javaParser.ir.BaseIrType;
-import com.jonheard.compilers.javaTokenizer.JavaToken;
-import com.jonheard.util.RewindableQueue;
-
-public class NewArray extends BaseIrType
+public class NewArray extends Expression
 {
-
-	public NewArray(RewindableQueue<JavaToken> tokenQueue)
+	public NewArray(int line)
 	{
-		super(tokenQueue);
+		super(ExpressionType.NewArray, line);
 	}
 }

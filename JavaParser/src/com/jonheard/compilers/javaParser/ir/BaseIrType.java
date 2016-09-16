@@ -33,12 +33,19 @@ public class BaseIrType
 		{
 			throw new ArrayIndexOutOfBoundsException(index);
 		}
-		return getChild(index);
+		return children.get(index);
 	}
 
 	public int getFirstPrintedChildIndex() { return 0; }
 
 	public String getHeaderString() { return ""; }
+	
+	public String getTypeName()
+	{
+		String result = this.getClass().getName();
+		result = result.substring(result.lastIndexOf('.')+1);
+		return result;
+	}
 
 	@Override
 	public String toString()
@@ -49,16 +56,15 @@ public class BaseIrType
 	public String toString(int tabCount)
 	{
 		StringBuffer result = new StringBuffer();
-		String typeName = this.getClass().getName();
-		typeName = typeName.substring(typeName.lastIndexOf('.')+1);
 		String tabs = new String(new char[tabCount]).replace('\0', '	');
 		String headerString = " line='" + getLine() + "' " + getHeaderString();
 		if(children.size() <= getFirstPrintedChildIndex())
 		{
-			result.append(tabs + "<" + typeName + headerString + "/>\n");
+			result.append(tabs + "<" + getTypeName() + headerString + "/>\n");
 		}
 		else
 		{
+			String typeName = getTypeName();
 			result.append(tabs + "<" + typeName + headerString + ">\n");
 			for(int i = getFirstPrintedChildIndex(); i < children.size(); i++)
 			{
@@ -71,7 +77,7 @@ public class BaseIrType
 
 	protected void addChild(BaseIrType child)
 	{
-		addChild(child);
+		children.add(child);
 	}
 
 	private int line;

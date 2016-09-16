@@ -1,14 +1,15 @@
 package expression;
 
-import com.jonheard.compilers.javaParser.ir.BaseIrType;
-import com.jonheard.compilers.javaTokenizer.JavaToken;
-import com.jonheard.util.RewindableQueue;
+import com.jonheard.compilers.javaParser.ir.List_Expression;
+import com.jonheard.compilers.javaParser.ir.QualifiedIdentifier;
 
-public class MethodCall extends BaseIrType
+public class MethodCall extends Expression
 {
-
-	public MethodCall(RewindableQueue<JavaToken> tokenQueue)
+	public MethodCall(
+			int line, QualifiedIdentifier id, List_Expression parameters)
 	{
-		super(tokenQueue);
+		super(ExpressionType.MethodCall, line);
+		addChild(id);
+		addChild(parameters);
 	}
 }

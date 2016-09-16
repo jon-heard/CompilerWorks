@@ -1,14 +1,12 @@
 package expression;
 
-import com.jonheard.compilers.javaParser.ir.BaseIrType;
-import com.jonheard.compilers.javaTokenizer.JavaToken;
-import com.jonheard.util.RewindableQueue;
+import com.jonheard.compilers.javaParser.ir.List_Expression;
 
-public class ThisConstructor extends BaseIrType
+public class ThisConstructor extends Expression
 {
-
-	public ThisConstructor(RewindableQueue<JavaToken> tokenQueue)
+	public ThisConstructor(int line, List_Expression parameters)
 	{
-		super(tokenQueue);
+		super(ExpressionType.ThisConstructor, line);
+		addChild(parameters);
 	}
 }
