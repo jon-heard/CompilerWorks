@@ -10,12 +10,9 @@ public class Empty extends BaseIrType
 {
 	public Empty(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType.SEMICOLON);
 	}
-
-	@Override
-	public String getHeaderString() { return ""; }
 	
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{

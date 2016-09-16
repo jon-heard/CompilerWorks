@@ -7,7 +7,7 @@ public class List_Modifier extends BaseIrType
 {
 	public List_Modifier(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		while(true)
 		{
 			JavaToken currentToken = tokenQueue.peek();

@@ -12,7 +12,7 @@ public class Import extends BaseIrType
 
 	public Import(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType._IMPORT);
 		if(see(tokenQueue, JavaTokenType._STATIC))
 		{

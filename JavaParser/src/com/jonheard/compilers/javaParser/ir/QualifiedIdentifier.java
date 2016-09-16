@@ -15,7 +15,7 @@ public class QualifiedIdentifier extends BaseIrType
 	public QualifiedIdentifier(
 			RewindableQueue<JavaToken> tokenQueue, boolean ignoreBadEnding)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		JavaToken currentToken = tokenQueue.peek();
 		while(currentToken.getType() == JavaTokenType.IDENTIFIER)
 		{

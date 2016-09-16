@@ -11,7 +11,7 @@ public class Method extends BaseIrType
 {
 	public Method(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		addChild(new List_Modifier(tokenQueue));
 		addChild(new Type(tokenQueue));
 		addChild(new Identifier(tokenQueue));

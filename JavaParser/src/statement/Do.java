@@ -12,7 +12,7 @@ public class Do extends BaseIrType
 {
 	public Do(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType._DO);
 		BaseIrType body = Parser_Statement.getNextStatement(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType._WHILE);
@@ -23,9 +23,6 @@ public class Do extends BaseIrType
 		addChild(body);
 	}
 
-	@Override
-	public String getHeaderString() { return ""; }
-	
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{
 		return see(tokenQueue, JavaTokenType._DO);

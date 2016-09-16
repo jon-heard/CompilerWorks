@@ -9,14 +9,6 @@ public class NewArray extends BaseIrType
 
 	public NewArray(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 	}
-
-	@Override
-	public String getHeaderString()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

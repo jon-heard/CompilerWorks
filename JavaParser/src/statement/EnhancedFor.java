@@ -14,7 +14,7 @@ public class EnhancedFor extends BaseIrType
 {
 	public EnhancedFor(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType._FOR);
 		mustBe(tokenQueue, JavaTokenType.PAREN_LEFT);
 		addChild(new Variable(tokenQueue));
@@ -23,9 +23,6 @@ public class EnhancedFor extends BaseIrType
 		mustBe(tokenQueue, JavaTokenType.PAREN_RIGHT);
 		addChild(Parser_Statement.getNextStatement(tokenQueue));
 	}
-
-	@Override
-	public String getHeaderString() { return ""; }
 	
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{

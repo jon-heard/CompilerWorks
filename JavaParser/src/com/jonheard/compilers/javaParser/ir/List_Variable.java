@@ -8,7 +8,7 @@ public class List_Variable extends BaseIrType
 {
 	public List_Variable(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		JavaToken current = tokenQueue.peek();
 		do
 		{
@@ -16,7 +16,4 @@ public class List_Variable extends BaseIrType
 		}
 		while(current.getType() == JavaTokenType.COMMA);
 	}
-
-	@Override
-	public String getHeaderString() { return ""; }
 }

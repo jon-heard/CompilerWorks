@@ -11,7 +11,7 @@ public class Return extends BaseIrType
 {
 	public Return(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType._RETURN);
 		if(!see(tokenQueue, JavaTokenType.SEMICOLON))
 		{
@@ -19,9 +19,6 @@ public class Return extends BaseIrType
 		}
 		mustBe(tokenQueue, JavaTokenType.SEMICOLON);
 	}
-
-	@Override
-	public String getHeaderString() { return ""; }
 
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{

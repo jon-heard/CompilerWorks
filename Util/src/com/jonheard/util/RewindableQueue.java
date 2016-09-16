@@ -7,7 +7,6 @@ import java.util.Stack;
 @SuppressWarnings("serial")
 public class RewindableQueue<T> extends LinkedList<T>
 {
-	public RewindableQueue() {}
 	public RewindableQueue(List<T> source)
 	{
 		for(T item : source)

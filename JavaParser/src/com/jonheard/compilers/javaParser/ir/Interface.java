@@ -10,7 +10,7 @@ public class Interface extends BaseIrType
 	public Interface(
 			RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		addChild(new List_Modifier(tokenQueue));
 		mustBe(tokenQueue, JavaTokenType._INTERFACE);
 		addChild(new Identifier(tokenQueue));

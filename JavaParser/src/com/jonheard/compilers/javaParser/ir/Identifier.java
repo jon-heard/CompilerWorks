@@ -11,7 +11,7 @@ public class Identifier extends BaseIrType
 	
 	public Identifier(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		JavaToken currentToken = tokenQueue.peek();
 		if(mustBe(tokenQueue, JavaTokenType.IDENTIFIER))
 		{

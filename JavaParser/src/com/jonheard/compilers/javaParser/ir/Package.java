@@ -9,7 +9,7 @@ public class Package extends BaseIrType
 {
 	Package(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		tokenQueue.poll();
 		addChild(new QualifiedIdentifier(tokenQueue));
 		tokenQueue.poll();

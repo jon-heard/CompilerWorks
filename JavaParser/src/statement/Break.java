@@ -10,13 +10,10 @@ public class Break extends BaseIrType
 {
 	public Break(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType._BREAK);
 		mustBe(tokenQueue, JavaTokenType.SEMICOLON);
 	}
-
-	@Override
-	public String getHeaderString() { return ""; }
 	
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{

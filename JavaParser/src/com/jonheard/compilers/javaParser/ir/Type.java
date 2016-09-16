@@ -9,7 +9,7 @@ public class Type extends BaseIrType
 {
 	public Type(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		addChild(new QualifiedIdentifier(tokenQueue));
 		while(have(tokenQueue, JavaTokenType.SQUARE_BRACE_LEFT))
 		{

@@ -9,7 +9,7 @@ public class Class extends BaseIrType
 {
 	public Class(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		addChild(new List_Modifier(tokenQueue));
 		mustBe(tokenQueue, JavaTokenType._CLASS);
 		addChild(new Identifier(tokenQueue));

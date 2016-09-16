@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jonheard.compilers.javaTokenizer.JavaToken;
-import com.jonheard.compilers.javaTokenizer.JavaTokenType;
-import com.jonheard.util.Logger;
 import com.jonheard.util.RewindableQueue;
 
-public abstract class BaseIrType
+public class BaseIrType
 {
-	public abstract String getHeaderString();
-
-	public BaseIrType(JavaToken start)
+	public BaseIrType(RewindableQueue<JavaToken> tokenQueue)
 	{
-		line = start.getRow();
+		line = tokenQueue.peek().getRow();
 	}
-	
+	public BaseIrType(int line)
+	{
+		this.line = line;
+	}
+
 	public int getLine()
 	{
 		return line;
@@ -26,6 +26,7 @@ public abstract class BaseIrType
 	{
 		return children.size();
 	}
+
 	public BaseIrType getChild(int index)
 	{
 		if(index < 0 || index > children.size())
@@ -36,6 +37,8 @@ public abstract class BaseIrType
 	}
 
 	public int getFirstPrintedChildIndex() { return 0; }
+
+	public String getHeaderString() { return ""; }
 
 	@Override
 	public String toString()
@@ -73,5 +76,4 @@ public abstract class BaseIrType
 
 	private int line;
 	private List<BaseIrType> children = new ArrayList<BaseIrType>();
-	private static boolean mustBeHasErrored = false;
 }

@@ -11,7 +11,7 @@ public class CodeBlock extends BaseIrType
 {
 	public CodeBlock(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType.CURL_BRACE_LEFT);
 		while(!have(tokenQueue, JavaTokenType.CURL_BRACE_RIGHT))
 		{
@@ -25,9 +25,6 @@ public class CodeBlock extends BaseIrType
 			}
 		}
 	}
-
-	@Override
-	public String getHeaderString() { return ""; }
 	
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{

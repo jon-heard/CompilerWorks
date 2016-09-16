@@ -11,16 +11,13 @@ public class If extends BaseIrType
 {
 	public If(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType._IF);
 		mustBe(tokenQueue, JavaTokenType.PAREN_LEFT);
 		addChild(Parser_Expression.parseExpression(tokenQueue));
 		mustBe(tokenQueue, JavaTokenType.PAREN_RIGHT);
 		addChild(Parser_Statement.getNextStatement(tokenQueue));
 	}
-
-	@Override
-	public String getHeaderString() { return ""; }
 
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{

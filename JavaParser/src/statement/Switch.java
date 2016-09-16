@@ -12,16 +12,13 @@ public class Switch extends BaseIrType
 {
 	public Switch(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType._SWITCH);
 		mustBe(tokenQueue, JavaTokenType.PAREN_LEFT);
 		addChild(Parser_Expression.parseExpression(tokenQueue));
 		mustBe(tokenQueue, JavaTokenType.PAREN_RIGHT);
 		addChild(new CodeBlock(tokenQueue));
 	}
-
-	@Override
-	public String getHeaderString() { return ""; }
 
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{

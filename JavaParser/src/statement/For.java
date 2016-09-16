@@ -10,7 +10,7 @@ public class For extends BaseIrType
 {
 	public For(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		mustBe(tokenQueue, JavaTokenType._FOR);
 		mustBe(tokenQueue, JavaTokenType.PAREN_LEFT);
 		while(!have(tokenQueue, JavaTokenType.PAREN_RIGHT))
@@ -19,9 +19,6 @@ public class For extends BaseIrType
 		}
 		addChild(Parser_Statement.getNextStatement(tokenQueue));
 	}
-
-	@Override
-	public String getHeaderString() { return ""; }
 	
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{

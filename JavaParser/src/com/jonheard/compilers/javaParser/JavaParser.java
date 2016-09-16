@@ -100,4 +100,6 @@ public class JavaParser
 
 
 	public static JavaToken finalToken;
+
+	private static boolean mustBeHasErrored = false;
 }

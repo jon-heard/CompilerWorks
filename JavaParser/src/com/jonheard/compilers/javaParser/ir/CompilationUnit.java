@@ -11,7 +11,7 @@ public class CompilationUnit extends BaseIrType
 {
 	public CompilationUnit(List<JavaToken> tokenList, int index)
 	{
-		super(tokenList.get(0));
+		super(tokenList.get(0).getRow());
 		RewindableQueue<JavaToken> tokenQueue =
 				new RewindableQueue<JavaToken>(tokenList);
 		finalToken = tokenList.get(tokenList.size()-1);

@@ -10,7 +10,7 @@ public class Enum extends BaseIrType
 	public Enum(
 			RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 		addChild(new List_Modifier(tokenQueue));
 		mustBe(tokenQueue, JavaTokenType._ENUM);
 		addChild(new Identifier(tokenQueue));

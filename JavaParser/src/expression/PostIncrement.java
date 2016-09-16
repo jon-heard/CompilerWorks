@@ -1,22 +1,12 @@
 package expression;
 
 import com.jonheard.compilers.javaParser.ir.BaseIrType;
-import com.jonheard.compilers.javaTokenizer.JavaToken;
-import com.jonheard.util.RewindableQueue;
 
-public final class PostIncrement extends BaseIrType
+public final class PostIncrement extends BaseUnaryExpression
 {
 
-	public PostIncrement(RewindableQueue<JavaToken> tokenQueue)
+	public PostIncrement(int line, BaseIrType lhs)
 	{
-		super(tokenQueue.peek());
+		super(line, lhs);
 	}
-
-	@Override
-	public String getHeaderString()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

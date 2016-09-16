@@ -9,20 +9,6 @@ public class SuperConstructor extends BaseIrType
 
 	public SuperConstructor(RewindableQueue<JavaToken> tokenQueue)
 	{
-		super(tokenQueue.peek());
+		super(tokenQueue);
 	}
-
-	@Override
-	public String getHeaderString()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static void main(String[] args)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
 }
