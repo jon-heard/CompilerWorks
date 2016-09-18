@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * Helper_Methods - Here is functionality that doesn't properly belong to any
  * specific class.
  */
-public class HelperMethods
+public class UtilMethods
 {
 	/// Takes a filename (a String), loads the data from the file into a String
 	/// and returns the String
@@ -94,6 +94,36 @@ public class HelperMethods
 			result = false;
 		}
 		return result;
+	}
+	
+	public static String constNameToCamelName(String source, boolean startUpper)
+	{
+		StringBuffer result = new StringBuffer();
+		int size = source.length();
+		for(int i = 0; i < size; i++)
+		{
+			if(source.charAt(i) == '_' && i+1 < size)
+			{
+				if(source.charAt(i+1) != '_')
+				{
+					startUpper = true;
+				}
+				else
+				{
+					result.append('_');
+				}
+			}
+			else if(startUpper)
+			{
+				startUpper = false;
+				result.append(Character.toUpperCase(source.charAt(i)));
+			}
+			else
+			{
+				result.append(Character.toLowerCase(source.charAt(i)));
+			}
+		}
+		return result.toString();
 	}
 	
 	/// Create a method descriptor from a return type & collection of arg types

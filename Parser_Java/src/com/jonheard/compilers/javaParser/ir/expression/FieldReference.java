@@ -2,12 +2,12 @@ package com.jonheard.compilers.javaParser.ir.expression;
 
 import com.jonheard.compilers.javaParser.ir.QualifiedIdentifier;
 
-public class Field extends Expression
+public class FieldReference extends Expression
 {
 
-	public Field(int line, QualifiedIdentifier id)
+	public FieldReference(int line, QualifiedIdentifier id)
 	{
-		super(ExpressionType.Variable, line);
+		super(ExpressionType.FIELD_REFERENCE, line);
 		addChild(id);
 	}
 	

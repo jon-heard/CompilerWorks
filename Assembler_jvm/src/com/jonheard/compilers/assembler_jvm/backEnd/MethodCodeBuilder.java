@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.jonheard.util.HelperMethods;
+import com.jonheard.util.UtilMethods;
 
 /*
  * MethodCodeBuilder - A class holding functionality to write the code data for
@@ -31,7 +31,7 @@ public class MethodCodeBuilder
 		this.constantPool = constantPool;
 		
 		/// Setup the initial local size based on the method's argument count
-		int initialLocalSize = HelperMethods.getStackSizeOfMethodDescriptor(
+		int initialLocalSize = UtilMethods.getStackSizeOfMethodDescriptor(
 				methodRep.getDescriptor());
 		if((methodRep.getModifiers()&0x0008) == 0) /// Non static method
 		{
@@ -162,16 +162,16 @@ public class MethodCodeBuilder
 			String retDescriptor = descriptor.substring(
 					descriptor.indexOf(')') + 1);
 			adjustStackCounter(-1 +
-					HelperMethods.getStackSizeOfFieldDescriptor(retDescriptor) -
-					HelperMethods.getStackSizeOfMethodDescriptor(descriptor));
+					UtilMethods.getStackSizeOfFieldDescriptor(retDescriptor) -
+					UtilMethods.getStackSizeOfMethodDescriptor(descriptor));
 		}
 		else if(op == Op_Method._invokestatic)
 		{
 			String retDescriptor = descriptor.substring(
 					descriptor.indexOf(')') + 1);
 			adjustStackCounter(
-					HelperMethods.getStackSizeOfFieldDescriptor(retDescriptor) -
-					HelperMethods.getStackSizeOfMethodDescriptor(descriptor));
+					UtilMethods.getStackSizeOfFieldDescriptor(retDescriptor) -
+					UtilMethods.getStackSizeOfMethodDescriptor(descriptor));
 		}
 		else
 		{

@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.jonheard.util.HelperMethods;
+import com.jonheard.util.UtilMethods;
 
 public class JavaCTest
 {
@@ -17,12 +17,12 @@ public class JavaCTest
 				"import javax.swing.JLabel;\n" +
 				"public class Test1\n" +
 				"{\n" +
-				"	public static void main(String[] args)\n" +
+				"	public static void main(java.lang.String[] args)\n" +
 				"	{\n" +
-				"		System.out.println(\"Hello world\");\n" +
+				"		java.lang.System.out.println(\"Hello world\");\n" +
 				"	}\n" +
 				"}";
-		HelperMethods.stringToFile(source, "Test1.java");
+		UtilMethods.stringToFile(source, "Test1.java");
 		JavaC compiler = new JavaC();
 
 		/// Tokenizing
@@ -33,8 +33,10 @@ public class JavaCTest
 				"identifier:swing\ndot\nidentifier:JLabel\nsemicolon\n" +
 				"public\nclass\nidentifier:Test1\ncurl_brace_left\npublic\n" +
 				"static\nidentifier:void\nidentifier:main\nparen_left\n" +
+				"identifier:java\ndot\nidentifier:lang\ndot\n" +
 				"identifier:String\nsquare_brace_left\nsquare_brace_right\n" +
 				"identifier:args\nparen_right\ncurl_brace_left\n" +
+				"identifier:java\ndot\nidentifier:lang\ndot\n" +
 				"identifier:System\ndot\nidentifier:out\ndot\n" +
 				"identifier:println\nparen_left\nstring:Hello world\n" +
 				"paren_right\nsemicolon\ncurl_brace_right\ncurl_brace_right\n";
@@ -44,25 +46,30 @@ public class JavaCTest
 		
 		/// Parsing
 		String expectedParsed = JavaC.HEADER_TEXT + 
-				"<CompilationUnit importCount='2' typeCount='1'>\n" +
-				"	<PackageDeclaration identifier='first.second'/>\n" +
-				"	<ImportDeclaration isOnDemaned='true' isStatic='false' identifier='java.util'/>\n" +
-				"	<ImportDeclaration isOnDemaned='false' isStatic='false' identifier='javax.swing.JLabel'/>\n" +
-				"	<ClassDeclaration name='Test1' modifiers='public'>\n" +
-				"		<MemberDeclaration name='main' type='void'  modifiers='public static' isMethod='true'>\n" +
-				"			<MethodPart>\n" +
-				"				<List_FormalParameters>\n" +
-				"					<VariableDeclaration name='args' type='String' arrayDimensions='1'/>\n" +
-				"				</List_FormalParameters>\n" +
-				"				<CodeBlock/>\n" +
-				"			</MethodPart>\n" +
-				"		</MemberDeclaration>\n" +
-				"	</ClassDeclaration>\n" +
+				"<CompilationUnit line='1' importCount='2' typeCount='1'>\n" +
+				"	<Package line='1' identifier='first.second'/>\n" +
+				"	<Import line='2' isOnDemaned='true' isStatic='false' identifier='java.util'/>\n" +
+				"	<Import line='3' isOnDemaned='false' isStatic='false' identifier='javax.swing.JLabel'/>\n" +
+				"	<Class line='4' name='Test1' modifiers='public'>\n" +
+				"		<Method line='6' name='main' type='void' modifiers='public static'>\n" +
+				"			<List_Variable line='6'>\n" +
+				"				<Variable line='6' name='args' type='java.lang.String[]' modifiers=''/>\n" +
+				"			</List_Variable>\n" +
+				"			<CodeBlock line='7'>\n" +
+				"				<MethodCall line='8'>\n" +
+				"					<QualifiedIdentifier line='8' value='java.lang.System.out.println'/>\n" +
+				"					<List_Expression line='8'>\n" +
+				"						<Literal_string line='8' value='Hello world'/>\n" +
+				"					</List_Expression>\n" +
+				"				</MethodCall>\n" +
+				"			</CodeBlock>\n" +
+				"		</Method>\n" +
+				"	</Class>\n" +
 				"</CompilationUnit>\n";
 		String actualParsed =
 				compiler.compile(new String[] {"Test1.java", "-p"});
 		System.out.println(actualParsed);
-		//assertEquals(expectedParsed, actualParsed);
+		assertEquals(expectedParsed, actualParsed);
 	}
 	
 	@Test

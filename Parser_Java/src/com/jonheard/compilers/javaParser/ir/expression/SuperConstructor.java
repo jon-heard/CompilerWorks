@@ -6,7 +6,7 @@ public class SuperConstructor extends Expression
 {
 	public SuperConstructor(int line, List_Expression parameters)
 	{
-		super(ExpressionType.SuperConstructor, line);
+		super(ExpressionType.SUPER_CONSTRUCTOR, line);
 		addChild(parameters);
 	}
 }

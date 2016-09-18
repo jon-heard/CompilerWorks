@@ -48,6 +48,27 @@ public class Method extends BaseIrType
 		return (Identifier)getChild(2);
 	}
 	
+	public List_Variable getParameterList()
+	{
+		return (List_Variable)getChild(3);
+	}
+	
+	public String toJvmDescriptor()
+	{
+		StringBuffer result = new StringBuffer();
+		List_Variable params = getParameterList();
+		
+		result.append('(');
+		for(int i = 0; i < params.getChildCount(); i++)
+		{
+			Type pType = ((Variable)params.getChild(i)).getType();
+			result.append(pType.toJvmDescriptor());
+		}
+		result.append(')');
+		result.append(getType().toJvmDescriptor());
+		return result.toString();
+	}
+	
 	public static boolean isNext(
 			RewindableQueue<JavaToken> tokenQueue)
 	{

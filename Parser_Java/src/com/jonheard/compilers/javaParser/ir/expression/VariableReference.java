@@ -2,12 +2,12 @@ package com.jonheard.compilers.javaParser.ir.expression;
 
 import com.jonheard.compilers.javaParser.ir.Identifier;
 
-public class Variable extends Expression
+public class VariableReference extends Expression
 {
 
-	public Variable(int line, Identifier id)
+	public VariableReference(int line, Identifier id)
 	{
-		super(ExpressionType.Variable, line);
+		super(ExpressionType.VARIABLE_REFERENCE, line);
 		addChild(id);
 	}
 	

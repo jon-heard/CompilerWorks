@@ -3,7 +3,7 @@ package com.jonheard.compilers;
 
 import com.jonheard.compilers.javaParser.JavaParser;
 import com.jonheard.compilers.javaTokenizer.JavaTokenizer;
-import com.jonheard.util.HelperMethods;
+import com.jonheard.util.UtilMethods;
 
 public class JavaC
 {
@@ -38,21 +38,21 @@ public class JavaC
 		{
 			switch(args[i])
 			{
-			case "-help":
-			case "-h":
-				help = true;
-				break;
-			case "-tokenize":
-			case "-t":
-				finalStage = Stage.tokenize;
-				break;
-			case "-parse":
-			case "-p":
-				finalStage = Stage.parse;
-				break;
-			default:
-				sourceFile = args[i];
-				break;
+				case "-help":
+				case "-h":
+					help = true;
+					break;
+				case "-tokenize":
+				case "-t":
+					finalStage = Stage.tokenize;
+					break;
+				case "-parse":
+				case "-p":
+					finalStage = Stage.parse;
+					break;
+				default:
+					sourceFile = args[i];
+					break;
 			}
 		}
 		
@@ -63,7 +63,7 @@ public class JavaC
 			return result.toString();
 		}
 		// Load the file
-		String source = HelperMethods.fileToString(sourceFile);
+		String source = UtilMethods.fileToString(sourceFile);
 		if(source == null)
 		{
 			result.append("ERROR: Invalid filename: " + sourceFile);

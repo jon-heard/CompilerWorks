@@ -1,6 +1,7 @@
 package com.jonheard.compilers.javaParser.ir.expression;
 
 import com.jonheard.compilers.javaParser.ir.BaseIrType;
+import com.jonheard.util.UtilMethods;
 
 public class Expression extends BaseIrType
 {
@@ -14,7 +15,8 @@ public class Expression extends BaseIrType
 		this(type, line);
 		addChild(lhs);
 	}
-	public Expression(ExpressionType type, int line, Expression lhs, Expression rhs)
+	public Expression(
+			ExpressionType type, int line, Expression lhs, Expression rhs)
 	{
 		this(type, line, lhs);
 		addChild(rhs);
@@ -30,7 +32,7 @@ public class Expression extends BaseIrType
 	@Override
 	public String getTypeName()
 	{
-		return getType().name();
+		return UtilMethods.constNameToCamelName(getType().name(), true);
 	}
 	
 	public ExpressionType getType()

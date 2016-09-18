@@ -57,7 +57,9 @@ public class BaseIrType
 	{
 		StringBuffer result = new StringBuffer();
 		String tabs = new String(new char[tabCount]).replace('\0', '	');
-		String headerString = " line='" + getLine() + "' " + getHeaderString();
+		String headerString = getHeaderString();
+		if(!headerString.equals("")) headerString = " " + headerString;
+		headerString = " line='" + getLine() + "'" + headerString;
 		if(children.size() <= getFirstPrintedChildIndex())
 		{
 			result.append(tabs + "<" + getTypeName() + headerString + "/>\n");

@@ -19,15 +19,15 @@ public class Parser_Expression
 		Expression result = parseExpression(tokenQueue);
 		switch(result.getType())
 		{
-			case PreIncrement:
-			case PreDecrement:
-			case PostIncrement:
-			case PostDecrement:
-			case MethodCall:
-			case SuperConstructor:
-			case ThisConstructor:
-			case NewObject:
-			case NewArray:
+			case PRE_INCREMENT:
+			case PRE_DECREMENT:
+			case POST_INCREMENT:
+			case POST_DECREMENT:
+			case METHOD_CALL:
+			case SUPER_CONSTRUCTOR:
+			case THIS_CONSTRUCTOR:
+			case NEW_OBJECT:
+			case NEW_ARRAY:
 			break;
 			default:
 				Logger.error("not a statement",
@@ -35,6 +35,7 @@ public class Parser_Expression
 						next.getLine());
 				break;				
 		}
+		mustBe(tokenQueue, JavaTokenType.SEMICOLON);
 		return result;
 	}
 	
@@ -51,27 +52,27 @@ public class Parser_Expression
 		Expression lhs = tryConditional(tokenQueue);
 		if(have(tokenQueue, JavaTokenType.EQUAL))
 			return new Expression(
-					ExpressionType.Assignment, line,
+					ExpressionType.ASSIGMENT, line,
 					lhs, tryAssignment(tokenQueue));
 		if(have(tokenQueue, JavaTokenType.PLUS_EQUAL))
 			return new Expression(
-					ExpressionType.Assignment_Add, line,
+					ExpressionType.ASSIGMENT__ADD, line,
 					lhs, tryAssignment(tokenQueue));
 		if(have(tokenQueue, JavaTokenType.DASH_EQUAL))
 			return new Expression(
-					ExpressionType.Assignment_Sub, line,
+					ExpressionType.ASSIGMENT__SUB, line,
 					lhs, tryAssignment(tokenQueue));
 		if(have(tokenQueue, JavaTokenType.STAR_EQUAL))
 			return new Expression(
-					ExpressionType.Assignment_Mul, line,
+					ExpressionType.ASSIGMENT__MUL, line,
 					lhs, tryAssignment(tokenQueue));
 		if(have(tokenQueue, JavaTokenType.SLASH_EQUAL))
 			return new Expression(
-					ExpressionType.Assignment_Div, line,
+					ExpressionType.ASSIGNMENT__DIV, line,
 					lhs, tryAssignment(tokenQueue));
 		if(have(tokenQueue, JavaTokenType.PERCENT_EQUAL))
 			return new Expression(
-					ExpressionType.Assignment_Mod, line,
+					ExpressionType.ASSIGNMENT__MOD, line,
 					lhs, tryAssignment(tokenQueue));
 		else
 			return lhs;
@@ -88,7 +89,7 @@ public class Parser_Expression
 			mustBe(tokenQueue, JavaTokenType.COLON);
 			Expression alternative = parseExpression(tokenQueue);
 			lhs = new Expression(
-					ExpressionType.Conditional, line,
+					ExpressionType.CONDITIONAL, line,
 					lhs, consequent, alternative);
 		}
 		return lhs;
@@ -104,11 +105,11 @@ public class Parser_Expression
 		{
 			if(have(tokenQueue, JavaTokenType.AND))
 				lhs = new Expression(
-						ExpressionType.LogicalAnd, line,
+						ExpressionType.LOGICAL_AND, line,
 						lhs, tryEquality(tokenQueue));
 			else if(have(tokenQueue, JavaTokenType.PIPE))
 				lhs = new Expression(
-						ExpressionType.LogicalOr, line,
+						ExpressionType.LOGICAL_OR, line,
 						lhs, tryEquality(tokenQueue));
 			else
 				more = false;
@@ -126,7 +127,7 @@ public class Parser_Expression
 		{
 			if(have(tokenQueue, JavaTokenType.EQUAL_EQUAL))
 				lhs = new Expression(
-						ExpressionType.Equality, line,
+						ExpressionType.EQUALITY, line,
 						lhs, tryRelational(tokenQueue));
 			else
 				more = false;
@@ -141,19 +142,19 @@ public class Parser_Expression
 		Expression lhs = tryAdditive(tokenQueue);
 		if(have(tokenQueue, JavaTokenType.RIGHT))
 			lhs = new Expression(
-					ExpressionType.Greater, line,
+					ExpressionType.GREATER, line,
 					lhs, tryAdditive(tokenQueue));
 		if(have(tokenQueue, JavaTokenType.LEFT))
 			lhs = new Expression(
-					ExpressionType.Less, line,
+					ExpressionType.LESS, line,
 					lhs, tryAdditive(tokenQueue));
 		if(have(tokenQueue, JavaTokenType.RIGHT_EQUAL))
 			lhs = new Expression(
-					ExpressionType.GreaterOrEqual, line,
+					ExpressionType.GREATER_OR_EQUAL, line,
 					lhs, tryAdditive(tokenQueue));
 		if(have(tokenQueue, JavaTokenType.LEFT_EQUAL))
 			lhs = new Expression(
-					ExpressionType.LessOrEqual, line,
+					ExpressionType.LESS_OR_EQUAL, line,
 					lhs, tryAdditive(tokenQueue));
 		return lhs;
 	}
@@ -168,11 +169,11 @@ public class Parser_Expression
 		{
 			if(have(tokenQueue, JavaTokenType.PLUS))
 				lhs = new Expression(
-						ExpressionType.Add, line,
+						ExpressionType.ADD, line,
 						lhs, tryMultiplicative(tokenQueue));
 			else if(have(tokenQueue, JavaTokenType.DASH))
 				lhs = new Expression(
-						ExpressionType.Sub, line,
+						ExpressionType.SUB, line,
 						lhs, tryMultiplicative(tokenQueue));
 			else
 				more = false;
@@ -190,15 +191,15 @@ public class Parser_Expression
 		{
 			if(have(tokenQueue, JavaTokenType.STAR))
 				lhs = new Expression(
-						ExpressionType.Mul, line,
+						ExpressionType.MUL, line,
 						lhs, tryUnary(tokenQueue));
 			else if(have(tokenQueue, JavaTokenType.SLASH))
 				lhs = new Expression(
-						ExpressionType.Div, line,
+						ExpressionType.DIV, line,
 						lhs, tryUnary(tokenQueue));
 			else if(have(tokenQueue, JavaTokenType.PERCENT))
 				lhs = new Expression(
-						ExpressionType.Mod, line,
+						ExpressionType.MOD, line,
 						lhs, tryUnary(tokenQueue));
 			else
 				more = false;
@@ -212,19 +213,19 @@ public class Parser_Expression
 		int line = tokenQueue.peek().getRow();
 		if(have(tokenQueue, JavaTokenType.PLUS_PLUS))
 			return new Expression(
-					ExpressionType.PreIncrement, line,
+					ExpressionType.PRE_INCREMENT, line,
 					tryUnary(tokenQueue));
 		else if(have(tokenQueue, JavaTokenType.DASH_DASH))
 			return new Expression(
-					ExpressionType.PreDecrement, line,
+					ExpressionType.PRE_DECREMENT, line,
 					tryUnary(tokenQueue));
 		else if(have(tokenQueue, JavaTokenType.PLUS))
 			return new Expression(
-					ExpressionType.Positive, line,
+					ExpressionType.POSITIVE, line,
 					tryUnary(tokenQueue));
 		else if(have(tokenQueue, JavaTokenType.DASH))
 			return new Expression(
-					ExpressionType.Negative, line,
+					ExpressionType.NEGATIVE, line,
 					tryUnary(tokenQueue));
 		else
 			return trySimpleUnary(tokenQueue);
@@ -236,7 +237,7 @@ public class Parser_Expression
 		int line = tokenQueue.peek().getRow();
 		if(have(tokenQueue, JavaTokenType.EXCLAIM))
 			return new Expression(
-					ExpressionType.LogicalNot, line,
+					ExpressionType.LOGICAL_NOT, line,
 					tryUnary(tokenQueue));
 		else if(seeCast(tokenQueue))
 		{
@@ -258,9 +259,9 @@ public class Parser_Expression
 		while(more)
 		{
 			if(have(tokenQueue, JavaTokenType.PLUS_PLUS))
-				lhs = new Expression(ExpressionType.PostIncrement, line, lhs);
+				lhs = new Expression(ExpressionType.POST_INCREMENT, line, lhs);
 			if(have(tokenQueue, JavaTokenType.DASH_DASH))
-				lhs = new Expression(ExpressionType.PostDecrement, line, lhs);
+				lhs = new Expression(ExpressionType.POST_DECREMENT, line, lhs);
 			//TODO: add dot and lbrack stuff (line 1506) 
 			else
 				more = false;
@@ -289,7 +290,7 @@ public class Parser_Expression
 			}
 			else
 			{
-				result = new Expression(ExpressionType.ThisReference, line);
+				result = new Expression(ExpressionType.THIS_REFERENCE, line);
 			}
 		}
 		// super
@@ -324,11 +325,11 @@ public class Parser_Expression
 			}
 			else if(id.getChildCount() == 1)
 			{
-				result = new Variable(line, (Identifier)id.getChild(0));
+				result = new VariableReference(line, (Identifier)id.getChild(0));
 			}
 			else
 			{
-				result = new Field(line, id);
+				result = new FieldReference(line, id);
 			}
 		}
 		// literal

@@ -4,6 +4,6 @@ public class NewArray extends Expression
 {
 	public NewArray(int line)
 	{
-		super(ExpressionType.NewArray, line);
+		super(ExpressionType.NEW_ARRAY, line);
 	}
 }

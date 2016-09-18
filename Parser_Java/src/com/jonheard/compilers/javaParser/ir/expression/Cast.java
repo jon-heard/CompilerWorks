@@ -6,7 +6,7 @@ public class Cast extends Expression
 {
 	public Cast(int line, QualifiedIdentifier castTo, Expression rhs)
 	{
-		super(ExpressionType.Cast, line);
+		super(ExpressionType.CAST, line);
 		addChild(castTo);
 		addChild(rhs);
 	}

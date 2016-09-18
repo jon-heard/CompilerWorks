@@ -55,8 +55,6 @@ public class CompilationUnit extends BaseIrType
 	@Override
 	public String getHeaderString()
 	{
-		Package p = getPackage();
-
 		return  "importCount='" + getImportCount() + "' " +
 				"typeCount='" + getTypeCount() + "'";
 	}

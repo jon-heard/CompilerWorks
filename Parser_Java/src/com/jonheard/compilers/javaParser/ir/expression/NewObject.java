@@ -4,6 +4,6 @@ public class NewObject extends Expression
 {
 	public NewObject(int line)
 	{
-		super(ExpressionType.NewObject, line);
+		super(ExpressionType.NEW_OBJECT, line);
 	}
 }

@@ -3,7 +3,7 @@ package com.jonheard.compilers.assembler_jvm.backEnd;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.jonheard.util.HelperMethods;
+import com.jonheard.util.UtilMethods;
 
 /*
  * ClassRep - Represents the class being built for writing to a class file.
@@ -36,7 +36,7 @@ public class ClassRep
 		cpIndex_sourceFileAttribute = constantPool.addUtf8("SourceFile");
 		/// Mods are given as a collection of strings ("public", "static", etc)
 		/// and stored as bit flags in a short.
-		this.modFlags = HelperMethods.generateFlagsFromModifierList(modifiers);
+		this.modFlags = UtilMethods.generateFlagsFromModifierList(modifiers);
 		this.modFlags |= 0x0020; /// Modern Java requires this implicit modifier
 	}
 
@@ -67,7 +67,7 @@ public class ClassRep
 	{
 		return addMethod(
 				name,
-				HelperMethods.buildMethodDescriptor(type, args),
+				UtilMethods.buildMethodDescriptor(type, args),
 				modifiers);
 	}
 	public MethodCodeBuilder addMethod(

@@ -6,7 +6,7 @@ public class ThisConstructor extends Expression
 {
 	public ThisConstructor(int line, List_Expression parameters)
 	{
-		super(ExpressionType.ThisConstructor, line);
+		super(ExpressionType.THIS_CONSTRUCTOR, line);
 		addChild(parameters);
 	}
 }

@@ -39,17 +39,46 @@ public class Type extends BaseIrType
 		
 	}
 	
-	public void incDimensionCount()
-	{
-		dimensionCount++;
-	}
-	
 	public QualifiedIdentifier getBase()
 	{
 		return (QualifiedIdentifier)getChild(0);
 	}
 
 	public int getDimensionCount() { return dimensionCount; }
+	
+	public String toJvmDescriptor()
+	{
+		String type = getBase().getValue();
+		int dimensionCount = getDimensionCount();
+		StringBuffer result = new StringBuffer();
+
+		for(int i = 0; i < dimensionCount; i++)
+		{
+			result.append("[");
+		}
+		if(type == "void") result.append("V");
+		else if(type == "byte") result.append("B");
+		else if(type == "char") result.append("C");
+		else if(type == "double") result.append("D");
+		else if(type == "float") result.append("F");
+		else if(type == "int") result.append("I");
+		else if(type == "long") result.append("J");
+		else if(type == "short") result.append("S");
+		else if(type == "boolean") result.append("Z");
+		else
+		{
+			result.append("L");
+			result.append(type.replace('.', '/'));
+			result.append(";");
+		}
+		
+		return result.toString();
+	}
+
+	public void incDimensionCount()
+	{
+		dimensionCount++;
+	}
 	
 	public static boolean isNext(RewindableQueue<JavaToken> tokenQueue)
 	{

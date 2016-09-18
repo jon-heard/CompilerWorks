@@ -3,7 +3,7 @@ package com.jonheard.compilers.assembler_jvm.frontEnd;
 import java.io.File;
 
 import com.jonheard.compilers.assembler_jvm.backEnd.ClassRep;
-import com.jonheard.util.HelperMethods;
+import com.jonheard.util.UtilMethods;
 
 /// The driver class for JvmAsm - the sourcefile assembly system
 public class JvmAssembler
@@ -85,7 +85,7 @@ public class JvmAssembler
 
 		/// Load the source file into a string
 //		verboseLog("Loading the sourcefile '" + sourceFileName + "'.");
-		String sourceData = HelperMethods.fileToString(sourceFileName);
+		String sourceData = UtilMethods.fileToString(sourceFileName);
 		if(sourceData == null)
 		{
 			System.err.println(
@@ -109,7 +109,7 @@ public class JvmAssembler
 		/// Store the ClassRep into a class file
 		String classFileName = classRep.getName() + ".class";
 //		verboseLog("Saving the class file '" + classFileName + "'.");
-		if(!HelperMethods.byteArrayToFile(
+		if(!UtilMethods.byteArrayToFile(
 				classRep.getJvmBytes(), classFileName))
 		{
 			System.err.println(

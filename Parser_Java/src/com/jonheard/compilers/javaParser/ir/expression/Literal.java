@@ -7,7 +7,7 @@ public class Literal extends Expression
 {
 	public Literal(int line, JavaToken data)
 	{
-		super(ExpressionType.Literal, line);
+		super(ExpressionType.LITERAL, line);
 		this.data = data;
 	}
 	

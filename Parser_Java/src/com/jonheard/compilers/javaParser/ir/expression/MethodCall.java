@@ -8,7 +8,7 @@ public class MethodCall extends Expression
 	public MethodCall(
 			int line, QualifiedIdentifier id, List_Expression parameters)
 	{
-		super(ExpressionType.MethodCall, line);
+		super(ExpressionType.METHOD_CALL, line);
 		addChild(id);
 		addChild(parameters);
 	}

@@ -1,5 +1,8 @@
 package com.jonheard.compilers.javaParser.ir;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.jonheard.compilers.javaTokenizer.JavaToken;
 import com.jonheard.util.RewindableQueue;
 
@@ -44,16 +47,29 @@ public class List_Modifier extends BaseIrType
 	public String getValue()
 	{
 		StringBuffer result = new StringBuffer();
-		if(hasPublic) result.append("public ");
-		if(hasPrivate) result.append("private ");
-		if(hasProtected) result.append("protected ");
-		if(hasStatic) result.append("static ");
-		if(hasFinal) result.append("final ");
-		if(result.length() > 0)
+		Collection<String> stringCollection = toStringCollection();
+		int counter = 0;
+		for(String item : stringCollection)
 		{
-			result.deleteCharAt(result.length()-1);
+			result.append(item);
+			if(counter < stringCollection.size()-1)
+			{
+				result.append(" ");
+			}
+			counter++;
 		}
 		return result.toString();
+	}
+	
+	public Collection<String> toStringCollection()
+	{
+		Collection<String> result = new ArrayList<String>();
+		if(hasPublic) result.add("public");
+		if(hasPrivate) result.add("private");
+		if(hasProtected) result.add("protected");
+		if(hasStatic) result.add("static");
+		if(hasFinal) result.add("final");		
+		return result;
 	}
 
 	private boolean hasPublic, hasPrivate, hasProtected, hasStatic, hasFinal;

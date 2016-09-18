@@ -2,7 +2,7 @@ package com.jonheard.compilers.assembler_jvm.backEnd;
 
 import java.util.Collection;
 
-import com.jonheard.util.HelperMethods;
+import com.jonheard.util.UtilMethods;
 
 /*
  * MemberRep - Represents a member (field or method) of a class
@@ -24,7 +24,7 @@ public abstract class MemberRep implements DataBuffer.Serializable
 		Collection<String> modifierList, ConstantPool constantPool)
 	{
 		this.constantPool = constantPool;
-		modifiers = HelperMethods.generateFlagsFromModifierList(modifierList);
+		modifiers = UtilMethods.generateFlagsFromModifierList(modifierList);
 		/// name and descriptor are held in the constant pool
 		this.cpIndex_name = constantPool.addUtf8(name);
 		this.cpIndex_descriptor = constantPool.addUtf8(descriptor);

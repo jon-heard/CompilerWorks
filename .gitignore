@@ -53,6 +53,6 @@ local.properties
 *.class
 
 # Test files
-JavaCompiler/Test1.java
-JavaCompiler/Test1.class
+Compiler_Java/Test1.java
+Compiler_Java/Test1.class
 Util/test1.txt
