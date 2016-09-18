@@ -52,7 +52,8 @@ local.properties
 # All class files
 *.class
 
-# Test files
-Compiler_Java/Test1.java
-Compiler_Java/Test1.class
-Util/test1.txt
+# Testing data files
+testdata/
+
+# Research material
+research/

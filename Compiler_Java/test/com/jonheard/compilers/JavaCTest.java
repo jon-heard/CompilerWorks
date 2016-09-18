@@ -2,15 +2,39 @@ package com.jonheard.compilers;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+
 import org.junit.Test;
 
 import com.jonheard.util.UtilMethods;
 
 public class JavaCTest
 {
+	private static final String TEST_DIR = "testData";
+	private static final String TEST_FILENAME_1 = "Test1.java";
+
+	private void setupTestData()
+	{
+		File testDir = new File(TEST_DIR);
+		if(testDir.exists())
+		{
+			String[]entries = testDir.list();
+			for(String s: entries){
+			    File currentFile = new File(testDir.getPath(), s);
+			    currentFile.delete();
+			}
+		}
+		else
+		{
+			testDir.mkdir();			
+		}
+	}
+
 	@Test
 	public void basics()
 	{
+		setupTestData();
+		
 		String source =
 				"package first.second;\n" +
 				"import java.util.*;\n" +
@@ -22,7 +46,7 @@ public class JavaCTest
 				"		java.lang.System.out.println(\"Hello world\");\n" +
 				"	}\n" +
 				"}";
-		UtilMethods.stringToFile(source, "Test1.java");
+		UtilMethods.stringToFile(source, TEST_DIR+"/"+TEST_FILENAME_1);
 		JavaC compiler = new JavaC();
 
 		/// Tokenizing
@@ -40,8 +64,8 @@ public class JavaCTest
 				"identifier:System\ndot\nidentifier:out\ndot\n" +
 				"identifier:println\nparen_left\nstring:Hello world\n" +
 				"paren_right\nsemicolon\ncurl_brace_right\ncurl_brace_right\n";
-		String actualTokens =
-				compiler.compile(new String[] {"Test1.java", "-t"});
+		String actualTokens = compiler.compile(
+				new String[] {TEST_DIR+"/"+TEST_FILENAME_1, "-t"});
 		assertEquals(expectedTokens, actualTokens);
 		
 		/// Parsing
@@ -66,8 +90,8 @@ public class JavaCTest
 				"		</Method>\n" +
 				"	</Class>\n" +
 				"</CompilationUnit>\n";
-		String actualParsed =
-				compiler.compile(new String[] {"Test1.java", "-p"});
+		String actualParsed = compiler.compile(
+				new String[] {TEST_DIR+"/"+TEST_FILENAME_1, "-p"});
 		System.out.println(actualParsed);
 		assertEquals(expectedParsed, actualParsed);
 	}

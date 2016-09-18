@@ -17,23 +17,40 @@ public class UtilMethodsTest
 {
 	final boolean INCLUDE_FILEIO_TESTS = true;
 
+	private static final String TEST_DIR = "testData";
 	private static final String TEST_FILENAME_1 = "test1.txt";
 	private static final String TEST_FILENAME_2 = "test2.txt";
 
+	private void setupTestData()
+	{
+		File testDir = new File(TEST_DIR);
+		if(testDir.exists())
+		{
+			String[]entries = testDir.list();
+			for(String s: entries){
+			    File currentFile = new File(testDir.getPath(), s);
+			    currentFile.delete();
+			}
+		}
+		else
+		{
+			testDir.mkdir();			
+		}
+	}
+	
 	@Test
 	public void fileToString()
 	{
 		assumeTrue(INCLUDE_FILEIO_TESTS);
 
 		String expected = "Hello world\nHow are you?";
+		
+		setupTestData();
 
 		/// Setup test files
 		try
 		{
-			File f1 = new File(TEST_FILENAME_1);
-			File f2 = new File(TEST_FILENAME_2);
-			f1.delete();
-			f2.delete();
+			File f1 = new File(TEST_DIR+"/"+TEST_FILENAME_1);
 			PrintWriter p = new PrintWriter(f1);
 			p.print(expected);
 			p.close();
@@ -44,18 +61,12 @@ public class UtilMethodsTest
 		}
 
 		/// Run tests
-		String actual1 = UtilMethods.fileToString(TEST_FILENAME_1);
-		String actual2 = UtilMethods.fileToString(TEST_FILENAME_2);
+		String actual1 = UtilMethods.fileToString(TEST_DIR+"/"+TEST_FILENAME_1);
+		String actual2 = UtilMethods.fileToString(TEST_DIR+"/"+TEST_FILENAME_2);
 
 		/// Check results
 		assertEquals(expected, actual1);
 		assertEquals(null, actual2);
-
-		/// Cleanup
-		File f1 = new File(TEST_FILENAME_1);
-		File f2 = new File(TEST_FILENAME_2);
-		f1.delete();
-		f2.delete();
 	}
 
 	@Test
@@ -65,45 +76,36 @@ public class UtilMethodsTest
 
 		String expected = "Hello world\nHow are you?";
 
-		/// Setup test files
-		File f1 = new File(TEST_FILENAME_1);
-		f1.delete();
+		setupTestData();
+
+		File f1 = new File(TEST_DIR+"/"+TEST_FILENAME_1);
+		File f2 = new File(TEST_DIR+"/"+TEST_FILENAME_2);
 
 		/// Run tests
-		boolean success1 = UtilMethods.stringToFile(null, TEST_FILENAME_1);
-		boolean success2 = UtilMethods.stringToFile("", TEST_FILENAME_1);
+		boolean success1 = UtilMethods.stringToFile(null, f1.getPath());
+		boolean success2 = UtilMethods.stringToFile(
+				expected, "c:/windows/system32/tmp.txt");
+		boolean success3 = UtilMethods.stringToFile("", f1.getPath());
+		boolean success4 = UtilMethods.stringToFile(expected, f2.getPath());
+
 
 		/// Check success results
 		assertFalse(success1);
-		assertTrue(success2);
+		assertFalse(success2);
+		assertTrue(success3);
+		assertTrue(success4);
 
-		/// Check file output
+		/// Check file results
 		try
 		{
+			// f1
 			Scanner s = new Scanner(f1);
 			s.useDelimiter("\\z");
 			assertFalse(s.hasNext());
 			s.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			assertTrue(false);
-		}
 
-		/// Run tests
-		boolean success3 = UtilMethods.stringToFile(expected,
-				TEST_FILENAME_1);
-		boolean success4 = UtilMethods.stringToFile(expected,
-				"c:/windows/system32/tmp.txt");
-
-		/// Check success results
-		assertTrue(success3);
-		assertFalse(success4);
-
-		/// Check file output
-		try
-		{
-			Scanner s = new Scanner(f1);
+			// f2
+			s = new Scanner(f2);
 			s.useDelimiter("\\z");
 			String actual = s.next();
 			assertEquals(expected, actual);
@@ -114,9 +116,6 @@ public class UtilMethodsTest
 		{
 			assertTrue(false);
 		}
-
-		/// Cleanup
-		f1.delete();
 	}
 
 	@Test
@@ -125,50 +124,41 @@ public class UtilMethodsTest
 		assumeTrue(INCLUDE_FILEIO_TESTS);
 
 		String expected = "Hello world\nHow are you?";
+		byte[] expectedBytes = expected.getBytes();
 
-		/// Setup test files
-		File f1 = new File(TEST_FILENAME_1);
-		f1.delete();
+		setupTestData();
+
+		File f1 = new File(TEST_DIR+"/"+TEST_FILENAME_1);
+		File f2 = new File(TEST_DIR+"/"+TEST_FILENAME_2);
 
 		/// Run tests
-		boolean success1 = UtilMethods.byteArrayToFile(null, TEST_FILENAME_1);
-		boolean success2 = UtilMethods.byteArrayToFile(new byte[0],
-				TEST_FILENAME_1);
+		boolean success1 = UtilMethods.byteArrayToFile(null, f1.getPath());
+		boolean success2 = UtilMethods.byteArrayToFile(
+				expected.getBytes(), "c:/windows/system32/tmp.txt");
+		boolean success3 =
+				UtilMethods.byteArrayToFile(new byte[0], f1.getPath());
+		boolean success4 =
+				UtilMethods.byteArrayToFile(expectedBytes, f2.getPath());
 
 		/// Check success results
 		assertFalse(success1);
-		assertTrue(success2);
+		assertFalse(success2);
+		assertTrue(success3);
+		assertTrue(success4);
 
 		/// Check file output
 		try
 		{
+			// f1
 			Scanner s = new Scanner(f1);
 			s.useDelimiter("\\z");
 			assertFalse(s.hasNext());
 			s.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			assertTrue(false);
-		}
 
-		/// Run tests
-		boolean success3 = UtilMethods.byteArrayToFile(expected.getBytes(),
-				TEST_FILENAME_1);
-		boolean success4 = UtilMethods.byteArrayToFile(expected.getBytes(),
-				"c:/windows/system32/tmp.txt");
-
-		/// Check success results
-		assertTrue(success3);
-		assertFalse(success4);
-
-		/// Check file output
-		try
-		{
-			Scanner s = new Scanner(f1);
+			// f2
+			s = new Scanner(f2);
 			s.useDelimiter("\\z");
 			String actual = s.next();
-
 			assertEquals(expected, actual);
 			assertFalse(s.hasNext());
 			s.close();
@@ -177,9 +167,6 @@ public class UtilMethodsTest
 		{
 			assertTrue(false);
 		}
-
-		/// Cleanup
-		f1.delete();
 	}
 
 	@Test
