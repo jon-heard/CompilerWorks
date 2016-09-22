@@ -11,7 +11,7 @@ import com.jonheard.compilers.javaTokenizer.JavaTokenType;
 import com.jonheard.compilers.javaTokenizer.JavaTokenizer;
 import com.jonheard.util.Logger;
 
-public class JavaTokenIteratorTest
+public class JavaTokenizerTest
 {
 	@Test
 	public void basic()

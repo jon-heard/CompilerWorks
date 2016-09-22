@@ -119,6 +119,40 @@ public class UtilMethodsTest
 	}
 
 	@Test
+	public void fileToByteArray()
+	{
+		assumeTrue(INCLUDE_FILEIO_TESTS);
+
+		String expected = "Hello world\nHow are you?";
+		byte[] expectedBytes = expected.getBytes();
+		
+		setupTestData();
+
+		/// Setup test files
+		try
+		{
+			File f1 = new File(TEST_DIR+"/"+TEST_FILENAME_1);
+			PrintWriter p = new PrintWriter(f1);
+			p.print(expected);
+			p.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+
+		/// Run tests
+		byte[] actual1 =
+				UtilMethods.fileToByteArray(TEST_DIR+"/"+TEST_FILENAME_1);
+		byte[] actual2 =
+				UtilMethods.fileToByteArray(TEST_DIR+"/"+TEST_FILENAME_2);
+
+		/// Check results
+		assertArrayEquals(expectedBytes, actual1);
+		assertEquals(null, actual2);
+	}
+
+	@Test
 	public void byteArrayToFile()
 	{
 		assumeTrue(INCLUDE_FILEIO_TESTS);

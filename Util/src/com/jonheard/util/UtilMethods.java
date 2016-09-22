@@ -2,6 +2,8 @@ package com.jonheard.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,7 +22,7 @@ public class UtilMethods
 	/// and returns the String
 	public static String fileToString(String filename)
 	{
-		String result = "";
+		String result = null;
 		try
 		{
 			Scanner s = new Scanner(new File(filename));
@@ -28,10 +30,7 @@ public class UtilMethods
 			result = s.next();
 			s.close();
 		}
-		catch (Exception e)
-		{
-			return null;
-		}
+		catch (Exception e) {}
 		return result;
 	}
 
@@ -42,6 +41,19 @@ public class UtilMethods
 	{
 		if(data == null) return false;
 		return byteArrayToFile(data.getBytes(), filename);
+	}
+	
+	/// Takes a filename (a String), loads the data from the file into a byte
+	/// array and returns the byte array
+	public static byte[] fileToByteArray(String filename)
+	{
+		byte[] result = null;
+		try
+		{
+			result = Files.readAllBytes(Paths.get(filename));
+		}
+		catch (Exception e) {}
+		return result;
 	}
 	
 	/// Takes a byte array of data and a filename (a String) and writes the data
