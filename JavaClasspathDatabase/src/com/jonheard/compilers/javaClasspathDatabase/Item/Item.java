@@ -1,4 +1,4 @@
-package com.jonheard.compilers.javaClassHeirarchy.Item;
+package com.jonheard.compilers.javaClasspathDatabase.Item;
 
 import java.util.HashMap;
 
@@ -30,7 +30,7 @@ public class Item
 	
 	public String getJavaAddress()
 	{
-		if(parent == null || parent instanceof Item_Folder)
+		if(parent == null || parent instanceof Item_Non)
 		{
 			return name;
 		}
@@ -42,7 +42,7 @@ public class Item
 	
 	public String getFileAddress()
 	{
-		if(parent == null || parent instanceof Item_Folder)
+		if(parent == null || parent instanceof Item_Non)
 		{
 			return name;
 		}

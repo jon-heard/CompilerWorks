@@ -1,16 +1,16 @@
-package com.jonheard.compilers.javaClassHeirarchy;
+package com.jonheard.compilers.javaClasspathDatabase;
 
 import java.io.FileInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.jonheard.compilers.javaClassHeirarchy.Item.*;
+import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 
 class SourceJar extends Source
 {
-	public SourceJar(String filename)
+	public SourceJar(JavaClasspathDatabase database, String filename)
 	{
-		super(filename);
+		super(database, filename);
 	}
 
 	public void loadItemData(Item toLoad)

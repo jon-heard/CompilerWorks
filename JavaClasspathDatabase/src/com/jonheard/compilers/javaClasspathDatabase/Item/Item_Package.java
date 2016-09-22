@@ -1,4 +1,4 @@
-package com.jonheard.compilers.javaClassHeirarchy.Item;
+package com.jonheard.compilers.javaClasspathDatabase.Item;
 
 public class Item_Package extends Item
 {

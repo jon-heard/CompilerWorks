@@ -1,15 +1,15 @@
-package com.jonheard.compilers.javaClassHeirarchy;
+package com.jonheard.compilers.javaClasspathDatabase;
 
 import java.io.File;
 
-import com.jonheard.compilers.javaClassHeirarchy.Item.*;
+import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 import com.jonheard.util.UtilMethods;
 
 class SourceFolder extends Source
 {
-	public SourceFolder(String filename)
+	public SourceFolder(JavaClasspathDatabase database, String filename)
 	{
-		super(filename);
+		super(database, filename);
 	}
 
 	public void loadItemData(Item toLoad)

@@ -1,4 +1,4 @@
-package com.jonheard.compilers.javaClassHeirarchy;
+package com.jonheard.compilers.javaClasspathDatabase;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,11 +24,35 @@ public class ClassFileMemberReader
 		return memberMap.containsKey(name);
 	}
 	
+	public String getMemberDescriptor(String name)
+	{
+		if(hasMember(name))
+		{
+			return memberMap.get(name).descriptor;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	public boolean isMemberStatic(String name)
+	{
+		if(hasMember(name))
+		{
+			return memberMap.get(name).staticMember;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	public boolean isMemberAMethod(String name)
 	{
 		if(hasMember(name))
 		{
-			return memberMap.get(name).startsWith("(");
+			return memberMap.get(name).descriptor.startsWith("(");
 		}
 		else
 		{
@@ -40,23 +64,11 @@ public class ClassFileMemberReader
 	{
 		if(hasMember(name))
 		{
-			return !memberMap.get(name).startsWith("(");
+			return !memberMap.get(name).descriptor.startsWith("(");
 		}
 		else
 		{
 			return false;
-		}
-	}
-
-	public String getMemberDescriptor(String name)
-	{
-		if(hasMember(name))
-		{
-			return memberMap.get(name);
-		}
-		else
-		{
-			return null;
 		}
 	}
 	
@@ -72,7 +84,8 @@ public class ClassFileMemberReader
 
 
 	private boolean valid = true;
-	private HashMap<String, String> memberMap = new HashMap<String, String>();
+	private HashMap<String, MemberInfo> memberMap =
+			new HashMap<String, MemberInfo>();
 	
 	private int unsign(byte value)
 	{
@@ -151,6 +164,7 @@ public class ClassFileMemberReader
 		ptr += 2;
 		for(int i = 0; i < fieldCount; i++)
 		{
+			int modifiers = unsignedShort(data[ptr], data[ptr+1]);
 			ptr += 2;
 			String name = utf8Map.get(unsignedShort(data[ptr], data[ptr+1]));
 			ptr += 2;
@@ -167,12 +181,13 @@ public class ClassFileMemberReader
 				ptr += 4;
 				
 			}
-			memberMap.put(name, descriptor);
+			memberMap.put(name, new MemberInfo(descriptor, modifiers));
 		}
 		int methodCount = unsignedShort(data[ptr], data[ptr+1]);
 		ptr += 2;
 		for(int i = 0; i < methodCount; i++)
 		{
+			int modifiers = unsignedShort(data[ptr], data[ptr+1]);
 			ptr += 2;
 			String name = utf8Map.get(unsignedShort(data[ptr], data[ptr+1]));
 			ptr += 2;
@@ -189,10 +204,21 @@ public class ClassFileMemberReader
 				ptr += 4;
 				
 			}
-			memberMap.put(name, descriptor);
+			memberMap.put(name, new MemberInfo(descriptor, modifiers));
 		}
 
 		return true;
+	}
+}
+
+class MemberInfo
+{
+	public String descriptor;
+	public boolean staticMember = false;
+	public MemberInfo(String descriptor, int modifiers)
+	{
+		this.descriptor = descriptor;
+		if((modifiers & 0x0008) != 0) staticMember = true;
 	}
 }
 

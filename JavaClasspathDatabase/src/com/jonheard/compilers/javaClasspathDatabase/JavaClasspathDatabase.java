@@ -1,38 +1,38 @@
-package com.jonheard.compilers.javaClassHeirarchy;
+package com.jonheard.compilers.javaClasspathDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.jonheard.compilers.javaClassHeirarchy.Item.*;
+import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 
-public class JavaClassHeirarchy
+public class JavaClasspathDatabase
 {
 	public boolean addSource_Folder(String filename)
 	{
-		Source toAdd = new SourceFolder(filename);
+		Source toAdd = new SourceFolder(this, filename);
 		if(!toAdd.isValid())
 		{
 			return false;
 		}
 		sourceList.add(toAdd);
-		memoization.clear();
+		resetMemoization();
 		return true;
 	}
 
 	public boolean addSource_Jar(String filename)
 	{
-		Source toAdd = new SourceJar(filename);
+		Source toAdd = new SourceJar(this, filename);
 		if(!toAdd.isValid())
 		{
 			return false;
 		}
 		sourceList.add(toAdd);
-		memoization.clear();
+		resetMemoization();
 		return true;
 	}
 	
-	public Item getHeirarchy(String address)
+	public Item getValue(String address)
 	{
 		if(memoization.containsKey(address))
 		{
@@ -44,7 +44,7 @@ public class JavaClassHeirarchy
 		List<Item> resultList = new ArrayList<Item>();
 		for(Source source : sourceList)
 		{
-			Item newResult = source.getHeirarchy(address);
+			Item newResult = source.getValue(address);
 			if(!(newResult instanceof Item_Err_NotFound))
 			{
 				resultList.add(newResult);
@@ -84,4 +84,27 @@ public class JavaClassHeirarchy
 	
 	private List<Source> sourceList = new ArrayList<Source>();
 	private HashMap<String, Item> memoization = new HashMap<String, Item>();
+	private final String[] JAVA_PRIMITIVES = {
+			"byte", "short", "int", "long",
+			"float", "double", "boolean", "char"};
+	
+	private void resetMemoization()
+	{
+		if(memoization.isEmpty())
+		{
+			for(String primitive : JAVA_PRIMITIVES)
+			{
+				memoization.put(primitive, new Item_Non(primitive));
+			}
+		}
+		else
+		{
+			HashMap<String, Item> newMemoization = new HashMap<String, Item>();
+			for(String primitive : JAVA_PRIMITIVES)
+			{
+				newMemoization.put(primitive, memoization.get(primitive));
+			}
+			memoization = newMemoization;
+		}
+	}
 }

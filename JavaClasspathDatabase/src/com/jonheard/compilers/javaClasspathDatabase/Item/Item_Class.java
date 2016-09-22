@@ -1,7 +1,7 @@
 
-package com.jonheard.compilers.javaClassHeirarchy.Item;
+package com.jonheard.compilers.javaClasspathDatabase.Item;
 
-import com.jonheard.compilers.javaClassHeirarchy.Source;
+import com.jonheard.compilers.javaClasspathDatabase.Source;
 
 public class Item_Class extends Item
 {
@@ -35,7 +35,7 @@ public class Item_Class extends Item
 	public String getFileAddress()
 	{
 		String name = this.getName() + ".class";
-		if(getParent() == null || getParent() instanceof Item_Folder)
+		if(getParent() == null || getParent() instanceof Item_Non)
 		{
 			return name;
 		}
