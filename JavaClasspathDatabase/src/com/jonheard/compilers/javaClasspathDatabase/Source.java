@@ -77,7 +77,8 @@ public abstract class Source
 				else
 				{
 					typeAddress =
-							typeAddress.substring(1, typeAddress.length()-2);
+							typeAddress.substring(1, typeAddress.length()-1).
+							replace("/", ".");
 				}
 			}
 			Item type = (database==null) ? null :database.getValue(typeAddress);
@@ -94,10 +95,7 @@ public abstract class Source
 		return null;
 	}
 	
-	public boolean isValid()
-	{
-		return valid;
-	}
+	public boolean isValid() { return valid; }
 
 	protected boolean valid = true;
 	protected Item_Non root;

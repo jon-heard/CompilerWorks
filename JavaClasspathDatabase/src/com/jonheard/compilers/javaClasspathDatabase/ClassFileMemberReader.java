@@ -14,10 +14,7 @@ public class ClassFileMemberReader
 		}
 	}
 
-	public boolean isValid()
-	{
-		return valid;
-	}
+	public boolean isValid() { return valid; }
 
 	public boolean hasMember(String name)
 	{
@@ -72,25 +69,16 @@ public class ClassFileMemberReader
 		}
 	}
 	
-	public int getMemberCount()
-	{
-		return memberMap.size();
-	}
+	public int getMemberCount() { return memberMap.size(); }
 	
-	public Set<String> getMemberList()
-	{
-		return memberMap.keySet();
-	}
+	public Set<String> getMemberList() { return memberMap.keySet(); }
 
 
 	private boolean valid = true;
 	private HashMap<String, MemberInfo> memberMap =
 			new HashMap<String, MemberInfo>();
 	
-	private int unsign(byte value)
-	{
-		return (int)value & 0xFF;
-	}
+	private int unsign(byte value) { return (int)value & 0xFF; }
 
 	private int unsignedShort(byte value1, byte value2)
 	{

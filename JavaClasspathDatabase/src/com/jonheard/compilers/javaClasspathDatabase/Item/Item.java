@@ -1,6 +1,7 @@
 package com.jonheard.compilers.javaClasspathDatabase.Item;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class Item
 {
@@ -14,19 +15,28 @@ public class Item
 		}
 	}
 	
+	public Item clone(Item newParent)
+	{
+		Item result = new Item(name, newParent);
+		for(String key : children.keySet())
+		{
+			result.children.put(key, children.get(key));
+		}
+		return result;
+	}
+	
 	public String getName() { return name; }
 	
 	public Item getParent() { return parent; }
 	
-	public boolean hasChild(String name)
-	{
-		return children.containsKey(name);
-	}
+	public boolean hasChild(String name) { return children.containsKey(name); }
 
 	public Item getChild(String name)
 	{
 		return children.containsKey(name) ? children.get(name) : null;
 	}
+	
+	public Set<String> getChildList() { return children.keySet(); }
 	
 	public String getJavaAddress()
 	{

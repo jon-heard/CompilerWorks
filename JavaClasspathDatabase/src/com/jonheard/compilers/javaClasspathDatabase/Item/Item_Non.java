@@ -5,8 +5,5 @@ package com.jonheard.compilers.javaClasspathDatabase.Item;
 /// Representing a primitive type (ie. not in database) (name = type)
 public class Item_Non extends Item
 {
-	public Item_Non(String name)
-	{
-		super(name, null);
-	}
+	public Item_Non(String name) { super(name, null); }
 }

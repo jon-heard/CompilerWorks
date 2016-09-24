@@ -1,2 +1,0 @@
-- members should have children of the type of member it is
-- handle array members

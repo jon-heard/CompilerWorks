@@ -66,6 +66,9 @@ public class JavaClasspathDatabaseTest
 
 		Item i14 = database.getValue("com.jonheard.compilers.badData");
 		assertEquals("com.jonheard.compilers", i14.getName());
+		
+		Item i15 = database.getValue("java.lang.System.out.println");
+		checkItem(i15, "println", Item_Member.class, i12);
 	}
 
 	@SuppressWarnings("rawtypes")

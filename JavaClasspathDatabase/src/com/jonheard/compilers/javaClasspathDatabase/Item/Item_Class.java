@@ -8,13 +8,24 @@ public class Item_Class extends Item
 	public Item_Class(String name, Item parent, Source source)
 	{
 		super(name, parent);
-		mySource = source;
+		this.source = source;
+	}
+	
+	@Override
+	public Item clone(Item newParent)
+	{
+		Item result = new Item_Class(getName(), newParent, source);
+		for(String key : children.keySet())
+		{
+			result.children.put(key, children.get(key));
+		}
+		return result;
 	}
 	
 	@Override
 	public boolean hasChild(String name)
 	{
-		if(mySource != null)
+		if(source != null)
 		{
 			loadChildren();
 		}
@@ -24,7 +35,7 @@ public class Item_Class extends Item
 	@Override
 	public Item getChild(String name)
 	{
-		if(mySource != null)
+		if(source != null)
 		{
 			loadChildren();
 		}
@@ -47,12 +58,12 @@ public class Item_Class extends Item
 
 	private void loadChildren()
 	{
-		if(mySource != null)
+		if(source != null)
 		{
-			mySource.loadItemData(this);
-			mySource = null;
+			source.loadItemData(this);
+			source = null;
 		}
 	}
 	
-	private Source mySource;
+	private Source source;
 }

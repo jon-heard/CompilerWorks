@@ -2,6 +2,8 @@ package com.jonheard.compilers.javaClasspathDatabase.Item;
 
 import static org.junit.Assert.*;
 
+import java.util.Set;
+
 import org.junit.Test;
 
 import com.jonheard.compilers.javaClasspathDatabase.Source;
@@ -17,17 +19,22 @@ public class ItemTest
 	{
 		Item i1 = new Item_Non("one");
 		Item i2 = new Item("two", i1);
-		Item i3 = new Item("three", i2);
+		Item i3 = new Item("three", i1);
+		Item i4 = new Item("four", i2);
 		assertEquals(null, i1.getParent());
 		assertEquals("two", i2.getName());
-		assertEquals(i1,  i2.getParent());
+		assertEquals(i1, i2.getParent());
 		assertFalse(i1.hasChild("badData"));
 		assertEquals(null, i1.getChild("badData"));
 		assertTrue(i1.hasChild("two"));
 		assertEquals(i2, i1.getChild("two"));
-		assertEquals("two.three", i3.getJavaAddress());
-		assertEquals("two/three", i3.getFileAddress());
+		assertEquals("two.four", i4.getJavaAddress());
+		assertEquals("two/four", i4.getFileAddress());
 		assertEquals("Item(two,one)", i2.toString());
+		Set<String> childList = i1.getChildList();
+		assertEquals(2, childList.size());
+		assertTrue(childList.contains("two"));
+		assertTrue(childList.contains("three"));
 	}
 	
 	public void Item_Member()
@@ -35,14 +42,20 @@ public class ItemTest
 		Item i1 = new Item_Non("one");
 		Item_Member i2 = new Item_Member("two", i1, null, "Z", true);
 		Item_Member i3 = new Item_Member("three", i1, null, "(Z)V", false);
+		Item_Member i4 = new Item_Member("three", i1, null, "([Z)[[V", false);
+		Item_Member i5 = new Item_Member("three", i1, null, "[[[Z", false);
 		assertEquals("Z", i2.getDescriptor());
 		assertEquals("(Z)V", i3.getDescriptor());
+		assertEquals("([Z)V", i4.getDescriptor());
+		assertEquals("Z", i5.getDescriptor());
 		assertTrue(i2.isField());
 		assertFalse(i2.isMethod());
 		assertFalse(i3.isField());
 		assertTrue(i3.isMethod());
 		assertTrue(i2.isStatic());
-		assertFalse(i2.isStatic());
+		assertFalse(i3.isStatic());
+		assertEquals(2, i4.getArrayDimension());
+		assertEquals(3, i5.getArrayDimension());
 	}
 	
 	public void Item_Class()
