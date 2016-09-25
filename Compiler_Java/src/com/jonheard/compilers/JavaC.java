@@ -1,8 +1,8 @@
 
 package com.jonheard.compilers;
 
-import com.jonheard.compilers.javaParser.JavaParser;
-import com.jonheard.compilers.javaTokenizer.JavaTokenizer;
+import com.jonheard.compilers.parser_java.JavaParser;
+import com.jonheard.compilers.tokenizer_java.Tokenizer;
 import com.jonheard.util.UtilMethods;
 
 public class JavaC
@@ -69,7 +69,7 @@ public class JavaC
 			result.append("ERROR: Invalid filename: " + sourceFile);
 			return result.toString();
 		}
-		JavaTokenizer t = new JavaTokenizer(sourceFile, source);
+		Tokenizer t = new Tokenizer(sourceFile, source);
 		if(finalStage == Stage.tokenize)
 		{
 			result.append(t.tokenizeToString());
