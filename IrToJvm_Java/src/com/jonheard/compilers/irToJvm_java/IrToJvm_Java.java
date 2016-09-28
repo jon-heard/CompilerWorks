@@ -1,11 +1,11 @@
-package com.jonheard.compilers.javaIrToJvm;
+package com.jonheard.compilers.irToJvm_java;
 
 import com.jonheard.compilers.assembler_jvm.backEnd.*;
 import com.jonheard.compilers.parser_java.ir.*;
 
-public class JavaIrToJvm
+public class IrToJvm_Java
 {
-	public JavaIrToJvm(com.jonheard.compilers.parser_java.ir.BaseIrType source)
+	public IrToJvm_Java(com.jonheard.compilers.parser_java.ir.BaseIrType source)
 	{
 		this.source = source;
 	}
