@@ -9,6 +9,7 @@ import com.jonheard.compilers.javaClasspathDatabase.JavaClasspathDatabase;
 import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 import com.jonheard.compilers.parser_java.ir.*;
 import com.jonheard.compilers.parser_java.ir.Package;
+import com.jonheard.compilers.parser_java.ir.expression.MethodCall;
 import com.jonheard.util.Logger;
 import com.jonheard.util.SourceFileInfo;
 
@@ -59,6 +60,11 @@ public class IrProcessor_Java
 			Type data = (Type)ir;
 			handleType(data);
 		}
+		else if(ir instanceof MethodCall)
+		{
+			MethodCall data = (MethodCall)ir;
+			handleMethodCall(data);
+		}
 		
 		return ir;
 	}
@@ -66,9 +72,10 @@ public class IrProcessor_Java
 	private void handleType(Type data)
 	{
 		QualifiedIdentifier id = data.getIdentifier();
-		if(libs.getValue(id.getValue()) instanceof Item_Err_NotFound)
+		Item path = libs.getValue(id.getValue());
+		if(path instanceof Item_Err_NotFound)
 		{
-			QualifiedIdentifier newId = fullyQualifyIdentifier(id);
+			QualifiedIdentifier newId = fullyQualifyIdentifier(id.getFirst());
 			if(newId == null)
 			{
 				Logger.error(
@@ -81,6 +88,27 @@ public class IrProcessor_Java
 				data.setIdentifier(newId);
 			}
 		}
+	}
+	
+	private void handleMethodCall(MethodCall data)
+	{
+//		QualifiedIdentifier id = data.getIdentifier();
+//		Item path = libs.getValue(id.getValue());
+//		if(path instanceof Item_Err_NotFound)
+//		{
+//			QualifiedIdentifier newId = fullyQualifyIdentifier(id.getFirst());
+//			if(newId == null)
+//			{
+//				Logger.error(
+//						"cannot find symbol", source.getFilename(),
+//						id.getLine(), id.getColumn(),
+//						source.getLine(id.getLine()));
+//			}
+//			else
+//			{
+//				data.setIdentifier(newId);
+//			}
+//		}
 	}
 	
 	private void handleImport(
@@ -133,7 +161,7 @@ public class IrProcessor_Java
 		}
 	}
 	
-	private QualifiedIdentifier fullyQualifyIdentifier(QualifiedIdentifier id)
+	private QualifiedIdentifier fullyQualifyIdentifier(Identifier id)
 	{
 		if(!imports.containsKey(id.getValue())) return null;
 		String[] path =

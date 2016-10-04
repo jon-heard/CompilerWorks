@@ -42,6 +42,11 @@ public class QualifiedIdentifier extends BaseIrType
 	@Override
 	public int getFirstPrintedChildIndex() { return 10000000; }
 	
+	public Identifier getFirst()
+	{
+		return (Identifier)getChild(0);
+	}
+	
 	public String getValue()
 	{
 		StringBuffer result = new StringBuffer();

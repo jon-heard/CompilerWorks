@@ -1,6 +1,5 @@
 
-remove tokenizer from processor buildpath
-
+add methodCall to processing
 adjust classpathDB to combine sources
 
 start making real tests for parser

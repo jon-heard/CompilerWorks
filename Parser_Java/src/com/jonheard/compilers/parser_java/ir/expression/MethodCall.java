@@ -13,4 +13,14 @@ public class MethodCall extends Expression
 		addChild(id);
 		addChild(parameters);
 	}
+	
+	public QualifiedIdentifier getIdentifier()
+	{
+		return (QualifiedIdentifier)getChild(0);
+	}
+
+	public List_Expression getParameters()
+	{
+		return (List_Expression)getChild(1);
+	}
 }
