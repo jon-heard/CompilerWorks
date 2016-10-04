@@ -73,7 +73,10 @@ public class IrProcessor_Java
 			QualifiedIdentifier newId = fullyQualifyIdentifier(id);
 			if(newId == null)
 			{
-				Logger.error("cannot find symbol", "", id.getLine(), 0, "");
+				Logger.error(
+						"cannot find symbol", source.getFilename(),
+						id.getLine(), id.getColumn(),
+						source.getLine(id.getLine()));
 			}
 			else
 			{
