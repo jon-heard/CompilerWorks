@@ -21,9 +21,11 @@ public class QualifiedIdentifier extends BaseIrType
 			else
 			{
 				parser.getTokenQueue().rewind();
+				parser.getTokenQueue().remember();
 				break;
 			}
 		}
+		parser.getTokenQueue().forget();
 	}
 	
 	@Override

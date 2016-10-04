@@ -17,9 +17,9 @@ public class List_Modifier extends BaseIrType
 		{
 			if(     parser.have(TokenType._PUBLIC   )) { hasPublic = true; }
 			else if(parser.have(TokenType._PRIVATE  )) { hasPrivate = true; }
-			else if(parser.have(TokenType._PROTECTED)) { hasPrivate = true; }
-			else if(parser.have(TokenType._STATIC   )) { hasPrivate = true; }
-			else if(parser.have(TokenType._FINAL    )) { hasPrivate = true; }
+			else if(parser.have(TokenType._PROTECTED)) { hasProtected = true; }
+			else if(parser.have(TokenType._STATIC   )) { hasStatic = true; }
+			else if(parser.have(TokenType._FINAL    )) { hasFinal = true; }
 			else { break; }
 		}
 	}
