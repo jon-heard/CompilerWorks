@@ -5,9 +5,9 @@ import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Literal extends Expression
 {
-	public Literal(int line, Token data)
+	public Literal(Token next, Token data)
 	{
-		super(ExpressionType.LITERAL, line);
+		super(ExpressionType.LITERAL, next);
 		this.data = data;
 	}
 	

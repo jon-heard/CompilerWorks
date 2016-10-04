@@ -1,31 +1,32 @@
 package com.jonheard.compilers.parser_java.ir.expression;
 
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
+import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.util.UtilMethods;
 
 public class Expression extends BaseIrType
 {
-	public Expression(ExpressionType type, int line)
+	public Expression(ExpressionType type, Token first)
 	{
-		super(line);
+		super(first.getRow(), first.getColumn());
 		this.type = type;
 	}
-	public Expression(ExpressionType type, int line, Expression lhs)
+	public Expression(ExpressionType type, Token first, Expression lhs)
 	{
-		this(type, line);
+		this(type, first);
 		addChild(lhs);
 	}
 	public Expression(
-			ExpressionType type, int line, Expression lhs, Expression rhs)
+			ExpressionType type, Token first, Expression lhs, Expression rhs)
 	{
-		this(type, line, lhs);
+		this(type, first, lhs);
 		addChild(rhs);
 	}
 	public Expression(
-			ExpressionType type, int line,
-			Expression lhs, Expression mhs, Expression rhs)
+			ExpressionType type, Token first, Expression lhs, Expression mhs,
+			Expression rhs)
 	{
-		this(type, line, lhs, mhs);
+		this(type, first, lhs, mhs);
 		addChild(rhs);
 	}
 	

@@ -1,7 +1,7 @@
 
-add SourceFileInfo to process
-add getColumn() to BaseIrType
 make getColumn() work in BaseIrType
+replace all peeks with "getNextToken"
+change "row" to "line" in tokens
 fix error handling in "handleTypes"
 
 adjust classpathDB to combine sources

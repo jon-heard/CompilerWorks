@@ -23,7 +23,7 @@ public class Identifier extends BaseIrType
 	}
 	public Identifier(String value)
 	{
-		super(0);
+		super(0, 0);
 		this.value = value;
 	}
 

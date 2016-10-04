@@ -1,12 +1,13 @@
 package com.jonheard.compilers.parser_java.ir.expression;
 
 import com.jonheard.compilers.parser_java.ir.QualifiedIdentifier;
+import com.jonheard.compilers.tokenizer_java.Token;
 
 public class Cast extends Expression
 {
-	public Cast(int line, QualifiedIdentifier castTo, Expression rhs)
+	public Cast(Token next, QualifiedIdentifier castTo, Expression rhs)
 	{
-		super(ExpressionType.CAST, line);
+		super(ExpressionType.CAST, next);
 		addChild(castTo);
 		addChild(rhs);
 	}

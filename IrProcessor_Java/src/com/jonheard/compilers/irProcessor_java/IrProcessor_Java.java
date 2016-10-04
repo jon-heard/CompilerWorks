@@ -9,6 +9,8 @@ import com.jonheard.compilers.javaClasspathDatabase.JavaClasspathDatabase;
 import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 import com.jonheard.compilers.parser_java.ir.*;
 import com.jonheard.compilers.parser_java.ir.Package;
+import com.jonheard.compilers.tokenizer_java.Token;
+import com.jonheard.compilers.tokenizer_java.TokenType;
 import com.jonheard.util.Logger;
 import com.jonheard.util.SourceFileInfo;
 
@@ -140,6 +142,9 @@ public class IrProcessor_Java
 		{
 			identifiers.add(new Identifier(node));
 		}
-		return new QualifiedIdentifier(id.getLine(), identifiers);
+		Token.setCurrentRow(id.getLine());
+		return new QualifiedIdentifier(
+				new Token(TokenType._ABSTRACT, id.getColumn()),
+				identifiers);
 	}
 }

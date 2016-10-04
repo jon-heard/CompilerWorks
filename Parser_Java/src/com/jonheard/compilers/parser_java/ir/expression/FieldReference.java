@@ -1,13 +1,14 @@
 package com.jonheard.compilers.parser_java.ir.expression;
 
 import com.jonheard.compilers.parser_java.ir.QualifiedIdentifier;
+import com.jonheard.compilers.tokenizer_java.Token;
 
 public class FieldReference extends Expression
 {
 
-	public FieldReference(int line, QualifiedIdentifier id)
+	public FieldReference(Token next, QualifiedIdentifier id)
 	{
-		super(ExpressionType.FIELD_REFERENCE, line);
+		super(ExpressionType.FIELD_REFERENCE, next);
 		addChild(id);
 	}
 	

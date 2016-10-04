@@ -1,13 +1,14 @@
 package com.jonheard.compilers.parser_java.ir.expression;
 
 import com.jonheard.compilers.parser_java.ir.Identifier;
+import com.jonheard.compilers.tokenizer_java.Token;
 
 public class VariableReference extends Expression
 {
 
-	public VariableReference(int line, Identifier id)
+	public VariableReference(Token next, Identifier id)
 	{
-		super(ExpressionType.VARIABLE_REFERENCE, line);
+		super(ExpressionType.VARIABLE_REFERENCE, next);
 		addChild(id);
 	}
 	

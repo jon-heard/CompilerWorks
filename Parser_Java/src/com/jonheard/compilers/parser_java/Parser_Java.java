@@ -21,9 +21,9 @@ public class Parser_Java
 	public SourceFileInfo getSource() { return source; }
 	public RewindableQueue<Token> getTokenQueue() { return tokenQueue; }
 
-	public int getCurrentLine()
+	public Token getNextToken()
 	{
-		return tokenQueue.peek().getRow();
+		return tokenQueue.peek();
 	}
 
 	public boolean see(TokenType type)

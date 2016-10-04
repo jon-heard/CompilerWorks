@@ -9,15 +9,22 @@ public class BaseIrType
 	public BaseIrType(Parser_Java parser)
 	{
 		line = parser.getTokenQueue().peek().getRow();
+		column = parser.getTokenQueue().peek().getColumn();
 	}
-	public BaseIrType(int line)
+	public BaseIrType(int line, int column)
 	{
 		this.line = line;
+		this.column = column;
 	}
 
 	public int getLine()
 	{
 		return line;
+	}
+	
+	public int getColumn()
+	{
+		return column;
 	}
 	
 	public int getChildCount()
@@ -87,6 +94,6 @@ public class BaseIrType
 		children.add(child);
 	}
 
-	private int line;
+	private int line, column;
 	private List<BaseIrType> children = new ArrayList<BaseIrType>();
 }
