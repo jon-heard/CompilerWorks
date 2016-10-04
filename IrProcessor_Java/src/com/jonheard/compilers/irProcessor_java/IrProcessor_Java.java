@@ -62,7 +62,7 @@ public class IrProcessor_Java
 	private void handleType(Type data)
 	{
 		QualifiedIdentifier id = data.getIdentifier();
-		if(libs.getValue(id.toString()) instanceof Item_Err_NotFound)
+		if(libs.getValue(id.getValue()) instanceof Item_Err_NotFound)
 		{
 			QualifiedIdentifier newId = fullyQualifyIdentifier(id);
 			if(newId == null)
@@ -128,9 +128,9 @@ public class IrProcessor_Java
 	
 	private QualifiedIdentifier fullyQualifyIdentifier(QualifiedIdentifier id)
 	{
-		if(!imports.containsKey(id.toString())) return null;
+		if(!imports.containsKey(id.getValue())) return null;
 		String[] path =
-				imports.get(id.toString()).getJavaAddress().split("\\.");
+				imports.get(id.getValue()).getJavaAddress().split("\\.");
 		List<Identifier> identifiers = new ArrayList<Identifier>();
 		for(String node : path)
 		{

@@ -1,5 +1,4 @@
 
-get processor working (types)
 add SourceFileInfo to process
 add getColumn() to BaseIrType
 make getColumn() work in BaseIrType
