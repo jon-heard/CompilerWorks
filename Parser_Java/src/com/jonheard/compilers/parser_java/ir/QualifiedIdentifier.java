@@ -1,7 +1,8 @@
 package com.jonheard.compilers.parser_java.ir;
 
+import java.util.List;
+
 import com.jonheard.compilers.parser_java.Parser_Java;
-import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class QualifiedIdentifier extends BaseIrType
@@ -23,7 +24,15 @@ public class QualifiedIdentifier extends BaseIrType
 		}
 		parser.getTokenQueue().rewind();
 	}
-	
+	public QualifiedIdentifier(int line, List<Identifier> children)
+	{
+		super(line);
+		for(Identifier child : children)
+		{
+			addChild(child);
+		}
+	}
+
 	@Override
 	public String getHeaderString()
 	{
