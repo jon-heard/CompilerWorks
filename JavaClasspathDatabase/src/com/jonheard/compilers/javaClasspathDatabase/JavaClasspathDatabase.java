@@ -109,8 +109,8 @@ public class JavaClasspathDatabase
 	private List<Source> sourceList = new ArrayList<Source>();
 	private HashMap<String, Item> memoization = new HashMap<String, Item>();
 	private final String[] JAVA_PRIMITIVES = {
-			"byte", "short", "int", "long",
-			"float", "double", "boolean", "char"};
+			"byte", "short", "int", "long", "float",
+			"double", "boolean", "char", "void"};
 	
 	private void resetMemoization()
 	{
