@@ -1,5 +1,7 @@
 
 change "row" to "line" in tokens
+avoid requiring dummy tokens with new constructor
+remove tokenizer from processor buildpath
 
 adjust classpathDB to combine sources
 

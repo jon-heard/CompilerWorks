@@ -36,20 +36,20 @@ public class Logger
 		}
 	}
 	public static void error(
-			String msg, String filename, int row, int col, String line)
+			String msg, String filename, int line, int col, String lineText)
 	{
 		String columnSpace = new String(new char[col]).replace('\0', ' ');
 		String toLog = String.format(
-				ERROR_MSG, filename, row, msg, line, columnSpace);
+				ERROR_MSG, filename, line, msg, lineText, columnSpace);
 		log(toLog);
 		errorCount++;
 	}
 	public static void warn(
-			String msg, String filename, int row, int col, String line)
+			String msg, String filename, int line, int col, String lineText)
 	{
 		String columnSpace = new String(new char[col]).replace('\0', ' ');
 		String toLog = String.format(
-				WARN_MSG, filename, row, msg, line, columnSpace);
+				WARN_MSG, filename, line, msg, lineText, columnSpace);
 		log(toLog);
 		warnCount++;
 	}

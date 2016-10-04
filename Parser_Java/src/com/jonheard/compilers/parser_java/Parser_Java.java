@@ -67,7 +67,7 @@ public class Parser_Java
 			mustBeHasErrored = true;
 			Logger.error(
 				"'" + type.name() + "' expected", source.getFilename(),
-				next.getRow(), next.getColumn(), source.getLine(next.getRow()));
+				next.getLine(), next.getColumn(), source.getLine(next.getLine()));
 			return false;
 		}
 		else

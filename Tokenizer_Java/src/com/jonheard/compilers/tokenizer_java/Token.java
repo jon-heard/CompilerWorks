@@ -7,14 +7,14 @@ public class Token
 		this.type = type;
 		this.text = "";
 		this.column = col;
-		this.row = currentRow;
+		this.line = currentLine;
 	}
 	public Token(TokenType type, int col, String text)
 	{
 		this.type = type;
 		this.column = col;
 		this.text = text;
-		this.row = currentRow;
+		this.line = currentLine;
 	}
 	public TokenType getType()
 	{
@@ -24,7 +24,7 @@ public class Token
 	{
 		return text;
 	}
-	public int getRow() { return row; }
+	public int getLine() { return line; }
 	public int getColumn() { return column; }
 	
 	@Override
@@ -53,13 +53,13 @@ public class Token
 	}
 	
 	
-	public static int getCurrentRow() { return currentRow; }
-	public static void setCurrentRow(int row) { Token.currentRow = row; }
-	public static void incCurrentRow() { Token.currentRow++; }
+	public static int getCurrentLine() { return currentLine; }
+	public static void setCurrentLine(int line) { Token.currentLine = line; }
+	public static void incCurrentLine() { Token.currentLine++; }
 
 	private TokenType type;
 	private String text;
-	private int row, column;
+	private int line, column;
 	
-	private static int currentRow;
+	private static int currentLine;
 }

@@ -8,7 +8,7 @@ public class Expression extends BaseIrType
 {
 	public Expression(ExpressionType type, Token first)
 	{
-		super(first.getRow(), first.getColumn());
+		super(first.getLine(), first.getColumn());
 		this.type = type;
 	}
 	public Expression(ExpressionType type, Token first, Expression lhs)

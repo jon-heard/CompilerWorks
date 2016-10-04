@@ -39,9 +39,9 @@ public class CompilationUnit extends BaseIrType
 				Token next = parser.getTokenQueue().poll();
 				Logger.error(
 						"class, interface or enum expected",
-						parser.getSource().getFilename(), next.getRow(),
+						parser.getSource().getFilename(), next.getLine(),
 						next.getColumn(),
-						parser.getSource().getLine(next.getRow()));
+						parser.getSource().getLine(next.getLine()));
 			}
 			typeCount++;
 		}

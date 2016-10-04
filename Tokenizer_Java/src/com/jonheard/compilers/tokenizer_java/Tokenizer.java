@@ -17,7 +17,7 @@ public class Tokenizer
 
 		List<Token> result = new ArrayList<Token>();
 		
-		Token.setCurrentRow(1);
+		Token.setCurrentLine(1);
 		
 		if(tokenTypeMap == null) initTokenMap();
 
@@ -131,12 +131,12 @@ public class Tokenizer
 					}
 					else
 					{
-						int row = Token.getCurrentRow();
+						int line = Token.getCurrentLine();
 						Logger.error(
 								"illegal character: " +
 										sourceCode.charAt(currentIndex),
-								source.getFilename(), row, getColumn(),
-								source.getLine(row-1));
+								source.getFilename(), line, getColumn(),
+								source.getLine(line-1));
 					}
 					break;
 			}
@@ -199,7 +199,7 @@ public class Tokenizer
 			currentIndex++;
 		}
 		columnStart = currentIndex+1;
-		Token.incCurrentRow();
+		Token.incCurrentLine();
 	}
 	private Token handleEqual()
 	{
@@ -446,8 +446,8 @@ public class Tokenizer
 		{
 			Logger.error(
 					"unclosed character literal", source.getFilename(),
-					Token.getCurrentRow(), getColumn(),
-					source.getLine(Token.getCurrentRow()-1));
+					Token.getCurrentLine(), getColumn(),
+					source.getLine(Token.getCurrentLine()-1));
 			currentIndex+= 3;
 			return null;
 		}
@@ -460,8 +460,8 @@ public class Tokenizer
 			{
 				Logger.error(
 					"unclosed character literal", source.getFilename(),
-					Token.getCurrentRow(), getColumn(),
-					source.getLine(Token.getCurrentRow()-1));
+					Token.getCurrentLine(), getColumn(),
+					source.getLine(Token.getCurrentLine()-1));
 				currentIndex+= 2;
 				return null;
 			}
@@ -473,8 +473,8 @@ public class Tokenizer
 		{
 			Logger.error(
 				"unclosed character literal", source.getFilename(),
-				Token.getCurrentRow(), getColumn(),
-				source.getLine(Token.getCurrentRow()-1));
+				Token.getCurrentLine(), getColumn(),
+				source.getLine(Token.getCurrentLine()-1));
 		}
 		return new Token(TokenType.CHAR, getColumn(), text.toString());
 	}
@@ -487,8 +487,8 @@ public class Tokenizer
 		{
 			Logger.error(
 					"unclosed string literal", source.getFilename(),
-					Token.getCurrentRow(), column,
-					source.getLine(Token.getCurrentRow()-1));
+					Token.getCurrentLine(), column,
+					source.getLine(Token.getCurrentLine()-1));
 			return null;
 		}
 		StringBuffer text = new StringBuffer();
@@ -507,8 +507,8 @@ public class Tokenizer
 		{
 			Logger.error(
 					"unclosed string literal", source.getFilename(),
-					Token.getCurrentRow(), column,
-					source.getLine(Token.getCurrentRow()-1));
+					Token.getCurrentLine(), column,
+					source.getLine(Token.getCurrentLine()-1));
 			currentIndex+= 3;
 		}
 		return new Token(TokenType.STRING, getColumn(), text.toString());
@@ -564,8 +564,8 @@ public class Tokenizer
 				Logger.error(
 						"binary numbers must contain at least one binary digit",
 						source.getFilename(),
-						Token.getCurrentRow(), getColumn(),
-						source.getLine(Token.getCurrentRow()-1));
+						Token.getCurrentLine(), getColumn(),
+						source.getLine(Token.getCurrentLine()-1));
 				return null;
 			}
 			return handleNumber(2);
@@ -579,8 +579,8 @@ public class Tokenizer
 				Logger.error(
 						"binary numbers must contain at least one hex digit",
 						source.getFilename(),
-						Token.getCurrentRow(), getColumn(),
-						source.getLine(Token.getCurrentRow()-1));
+						Token.getCurrentLine(), getColumn(),
+						source.getLine(Token.getCurrentLine()-1));
 				return null;
 			}
 			return handleNumber(16);
@@ -627,8 +627,8 @@ public class Tokenizer
 				{
 					Logger.error(
 						"illegal underscore", source.getFilename(),
-						Token.getCurrentRow(), getColumn(),
-						source.getLine(Token.getCurrentRow()-1));
+						Token.getCurrentLine(), getColumn(),
+						source.getLine(Token.getCurrentLine()-1));
 					currentIndex++;
 					break;
 				}

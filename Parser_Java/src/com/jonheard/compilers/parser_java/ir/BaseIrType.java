@@ -8,7 +8,7 @@ public class BaseIrType
 {
 	public BaseIrType(Parser_Java parser)
 	{
-		line = parser.getNextToken().getRow();
+		line = parser.getNextToken().getLine();
 		column = parser.getNextToken().getColumn();
 	}
 	public BaseIrType(int line, int column)

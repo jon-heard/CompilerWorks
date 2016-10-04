@@ -29,9 +29,9 @@ public class Parser_Expression
 			break;
 			default:
 				Logger.error("not a statement",
-						parser.getSource().getFilename(), next.getRow(),
+						parser.getSource().getFilename(), next.getLine(),
 						next.getColumn(),
-						parser.getSource().getLine(next.getRow()));
+						parser.getSource().getLine(next.getLine()));
 				break;				
 		}
 		parser.mustBe(TokenType.SEMICOLON);
@@ -337,9 +337,9 @@ public class Parser_Expression
 			{
 				Logger.error(
 						"illegal start of expression",
-						parser.getSource().getFilename(), literalToken.getRow(),
+						parser.getSource().getFilename(), literalToken.getLine(),
 						literalToken.getColumn(),
-						parser.getSource().getLine(literalToken.getRow()));
+						parser.getSource().getLine(literalToken.getLine()));
 			}
 			result = new Literal(next, literalToken);
 		}

@@ -10,18 +10,18 @@ public class TokenTest
 	@Test
 	public void main()
 	{
-		Token.setCurrentRow(81);
+		Token.setCurrentLine(81);
 		Token t1 = new Token(TokenType._ABSTRACT, 7);
-		Token.incCurrentRow();
+		Token.incCurrentLine();
 		Token t2 = new Token(TokenType.INTEGER, 23, "57");
 		
-		assertEquals(82, Token.getCurrentRow());
+		assertEquals(82, Token.getCurrentLine());
 		assertEquals(TokenType._ABSTRACT, t1.getType());
 		assertEquals(TokenType.INTEGER, t2.getType());
 		assertEquals("", t1.getText());
 		assertEquals("57", t2.getText());
-		assertEquals(81, t1.getRow());
-		assertEquals(82, t2.getRow());
+		assertEquals(81, t1.getLine());
+		assertEquals(82, t2.getLine());
 		assertEquals(7, t1.getColumn());
 		assertEquals(23, t2.getColumn());
 		assertEquals("abstract", t1.toString());

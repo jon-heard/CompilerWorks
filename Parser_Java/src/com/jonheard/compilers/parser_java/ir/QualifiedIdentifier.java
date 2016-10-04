@@ -27,7 +27,7 @@ public class QualifiedIdentifier extends BaseIrType
 	}
 	public QualifiedIdentifier(Token next, List<Identifier> children)
 	{
-		super(next.getRow(), next.getColumn());
+		super(next.getLine(), next.getColumn());
 		for(Identifier child : children)
 		{
 			addChild(child);

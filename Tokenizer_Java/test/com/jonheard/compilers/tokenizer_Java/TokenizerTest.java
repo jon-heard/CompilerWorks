@@ -32,7 +32,7 @@ public class TokenizerTest
 	}
 	
 	@Test
-	public void linesRowsCols()
+	public void linesAndCols()
 	{
 		String source = "public class private \nprotected public\r\n class";
 		Tokenizer iterator = new Tokenizer();
@@ -40,22 +40,22 @@ public class TokenizerTest
 		assertEquals(6, tokens.size());
 
 		assertEquals(TokenType._PUBLIC,			tokens.get(0).getType());
-		assertEquals(1, tokens.get(0).getRow());
+		assertEquals(1, tokens.get(0).getLine());
 		assertEquals(0, tokens.get(0).getColumn());
 		assertEquals(TokenType._CLASS,			tokens.get(1).getType());
-		assertEquals(1, tokens.get(1).getRow());
+		assertEquals(1, tokens.get(1).getLine());
 		assertEquals(7, tokens.get(1).getColumn());
 		assertEquals(TokenType._PRIVATE,		tokens.get(2).getType());
-		assertEquals(1, tokens.get(2).getRow());
+		assertEquals(1, tokens.get(2).getLine());
 		assertEquals(13, tokens.get(2).getColumn());
 		assertEquals(TokenType._PROTECTED,		tokens.get(3).getType());
-		assertEquals(2, tokens.get(3).getRow());
+		assertEquals(2, tokens.get(3).getLine());
 		assertEquals(0, tokens.get(3).getColumn());
 		assertEquals(TokenType._PUBLIC,			tokens.get(4).getType());
-		assertEquals(2, tokens.get(4).getRow());
+		assertEquals(2, tokens.get(4).getLine());
 		assertEquals(10, tokens.get(4).getColumn());
 		assertEquals(TokenType._CLASS,			tokens.get(5).getType());
-		assertEquals(3, tokens.get(5).getRow());
+		assertEquals(3, tokens.get(5).getLine());
 		assertEquals(1, tokens.get(5).getColumn());
 	}
 

@@ -145,7 +145,7 @@ public class IrProcessor_Java
 		{
 			identifiers.add(new Identifier(node));
 		}
-		Token.setCurrentRow(id.getLine());
+		Token.setCurrentLine(id.getLine());
 		return new QualifiedIdentifier(
 				new Token(TokenType._ABSTRACT, id.getColumn()),
 				identifiers);
