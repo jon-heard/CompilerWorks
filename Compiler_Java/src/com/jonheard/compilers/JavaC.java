@@ -112,7 +112,7 @@ public class JavaC
 
 		// Process
 		IrProcessor_Java processor = new IrProcessor_Java();
-		processor.process(libs, parsed);
+		processor.process(source, libs, parsed);
 		if(finalStage == Stage.process)
 		{
 			ParserStringConverter converter = new ParserStringConverter();

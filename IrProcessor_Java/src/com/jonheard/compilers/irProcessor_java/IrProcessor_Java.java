@@ -14,8 +14,11 @@ import com.jonheard.util.SourceFileInfo;
 
 public class IrProcessor_Java
 {
-	public void process(JavaClasspathDatabase libs, CompilationUnit toProcess)
+	public void process(
+			SourceFileInfo source, JavaClasspathDatabase libs,
+			CompilationUnit toProcess)
 	{
+		this.source = source;
 		this.libs = libs;
 		imports.clear();
 		handleImport(0, "java.lang", false, true);
@@ -27,6 +30,7 @@ public class IrProcessor_Java
 	}
 
 	private HashMap<String, Item> imports = new HashMap<String, Item>();
+	private SourceFileInfo source;
 	private JavaClasspathDatabase libs;
 
 	private BaseIrType process_helper(BaseIrType ir)
