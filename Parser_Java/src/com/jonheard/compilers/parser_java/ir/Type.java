@@ -1,8 +1,5 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
@@ -52,7 +49,7 @@ public class Type extends BaseIrType
 	public String getValue()
 	{
 		StringBuffer result = new StringBuffer();
-		result.append(getBase().getValue());
+		result.append(getIdentifier().getValue());
 		for(int i = 0; i < getDimensionCount(); i++)
 		{
 			result.append("[]");
@@ -60,9 +57,13 @@ public class Type extends BaseIrType
 		return result.toString();
 	}
 	
-	public QualifiedIdentifier getBase()
+	public QualifiedIdentifier getIdentifier()
 	{
 		return (QualifiedIdentifier)getChild(0);
+	}
+	public void setIdentifier(QualifiedIdentifier value)
+	{
+		replaceChild(0, value);
 	}
 
 //	public List<Type> getGenericTypes()
@@ -83,7 +84,7 @@ public class Type extends BaseIrType
 	
 	public String toJvmDescriptor()
 	{
-		String type = getBase().getValue();
+		String type = getIdentifier().getValue();
 		int dimensionCount = getDimensionCount();
 		StringBuffer result = new StringBuffer();
 
