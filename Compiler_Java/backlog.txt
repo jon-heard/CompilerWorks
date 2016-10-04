@@ -1,6 +1,10 @@
 
-Allow creation of QualfiedIdentifier from Item
 get processor working (types)
+add SourceFileInfo to process
+add getColumn() to BaseIrType
+make getColumn() work in BaseIrType
+fix error handling in "handleTypes"
+
 adjust classpathDB to combine sources
 
 start making real tests for parser

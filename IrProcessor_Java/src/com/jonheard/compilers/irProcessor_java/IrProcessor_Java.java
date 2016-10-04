@@ -1,13 +1,16 @@
 
 package com.jonheard.compilers.irProcessor_java;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.jonheard.compilers.javaClasspathDatabase.JavaClasspathDatabase;
 import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 import com.jonheard.compilers.parser_java.ir.*;
 import com.jonheard.compilers.parser_java.ir.Package;
 import com.jonheard.util.Logger;
+import com.jonheard.util.SourceFileInfo;
 
 public class IrProcessor_Java
 {
@@ -58,15 +61,17 @@ public class IrProcessor_Java
 	
 	private void handleType(Type data)
 	{
-		if(libs.getValue(data.getValue()) instanceof Item_Err_NotFound)
+		QualifiedIdentifier id = data.getIdentifier();
+		if(libs.getValue(id.toString()) instanceof Item_Err_NotFound)
 		{
-			if(imports.containsKey(data.getValue()))
+			QualifiedIdentifier newId = fullyQualifyIdentifier(id);
+			if(newId == null)
 			{
-				
+				Logger.error("cannot find symbol", "", id.getLine(), 0, "");
 			}
 			else
 			{
-				//Logger.error(", filename, row, col, line);
+				data.setIdentifier(newId);
 			}
 		}
 	}
@@ -119,5 +124,18 @@ public class IrProcessor_Java
 				imports.put(path.getName(), path);
 			}
 		}
+	}
+	
+	private QualifiedIdentifier fullyQualifyIdentifier(QualifiedIdentifier id)
+	{
+		if(!imports.containsKey(id.toString())) return null;
+		String[] path =
+				imports.get(id.toString()).getJavaAddress().split("\\.");
+		List<Identifier> identifiers = new ArrayList<Identifier>();
+		for(String node : path)
+		{
+			identifiers.add(new Identifier(node));
+		}
+		return new QualifiedIdentifier(id.getLine(), identifiers);
 	}
 }
