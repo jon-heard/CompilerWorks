@@ -12,19 +12,19 @@ public class Type extends BaseIrType
 	{
 		super(parser);
 		addChild(new QualifiedIdentifier(parser));
-		if(parser.have(TokenType.LEFT))
-		{
-			do
-			{
-				addChild(new Type(parser));
-			}
-			while(parser.have(TokenType.COMMA));
-			parser.mustBe(TokenType.RIGHT);
-		}
-		else
-		{
-			addChild(null);
-		}
+//		if(parser.have(TokenType.LEFT))
+//		{
+//			do
+//			{
+//				addChild(new Type(parser));
+//			}
+//			while(parser.have(TokenType.COMMA));
+//			parser.mustBe(TokenType.RIGHT);
+//		}
+//		else
+//		{
+//			addChild(null);
+//		}
 		while(parser.have(TokenType.SQUARE_BRACE_LEFT))
 		{
 			parser.mustBe(TokenType.SQUARE_BRACE_RIGHT);
@@ -65,19 +65,19 @@ public class Type extends BaseIrType
 		return (QualifiedIdentifier)getChild(0);
 	}
 
-	public List<Type> getGenericTypes()
-	{
-		List<Type> result = new ArrayList<Type>();
-		for(int i = 1; i < getChildCount(); i++)
-		{
-			BaseIrType child = getChild(i);
-			if(child instanceof Type)
-			{
-				result.add((Type)child);
-			}
-		}
-		return result;
-	}
+//	public List<Type> getGenericTypes()
+//	{
+//		List<Type> result = new ArrayList<Type>();
+//		for(int i = 1; i < getChildCount(); i++)
+//		{
+//			BaseIrType child = getChild(i);
+//			if(child instanceof Type)
+//			{
+//				result.add((Type)child);
+//			}
+//		}
+//		return result;
+//	}
 	
 	public int getDimensionCount() { return dimensionCount; }
 	
