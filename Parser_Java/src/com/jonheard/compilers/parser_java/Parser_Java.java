@@ -3,6 +3,7 @@ package com.jonheard.compilers.parser_java;
 import java.util.List;
 
 import com.jonheard.compilers.parser_java.ir.CompilationUnit;
+import com.jonheard.compilers.parser_java.ir.expression.Expression;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 import com.jonheard.util.Logger;
@@ -21,6 +22,11 @@ public class Parser_Java
 	public SourceFileInfo getSource() { return source; }
 	public RewindableQueue<Token> getTokenQueue() { return tokenQueue; }
 
+	public int getCurrentLine()
+	{
+		return tokenQueue.peek().getRow();
+	}
+
 	public boolean see(TokenType type)
 	{
 		if(tokenQueue == null || type == null) return false;
@@ -37,7 +43,6 @@ public class Parser_Java
 		}
 		return false;
 	}
-
 
 	public boolean mustBe(TokenType type)
 	{
