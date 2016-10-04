@@ -21,6 +21,11 @@ public class Identifier extends BaseIrType
 			value = "";
 		}
 	}
+	public Identifier(String value)
+	{
+		super(0);
+		this.value = value;
+	}
 
 	@Override
 	public String getHeaderString()
