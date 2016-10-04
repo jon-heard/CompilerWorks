@@ -11,9 +11,6 @@ import com.jonheard.util.Logger;
 
 public class IrProcessor_Java
 {
-	HashMap<String, Item> imports = new HashMap<String, Item>();
-	JavaClasspathDatabase libs;
-	
 	public void process(JavaClasspathDatabase libs, CompilationUnit toProcess)
 	{
 		this.libs = libs;
@@ -25,7 +22,10 @@ public class IrProcessor_Java
 			System.out.println(item.getJavaAddress());
 		}
 	}
-	
+
+	private HashMap<String, Item> imports = new HashMap<String, Item>();
+	private JavaClasspathDatabase libs;
+
 	private BaseIrType process_helper(BaseIrType ir)
 	{
 		for(int i = 0; i < ir.getChildCount(); i++)
@@ -47,8 +47,28 @@ public class IrProcessor_Java
 					data.getLine(), data.getIdentifier().getValue(),
 					false, true);
 		}
+		else if(ir instanceof Type)
+		{
+			Type data = (Type)ir;
+			handleType(data);
+		}
 		
 		return ir;
+	}
+	
+	private void handleType(Type data)
+	{
+		if(libs.getValue(data.getValue()) instanceof Item_Err_NotFound)
+		{
+			if(imports.containsKey(data.getValue()))
+			{
+				
+			}
+			else
+			{
+				//Logger.error(", filename, row, col, line);
+			}
+		}
 	}
 	
 	private void handleImport(

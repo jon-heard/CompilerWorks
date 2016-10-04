@@ -37,7 +37,7 @@ public class JavaCTest
 		
 		String source =
 				"package first.second;\n" +
-				"import java.lang.*;\n" +
+				"import java.util.*;\n" +
 				"import javax.swing.JLabel;\n" +
 				"public class Test1\n" +
 				"{\n" +
@@ -52,7 +52,7 @@ public class JavaCTest
 		// Tokenizing
 		String expectedTokens = JavaC.HEADER_TEXT +
 				"package\nidentifier:first\ndot\nidentifier:second\n" +
-				"semicolon\nimport\nidentifier:java\ndot\nidentifier:lang\n" +
+				"semicolon\nimport\nidentifier:java\ndot\nidentifier:util\n" +
 				"dot\nstar\nsemicolon\nimport\nidentifier:javax\ndot\n" +
 				"identifier:swing\ndot\nidentifier:JLabel\nsemicolon\n" +
 				"public\nclass\nidentifier:Test1\ncurl_brace_left\npublic\n" +
@@ -70,7 +70,7 @@ public class JavaCTest
 		String expectedParsed = JavaC.HEADER_TEXT + 
 				"<CompilationUnit line='1' importCount='2' typeCount='1'>\n" +
 				"	<Package line='1' identifier='first.second'/>\n" +
-				"	<Import line='2' isOnDemand='true' isStatic='false' identifier='java.lang'/>\n" +
+				"	<Import line='2' isOnDemand='true' isStatic='false' identifier='java.util'/>\n" +
 				"	<Import line='3' isOnDemand='false' isStatic='false' identifier='javax.swing.JLabel'/>\n" +
 				"	<Class line='4' name='Test1' modifiers='public'>\n" +
 				"		<Method line='6' name='main' type='void' modifiers='public static'>\n" +
@@ -96,7 +96,7 @@ public class JavaCTest
 		String expectedProcessed = JavaC.HEADER_TEXT + 
 				"<CompilationUnit line='1' importCount='2' typeCount='1'>\n" +
 				"	<Package line='1' identifier='first.second'/>\n" +
-				"	<Import line='2' isOnDemand='true' isStatic='false' identifier='java.lang'/>\n" +
+				"	<Import line='2' isOnDemand='true' isStatic='false' identifier='java.util'/>\n" +
 				"	<Import line='3' isOnDemand='false' isStatic='false' identifier='javax.swing.JLabel'/>\n" +
 				"	<Class line='4' name='Test1' modifiers='public'>\n" +
 				"		<Method line='6' name='main' type='void' modifiers='public static'>\n" +
