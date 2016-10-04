@@ -80,7 +80,7 @@ public class JavaCTest
 				"			</List_Variable>\n" +
 				"			<CodeBlock line='7'>\n" +
 				"				<MethodCall line='8'>\n" +
-				"					<QualifiedIdentifier line='8' value='java.lang.System.out.println'/>\n" +
+				"					<QualifiedIdentifier line='8' value='System.out.println'/>\n" +
 				"					<List_Expression line='8'>\n" +
 				"						<Literal_string line='8' value='Hello world'/>\n" +
 				"					</List_Expression>\n" +

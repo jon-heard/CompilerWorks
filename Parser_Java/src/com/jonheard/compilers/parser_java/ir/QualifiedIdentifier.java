@@ -1,6 +1,7 @@
 package com.jonheard.compilers.parser_java.ir;
 
 import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class QualifiedIdentifier extends BaseIrType
@@ -12,20 +13,15 @@ public class QualifiedIdentifier extends BaseIrType
 		parser.getTokenQueue().remember();
 		while(parser.have(TokenType.DOT))
 		{
-			if(parser.see(TokenType.IDENTIFIER))
-			{
-				addChild(new Identifier(parser));
-				parser.getTokenQueue().forget();
-				parser.getTokenQueue().remember();
-			}
-			else
+			if(Identifier.isNext(parser))
 			{
 				parser.getTokenQueue().rewind();
+				parser.mustBe(TokenType.DOT);
+				addChild(new Identifier(parser));
 				parser.getTokenQueue().remember();
-				break;
 			}
 		}
-		parser.getTokenQueue().forget();
+		parser.getTokenQueue().rewind();
 	}
 	
 	@Override
