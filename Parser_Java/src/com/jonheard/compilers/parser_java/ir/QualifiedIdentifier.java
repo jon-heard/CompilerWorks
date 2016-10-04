@@ -3,7 +3,6 @@ package com.jonheard.compilers.parser_java.ir;
 import java.util.List;
 
 import com.jonheard.compilers.parser_java.Parser_Java;
-import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class QualifiedIdentifier extends BaseIrType
@@ -25,9 +24,9 @@ public class QualifiedIdentifier extends BaseIrType
 		}
 		parser.getTokenQueue().rewind();
 	}
-	public QualifiedIdentifier(Token next, List<Identifier> children)
+	public QualifiedIdentifier(int line, int column, List<Identifier> children)
 	{
-		super(next.getLine(), next.getColumn());
+		super(line, column);
 		for(Identifier child : children)
 		{
 			addChild(child);
