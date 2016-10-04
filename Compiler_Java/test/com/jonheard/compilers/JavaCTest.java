@@ -41,7 +41,7 @@ public class JavaCTest
 				"import javax.swing.JLabel;\n" +
 				"public class Test1\n" +
 				"{\n" +
-				"	public static void main(java.lang.String[] args)\n" +
+				"	public static void main(String[] args)\n" +
 				"	{\n" +
 				"		System.out.println(\"Hello world\");\n" +
 				"	}\n" +
@@ -57,7 +57,6 @@ public class JavaCTest
 				"identifier:swing\ndot\nidentifier:JLabel\nsemicolon\n" +
 				"public\nclass\nidentifier:Test1\ncurl_brace_left\npublic\n" +
 				"static\nidentifier:void\nidentifier:main\nparen_left\n" +
-				"identifier:java\ndot\nidentifier:lang\ndot\n" +
 				"identifier:String\nsquare_brace_left\nsquare_brace_right\n" +
 				"identifier:args\nparen_right\ncurl_brace_left\n" +
 				"identifier:System\ndot\nidentifier:out\ndot\n" +
@@ -76,7 +75,7 @@ public class JavaCTest
 				"	<Class line='4' name='Test1' modifiers='public'>\n" +
 				"		<Method line='6' name='main' type='void' modifiers='public static'>\n" +
 				"			<List_Variable line='6'>\n" +
-				"				<Variable line='6' name='args' type='java.lang.String[]' modifiers=''/>\n" +
+				"				<Variable line='6' name='args' type='String[]' modifiers=''/>\n" +
 				"			</List_Variable>\n" +
 				"			<CodeBlock line='7'>\n" +
 				"				<MethodCall line='8'>\n" +

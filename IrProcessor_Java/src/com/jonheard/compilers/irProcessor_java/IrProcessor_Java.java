@@ -20,6 +20,10 @@ public class IrProcessor_Java
 		imports.clear();
 		handleImport(0, "java.lang", false, true);
 		process_helper(toProcess);
+		for(Item item : imports.values())
+		{
+			System.out.println(item.getJavaAddress());
+		}
 	}
 	
 	private BaseIrType process_helper(BaseIrType ir)
