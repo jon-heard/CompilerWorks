@@ -23,4 +23,9 @@ public class MethodCall extends Expression
 	{
 		return (List_Expression)getChild(1);
 	}
+	
+	public void setIdentifier(QualifiedIdentifier value)
+	{
+		replaceChild(0, value);
+	}
 }
