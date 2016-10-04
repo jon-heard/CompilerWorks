@@ -1,43 +1,28 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.util.RewindableQueue;
-
-import static com.jonheard.compilers.parser_java.JavaParser.*;
-
-import com.jonheard.compilers.tokenizer_java.Token;
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class QualifiedIdentifier extends BaseIrType
 {
-	public QualifiedIdentifier(RewindableQueue<Token> tokenQueue)
+	public QualifiedIdentifier(Parser_Java parser)
 	{
-		this(tokenQueue, false);
-	}
-	
-	public QualifiedIdentifier(
-			RewindableQueue<Token> tokenQueue, boolean ignoreBadEnding)
-	{
-		super(tokenQueue);
-		Token currentToken = tokenQueue.peek();
-		while(currentToken.getType() == TokenType.IDENTIFIER)
+		super(parser);
+		addChild(new Identifier(parser));
+		parser.getTokenQueue().remember();
+		while(parser.have(TokenType.DOT))
 		{
-			endedWithDot = false;
-			addChild(new Identifier(tokenQueue));
-			currentToken = tokenQueue.peek();
-			if(currentToken.getType() == TokenType.DOT)
+			if(parser.see(TokenType.IDENTIFIER))
 			{
-				endedWithDot = true;
-				tokenQueue.poll();
-				currentToken = tokenQueue.peek();
+				addChild(new Identifier(parser));
+				parser.getTokenQueue().forget();
+				parser.getTokenQueue().remember();
 			}
 			else
 			{
+				parser.getTokenQueue().rewind();
 				break;
 			}
-		}
-		if(!ignoreBadEnding && endedWithDot)
-		{
-			// Error handling on bad ending
 		}
 	}
 	
@@ -62,15 +47,8 @@ public class QualifiedIdentifier extends BaseIrType
 		return result.toString();
 	}
 	
-	public boolean isEndedWithDot()
+	public static boolean isNext(Parser_Java parser)
 	{
-		return endedWithDot;
+		return Identifier.isNext(parser);
 	}
-	
-	public static boolean isNext(RewindableQueue<Token> tokenQueue)
-	{
-		return see(tokenQueue, TokenType.IDENTIFIER);
-	}
-
-	private boolean endedWithDot = false;
 }

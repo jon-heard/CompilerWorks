@@ -19,8 +19,7 @@ public class ItemTest
 	{
 		Item i1 = new Item_Non("one");
 		Item i2 = new Item("two", i1);
-		Item i3 = new Item("three", i1);
-		Item i4 = new Item("four", i2);
+		Item i3 = new Item("three", i2);
 		assertEquals(null, i1.getParent());
 		assertEquals("two", i2.getName());
 		assertEquals(i1, i2.getParent());
@@ -28,13 +27,20 @@ public class ItemTest
 		assertEquals(null, i1.getChild("badData"));
 		assertTrue(i1.hasChild("two"));
 		assertEquals(i2, i1.getChild("two"));
-		assertEquals("two.four", i4.getJavaAddress());
-		assertEquals("two/four", i4.getFileAddress());
+		assertEquals("two.three", i3.getJavaAddress());
+		assertEquals("two/three", i3.getFileAddress());
 		assertEquals("Item(two,one)", i2.toString());
 		Set<String> childList = i1.getChildList();
 		assertEquals(2, childList.size());
 		assertTrue(childList.contains("two"));
 		assertTrue(childList.contains("three"));
+	}
+	
+	public void Item_Non()
+	{
+		Item i1 = new Item_Non("one");
+		assertEquals("", i1.getJavaAddress());
+		assertEquals("", i1.getFileAddress());
 	}
 	
 	public void Item_Member()

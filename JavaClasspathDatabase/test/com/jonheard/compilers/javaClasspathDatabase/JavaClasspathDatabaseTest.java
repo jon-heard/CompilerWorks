@@ -13,12 +13,12 @@ public class JavaClasspathDatabaseTest
 	public void main()
 	{
 		JavaClasspathDatabase database = new JavaClasspathDatabase();
-		assertFalse(database.addSource_Folder("badData"));
-		assertTrue(database.addSource_Folder("bin"));
 
-		String rtJarPath = System.getProperty("java.home") + "/lib/rt.jar";
+		assertFalse(database.addSource_Folder("badData"));
 		assertFalse(database.addSource_Jar("badData"));
-		assertTrue(database.addSource_Jar(rtJarPath));
+
+		assertTrue(database.addSource_Folder("bin"));
+		assertTrue(database.addSource_Jdk());
 		
 		Item i01 = database.getValue("badData");
 		assertTrue(i01 instanceof Item_Err_NotFound);

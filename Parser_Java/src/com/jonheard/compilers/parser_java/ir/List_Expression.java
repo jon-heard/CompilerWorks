@@ -1,21 +1,18 @@
 package com.jonheard.compilers.parser_java.ir;
 
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.parser_java.ir.expression.Parser_Expression;
-import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
-import com.jonheard.util.RewindableQueue;
 
 public class List_Expression extends BaseIrType
 {
-	public List_Expression(RewindableQueue<Token> tokenQueue)
+	public List_Expression(Parser_Java parser)
 	{
-		super(tokenQueue);
-		Token current = tokenQueue.peek();
+		super(parser);
 		do
 		{
-			addChild(Parser_Expression.parseExpression(tokenQueue));
-			current = tokenQueue.peek();
+			addChild(Parser_Expression.parseExpression(parser));
 		}
-		while(current.getType() == TokenType.COMMA);
+		while(parser.have(TokenType.COMMA));
 	}
 }

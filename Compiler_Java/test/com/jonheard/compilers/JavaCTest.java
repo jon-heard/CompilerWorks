@@ -37,13 +37,13 @@ public class JavaCTest
 		
 		String source =
 				"package first.second;\n" +
-				"import java.util.*;\n" +
+				"import java.lang.*;\n" +
 				"import javax.swing.JLabel;\n" +
 				"public class Test1\n" +
 				"{\n" +
 				"	public static void main(java.lang.String[] args)\n" +
 				"	{\n" +
-				"		java.lang.System.out.println(\"Hello world\");\n" +
+				"		System.out.println(\"Hello world\");\n" +
 				"	}\n" +
 				"}";
 		UtilMethods.stringToFile(source, TEST_DIR+"/"+TEST_FILENAME_1);
@@ -52,7 +52,7 @@ public class JavaCTest
 		/// Tokenizing
 		String expectedTokens = JavaC.HEADER_TEXT +
 				"package\nidentifier:first\ndot\nidentifier:second\n" +
-				"semicolon\nimport\nidentifier:java\ndot\nidentifier:util\n" +
+				"semicolon\nimport\nidentifier:java\ndot\nidentifier:lang\n" +
 				"dot\nstar\nsemicolon\nimport\nidentifier:javax\ndot\n" +
 				"identifier:swing\ndot\nidentifier:JLabel\nsemicolon\n" +
 				"public\nclass\nidentifier:Test1\ncurl_brace_left\npublic\n" +
@@ -60,7 +60,6 @@ public class JavaCTest
 				"identifier:java\ndot\nidentifier:lang\ndot\n" +
 				"identifier:String\nsquare_brace_left\nsquare_brace_right\n" +
 				"identifier:args\nparen_right\ncurl_brace_left\n" +
-				"identifier:java\ndot\nidentifier:lang\ndot\n" +
 				"identifier:System\ndot\nidentifier:out\ndot\n" +
 				"identifier:println\nparen_left\nstring:Hello world\n" +
 				"paren_right\nsemicolon\ncurl_brace_right\ncurl_brace_right\n";
@@ -72,8 +71,8 @@ public class JavaCTest
 		String expectedParsed = JavaC.HEADER_TEXT + 
 				"<CompilationUnit line='1' importCount='2' typeCount='1'>\n" +
 				"	<Package line='1' identifier='first.second'/>\n" +
-				"	<Import line='2' isOnDemaned='true' isStatic='false' identifier='java.util'/>\n" +
-				"	<Import line='3' isOnDemaned='false' isStatic='false' identifier='javax.swing.JLabel'/>\n" +
+				"	<Import line='2' isOnDemand='true' isStatic='false' identifier='java.lang'/>\n" +
+				"	<Import line='3' isOnDemand='false' isStatic='false' identifier='javax.swing.JLabel'/>\n" +
 				"	<Class line='4' name='Test1' modifiers='public'>\n" +
 				"		<Method line='6' name='main' type='void' modifiers='public static'>\n" +
 				"			<List_Variable line='6'>\n" +
@@ -92,8 +91,11 @@ public class JavaCTest
 				"</CompilationUnit>\n";
 		String actualParsed = compiler.compile(
 				new String[] {TEST_DIR+"/"+TEST_FILENAME_1, "-p"});
-		System.out.println(actualParsed);
 		assertEquals(expectedParsed, actualParsed);
+
+//		String actualProcessed = compiler.compile(
+//				new String[] {TEST_DIR+"/"+TEST_FILENAME_1, "-r"});
+		System.out.println(actualParsed);
 	}
 	
 	@Test

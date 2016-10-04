@@ -1,38 +1,36 @@
 package com.jonheard.compilers.parser_java.ir.statement;
 
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
 import com.jonheard.compilers.parser_java.ir.expression.Parser_Expression;
-import com.jonheard.compilers.tokenizer_java.Token;
-import com.jonheard.util.RewindableQueue;
 
 public class Parser_Statement
 {
-	public static BaseIrType getNextStatement(
-			RewindableQueue<Token> tokenQueue)
+	public static BaseIrType getNextStatement(Parser_Java parser)
 	{
 		BaseIrType result = null;
-		if(CodeBlock.isNext(tokenQueue)) { result = new CodeBlock(tokenQueue); } 
-		else if(If.isNext(tokenQueue)) { result = new If(tokenQueue); }
-		else if(While.isNext(tokenQueue)) { result = new While(tokenQueue); }
-		else if(Switch.isNext(tokenQueue)) { result = new Switch(tokenQueue); }
-		else if(For.isNext(tokenQueue))
+		if(CodeBlock.isNext(parser)) { result = new CodeBlock(parser); } 
+		else if(If.isNext(parser)) { result = new If(parser); }
+		else if(While.isNext(parser)) { result = new While(parser); }
+		else if(Switch.isNext(parser)) { result = new Switch(parser); }
+		else if(For.isNext(parser))
 		{
-			if(EnhancedFor.isNext(tokenQueue))
+			if(EnhancedFor.isNext(parser))
 			{
-				result = new EnhancedFor(tokenQueue);
+				result = new EnhancedFor(parser);
 			}
 			else
 			{
-				result = new For(tokenQueue);
+				result = new For(parser);
 			}
 		}
-		else if(Do.isNext(tokenQueue)) { result = new Do(tokenQueue); }
-		else if(Return.isNext(tokenQueue)) { result = new Return(tokenQueue); }
-		else if(Break.isNext(tokenQueue)) { result = new Break(tokenQueue); }
-		else if(Empty.isNext(tokenQueue)) { result = new Empty(tokenQueue); }
+		else if(Do.isNext(parser)) { result = new Do(parser); }
+		else if(Return.isNext(parser)) { result = new Return(parser); }
+		else if(Break.isNext(parser)) { result = new Break(parser); }
+		else if(Empty.isNext(parser)) { result = new Empty(parser); }
 		else
 		{
-			result = Parser_Expression.parseExpressionStatment(tokenQueue);
+			result = Parser_Expression.parseExpressionStatment(parser);
 		}
 		return result;
 	}

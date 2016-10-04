@@ -93,19 +93,17 @@ public class UtilMethods
 	}
 
 	/// Determine if the given enum contains a value matching the given string 
-	public static <T extends Enum<T>> boolean enumContainsString(
-			Class<T> haystack, String needle)
+	public static <T extends Enum<T>> boolean enumHasValue(
+			Class<T> enumClass, String needle)
 	{
-		boolean result = true;
-		try
+		for(Enum<T> enumVal : enumClass.getEnumConstants())
 		{
-			Enum.valueOf(haystack, needle);
+	           if (enumVal.name().equals(needle)) 
+	           {
+	        	   	return true;
+	           }
 		}
-		catch(IllegalArgumentException e)
-		{
-			result = false;
-		}
-		return result;
+		return false;
 	}
 	
 	public static String constNameToCamelName(String source, boolean startUpper)

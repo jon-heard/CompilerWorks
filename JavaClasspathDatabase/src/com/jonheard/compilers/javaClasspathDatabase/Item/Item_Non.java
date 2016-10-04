@@ -6,4 +6,16 @@ package com.jonheard.compilers.javaClasspathDatabase.Item;
 public class Item_Non extends Item
 {
 	public Item_Non(String name) { super(name, null); }
+	
+	@Override
+	public String getJavaAddress()
+	{
+		return "";
+	}
+
+	@Override
+	public String getFileAddress()
+	{
+		return "";
+	}
 }

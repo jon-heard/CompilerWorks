@@ -5,31 +5,24 @@ import java.util.EnumSet;
 import java.util.List;
 
 import com.jonheard.util.Logger;
+import com.jonheard.util.SourceFileInfo;
 import com.jonheard.util.Trie;
 
 public class Tokenizer
 {
-	public Tokenizer() {}
-	public Tokenizer(String filename, String sourceCode)
+	public List<Token> tokenize(SourceFileInfo source)
 	{
-		sourceFileInfo = new SourceFileInfo(filename, sourceCode);
-	}
-	
-	public String getFilename() { return sourceFileInfo.getFilename(); }
-	public String getSourceCode() { return sourceFileInfo.getSourcecode(); }
+		this.source = source;
+		sourceCode = source.getSourcecode();
 
-	public List<Token> tokenize()
-	{
 		List<Token> result = new ArrayList<Token>();
 		
-		Token.setCurrentSourceFileInfo(sourceFileInfo);
 		Token.setCurrentRow(1);
 		
 		if(tokenTypeMap == null) initTokenMap();
 
-		String sourceCode = sourceFileInfo.getSourcecode();
-		int sourceLength = sourceCode.length();
 		currentIndex = 0;
+		int sourceLength = sourceCode.length();
 		while(currentIndex < sourceLength)
 		{
 			Token toAdd = null;
@@ -43,41 +36,41 @@ public class Tokenizer
 					handleLineBreak();
 					break;
 				case '~':
-					toAdd = new Token(TokenType.TILDE, getCol());
+					toAdd = new Token(TokenType.TILDE, getColumn());
 					break;
 				case ';':
-					toAdd = new Token(TokenType.SEMICOLON, getCol());
+					toAdd = new Token(TokenType.SEMICOLON, getColumn());
 					break;
 				case '?':
-					toAdd = new Token(TokenType.QUESTION, getCol());
+					toAdd = new Token(TokenType.QUESTION, getColumn());
 					break;
 				case ':':
-					toAdd = new Token(TokenType.COLON, getCol());
+					toAdd = new Token(TokenType.COLON, getColumn());
 					break;
 				case ',':
-					toAdd = new Token(TokenType.COMMA, getCol());
+					toAdd = new Token(TokenType.COMMA, getColumn());
 					break;
 				case '(':
-					toAdd = new Token(TokenType.PAREN_LEFT, getCol());
+					toAdd = new Token(TokenType.PAREN_LEFT, getColumn());
 					break;
 				case ')':
-					toAdd = new Token(TokenType.PAREN_RIGHT, getCol());
+					toAdd = new Token(TokenType.PAREN_RIGHT, getColumn());
 					break;
 				case '{':
 					toAdd = new Token(
-							TokenType.CURL_BRACE_LEFT, getCol());
+							TokenType.CURL_BRACE_LEFT, getColumn());
 					break;
 				case '}':
 					toAdd = new Token(
-							TokenType.CURL_BRACE_RIGHT, getCol());
+							TokenType.CURL_BRACE_RIGHT, getColumn());
 					break;
 				case '[':
 					toAdd = new Token(
-							TokenType.SQUARE_BRACE_LEFT, getCol());
+							TokenType.SQUARE_BRACE_LEFT, getColumn());
 					break;
 				case ']':
 					toAdd = new Token(
-							TokenType.SQUARE_BRACE_RIGHT, getCol());
+							TokenType.SQUARE_BRACE_RIGHT, getColumn());
 					break;
 				case '=':
 					toAdd = handleEqual();
@@ -142,8 +135,8 @@ public class Tokenizer
 						Logger.error(
 								"illegal character: " +
 										sourceCode.charAt(currentIndex),
-								sourceFileInfo.getFilename(), row, getCol(),
-								sourceFileInfo.getLine(row-1));
+								source.getFilename(), row, getColumn(),
+								source.getLine(row-1));
 					}
 					break;
 			}
@@ -153,26 +146,14 @@ public class Tokenizer
 		return result;
 	}
 
-	public String tokenizeToString()
-	{
-		List<Token> tokenList = tokenize();
-		StringBuffer result = new StringBuffer();
-		for(Token token : tokenList)
-		{
-			result.append(token.toString());
-			result.append('\n');
-		}
-		return result.toString();
-	}
-
-
-	private SourceFileInfo sourceFileInfo;
 	private int currentIndex;
-	private int colStart = 0;
+	private int columnStart = 0;
+	private SourceFileInfo source;
+	private String sourceCode;
 
-	private int getCol()
+	private int getColumn()
 	{
-		return currentIndex - colStart;
+		return currentIndex - columnStart;
 	}
 
 	private boolean isAlpha(String source, int index)
@@ -211,163 +192,152 @@ public class Tokenizer
 
 	private void handleLineBreak()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		while(	currentIndex+1 < sourceCode.length() && 
 				(sourceCode.charAt(currentIndex+1) == '\r' ||
 				sourceCode.charAt(currentIndex+1) == '\n'))
 		{
 			currentIndex++;
 		}
-		colStart = currentIndex+1;
+		columnStart = currentIndex+1;
 		Token.incCurrentRow();
 	}
 	private Token handleEqual()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(	currentIndex >= sourceCode.length()-1 ||
 			sourceCode.charAt(currentIndex+1) != '=')
 		{
-			return new Token(TokenType.EQUAL, getCol());
+			return new Token(TokenType.EQUAL, getColumn());
 		}
 		currentIndex++;
-		return new Token(TokenType.EQUAL_EQUAL, getCol());
+		return new Token(TokenType.EQUAL_EQUAL, getColumn());
 	}
 	private Token handleExclaim()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(	currentIndex >= sourceCode.length()-1 ||
 			sourceCode.charAt(currentIndex+1) != '=')
 		{
-			return new Token(TokenType.EXCLAIM, getCol());
+			return new Token(TokenType.EXCLAIM, getColumn());
 		}
 		currentIndex++;
-		return new Token(TokenType.EXCLAIM_EQUAL, getCol());
+		return new Token(TokenType.EXCLAIM_EQUAL, getColumn());
 	}
 	private Token handleStar()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(	currentIndex >= sourceCode.length()-1 ||
 			sourceCode.charAt(currentIndex+1) != '=')
 		{
-			return new Token(TokenType.STAR, getCol());
+			return new Token(TokenType.STAR, getColumn());
 		}
 		currentIndex++;
-		return new Token(TokenType.STAR_EQUAL, getCol());
+		return new Token(TokenType.STAR_EQUAL, getColumn());
 	}
 	private Token handlePercent()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(	currentIndex >= sourceCode.length()-1 ||
 			sourceCode.charAt(currentIndex+1) != '=')
 		{
-			return new Token(TokenType.PERCENT, getCol());
+			return new Token(TokenType.PERCENT, getColumn());
 		}
 		currentIndex++;
-		return new Token(TokenType.PERCENT_EQUAL, getCol());
+		return new Token(TokenType.PERCENT_EQUAL, getColumn());
 	}
 	private Token handleCarat()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(	currentIndex >= sourceCode.length()-1 ||
 			sourceCode.charAt(currentIndex+1) != '=')
 		{
-			return new Token(TokenType.CARAT, getCol());
+			return new Token(TokenType.CARAT, getColumn());
 		}
 		currentIndex++;
-		return new Token(TokenType.CARAT_EQUAL, getCol());
+		return new Token(TokenType.CARAT_EQUAL, getColumn());
 	}
 	private Token handlePlus()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(currentIndex >= sourceCode.length()-1)
 		{
-			return new Token(TokenType.PLUS, getCol());
+			return new Token(TokenType.PLUS, getColumn());
 		}
 		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new Token(TokenType.PLUS_EQUAL, getCol());
+			return new Token(TokenType.PLUS_EQUAL, getColumn());
 		}
 		if(nextChar == '+')
 		{
 			currentIndex++;
-			return new Token(TokenType.PLUS_PLUS, getCol());
+			return new Token(TokenType.PLUS_PLUS, getColumn());
 		}
-		return new Token(TokenType.PLUS, getCol());
+		return new Token(TokenType.PLUS, getColumn());
 	}
 	private Token handleDash()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(currentIndex >= sourceCode.length()-1)
 		{
-			return new Token(TokenType.DASH, getCol());
+			return new Token(TokenType.DASH, getColumn());
 		}
 		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new Token(TokenType.DASH_EQUAL, getCol());
+			return new Token(TokenType.DASH_EQUAL, getColumn());
 		}
 		if(nextChar == '-')
 		{
 			currentIndex++;
-			return new Token(TokenType.DASH_DASH, getCol());
+			return new Token(TokenType.DASH_DASH, getColumn());
 		}
-		return new Token(TokenType.DASH, getCol());
+		return new Token(TokenType.DASH, getColumn());
 	}
 	private Token handleAnd()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(currentIndex >= sourceCode.length()-1)
 		{
-			return new Token(TokenType.AND, getCol());
+			return new Token(TokenType.AND, getColumn());
 		}
 		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new Token(TokenType.AND_EQUAL, getCol());
+			return new Token(TokenType.AND_EQUAL, getColumn());
 		}
 		if(nextChar == '&')
 		{
 			currentIndex++;
-			return new Token(TokenType.AND_AND, getCol());
+			return new Token(TokenType.AND_AND, getColumn());
 		}
-		return new Token(TokenType.AND, getCol());
+		return new Token(TokenType.AND, getColumn());
 	}
 	private Token handlePipe()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(currentIndex >= sourceCode.length()-1)
 		{
-			return new Token(TokenType.PIPE, getCol());
+			return new Token(TokenType.PIPE, getColumn());
 		}
 		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new Token(TokenType.PIPE_EQUAL, getCol());
+			return new Token(TokenType.PIPE_EQUAL, getColumn());
 		}
 		if(nextChar == '|')
 		{
 			currentIndex++;
-			return new Token(TokenType.PIPE_PIPE, getCol());
+			return new Token(TokenType.PIPE_PIPE, getColumn());
 		}
-		return new Token(TokenType.PIPE, getCol());
+		return new Token(TokenType.PIPE, getColumn());
 	}
 	private Token handleLeft()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(currentIndex >= sourceCode.length()-1)
 		{
-			return new Token(TokenType.LEFT, getCol());
+			return new Token(TokenType.LEFT, getColumn());
 		}
 		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new Token(TokenType.LEFT_EQUAL, getCol());
+			return new Token(TokenType.LEFT_EQUAL, getColumn());
 		}
 		if(nextChar == '<')
 		{
@@ -375,38 +345,37 @@ public class Tokenizer
 			if(	currentIndex >= sourceCode.length()-1 ||
 					sourceCode.charAt(currentIndex+1) != '=')
 			{
-				return new Token(TokenType.LEFT_LEFT, getCol());
+				return new Token(TokenType.LEFT_LEFT, getColumn());
 			}
 			currentIndex++;
-			return new Token(TokenType.LEFT_LEFT_EQUAL, getCol());
+			return new Token(TokenType.LEFT_LEFT_EQUAL, getColumn());
 		}
-		return new Token(TokenType.LEFT, getCol());
+		return new Token(TokenType.LEFT, getColumn());
 	}
 	private Token handleRight()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(currentIndex >= sourceCode.length()-1)
 		{
-			return new Token(TokenType.RIGHT, getCol());
+			return new Token(TokenType.RIGHT, getColumn());
 		}
 		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new Token(TokenType.RIGHT_EQUAL, getCol());
+			return new Token(TokenType.RIGHT_EQUAL, getColumn());
 		}
 		if(nextChar == '>')
 		{
 			currentIndex++;
 			if(currentIndex >= sourceCode.length()-1)
 			{
-				return new Token(TokenType.RIGHT_RIGHT, getCol());
+				return new Token(TokenType.RIGHT_RIGHT, getColumn());
 			}
 			nextChar = sourceCode.charAt(currentIndex+1);
 			if(nextChar == '=')
 			{
 				currentIndex++;
-				return new Token(TokenType.RIGHT_RIGHT_EQUAL, getCol());
+				return new Token(TokenType.RIGHT_RIGHT_EQUAL, getColumn());
 			}
 			if(nextChar == '>')
 			{
@@ -415,22 +384,21 @@ public class Tokenizer
 						sourceCode.charAt(currentIndex+1) != '=')
 				{
 					return new Token(
-							TokenType.RIGHT_RIGHT_RIGHT, getCol());
+							TokenType.RIGHT_RIGHT_RIGHT, getColumn());
 				}
 				currentIndex++;
 				return new Token(
-						TokenType.RIGHT_RIGHT_RIGHT_EQUAL, getCol());
+						TokenType.RIGHT_RIGHT_RIGHT_EQUAL, getColumn());
 			}
-			return new Token(TokenType.RIGHT_RIGHT, getCol());
+			return new Token(TokenType.RIGHT_RIGHT, getColumn());
 		}
-		return new Token(TokenType.RIGHT, getCol());
+		return new Token(TokenType.RIGHT, getColumn());
 	}
 	private Token handleSlash()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(currentIndex >= sourceCode.length()-1)
 		{
-			return new Token(TokenType.SLASH, getCol());
+			return new Token(TokenType.SLASH, getColumn());
 		}
 		int nextChar = sourceCode.charAt(currentIndex+1);
 		if(nextChar == '/')
@@ -467,20 +435,19 @@ public class Tokenizer
 		if(nextChar == '=')
 		{
 			currentIndex++;
-			return new Token(TokenType.SLASH_EQUAL, getCol());
+			return new Token(TokenType.SLASH_EQUAL, getColumn());
 		}
-		return new Token(TokenType.SLASH, getCol());
+		return new Token(TokenType.SLASH, getColumn());
 	}
 	
 	private Token handleChar()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(currentIndex > sourceCode.length()-3)
 		{
 			Logger.error(
-					"unclosed character literal", sourceFileInfo.getFilename(),
-					Token.getCurrentRow(), getCol(),
-					sourceFileInfo.getLine(Token.getCurrentRow()-1));
+					"unclosed character literal", source.getFilename(),
+					Token.getCurrentRow(), getColumn(),
+					source.getLine(Token.getCurrentRow()-1));
 			currentIndex+= 3;
 			return null;
 		}
@@ -492,9 +459,9 @@ public class Tokenizer
 			if(currentIndex > sourceCode.length()-3)
 			{
 				Logger.error(
-					"unclosed character literal", sourceFileInfo.getFilename(),
-					Token.getCurrentRow(), getCol(),
-					sourceFileInfo.getLine(Token.getCurrentRow()-1));
+					"unclosed character literal", source.getFilename(),
+					Token.getCurrentRow(), getColumn(),
+					source.getLine(Token.getCurrentRow()-1));
 				currentIndex+= 2;
 				return null;
 			}
@@ -505,23 +472,23 @@ public class Tokenizer
 		if(sourceCode.charAt(currentIndex) != '\'')
 		{
 			Logger.error(
-				"unclosed character literal", sourceFileInfo.getFilename(),
-				Token.getCurrentRow(), getCol(),
-				sourceFileInfo.getLine(Token.getCurrentRow()-1));
+				"unclosed character literal", source.getFilename(),
+				Token.getCurrentRow(), getColumn(),
+				source.getLine(Token.getCurrentRow()-1));
 		}
-		return new Token(TokenType.CHAR, text.toString(), getCol());
+		return new Token(TokenType.CHAR, getColumn(), text.toString());
 	}
 	
 	private Token handleString()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
+		int column = getColumn();
 		currentIndex++;
 		if(currentIndex > sourceCode.length()-1)
 		{
 			Logger.error(
-					"unclosed string literal", sourceFileInfo.getFilename(),
-					Token.getCurrentRow(), getCol(),
-					sourceFileInfo.getLine(Token.getCurrentRow()-1));
+					"unclosed string literal", source.getFilename(),
+					Token.getCurrentRow(), column,
+					source.getLine(Token.getCurrentRow()-1));
 			return null;
 		}
 		StringBuffer text = new StringBuffer();
@@ -539,17 +506,16 @@ public class Tokenizer
 		if(curChar != '\"')
 		{
 			Logger.error(
-					"unclosed string literal", sourceFileInfo.getFilename(),
-					Token.getCurrentRow(), getCol(),
-					sourceFileInfo.getLine(Token.getCurrentRow()-1));
+					"unclosed string literal", source.getFilename(),
+					Token.getCurrentRow(), column,
+					source.getLine(Token.getCurrentRow()-1));
 			currentIndex+= 3;
 		}
-		return new Token(TokenType.STRING, text.toString(), getCol());
+		return new Token(TokenType.STRING, getColumn(), text.toString());
 	}
 	
 	private Token handleIdentifier()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		Token result = null;
 		if(isAlpha(sourceCode, currentIndex))
 		{
@@ -557,7 +523,7 @@ public class Tokenizer
 					tokenTypeMap.getFromEmbeddedKey(sourceCode, currentIndex);
 			if(type != null)
 			{
-				result = new Token(type, getCol());
+				result = new Token(type, getColumn());
 				currentIndex +=
 						result.toString().length() - 1;
 			}
@@ -570,8 +536,8 @@ public class Tokenizer
 				}
 				result = new Token(
 					TokenType.IDENTIFIER,
-					sourceCode.substring(currentIndex, identifierEnd),
-					getCol());
+					getColumn(),
+					sourceCode.substring(currentIndex, identifierEnd));
 				currentIndex=identifierEnd-1;
 			}
 		}
@@ -580,16 +546,14 @@ public class Tokenizer
 	
 	private Token handleDot()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		if(isNumeric(sourceCode, currentIndex+1, 10))
 		{
 			return handleNumber(10);
 		}
-		return new Token(TokenType.DOT, getCol());
+		return new Token(TokenType.DOT, getColumn());
 	}
 	private Token handleZero()
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		char next = sourceCode.charAt(currentIndex+1);
 		if(next == 'b' || next == 'B')
 		{
@@ -599,9 +563,9 @@ public class Tokenizer
 			{
 				Logger.error(
 						"binary numbers must contain at least one binary digit",
-						sourceFileInfo.getFilename(),
-						Token.getCurrentRow(), getCol(),
-						sourceFileInfo.getLine(Token.getCurrentRow()-1));
+						source.getFilename(),
+						Token.getCurrentRow(), getColumn(),
+						source.getLine(Token.getCurrentRow()-1));
 				return null;
 			}
 			return handleNumber(2);
@@ -614,9 +578,9 @@ public class Tokenizer
 			{
 				Logger.error(
 						"binary numbers must contain at least one hex digit",
-						sourceFileInfo.getFilename(),
-						Token.getCurrentRow(), getCol(),
-						sourceFileInfo.getLine(Token.getCurrentRow()-1));
+						source.getFilename(),
+						Token.getCurrentRow(), getColumn(),
+						source.getLine(Token.getCurrentRow()-1));
 				return null;
 			}
 			return handleNumber(16);
@@ -629,26 +593,25 @@ public class Tokenizer
 		else if(next == 'd' || next == 'D')
 		{
 			currentIndex++;
-			return new Token(TokenType.DOUBLE, "0", getCol());
+			return new Token(TokenType.DOUBLE, getColumn(), "0");
 		}
 		else if(next == 'f' || next == 'F')
 		{
 			currentIndex++;
-			return new Token(TokenType.FLOAT, "0", getCol());
+			return new Token(TokenType.FLOAT, getColumn(), "0");
 		}
 		else if(next == 'l' || next == 'L')
 		{
 			currentIndex++;
-			return new Token(TokenType.LONG, "0", getCol());
+			return new Token(TokenType.LONG, getColumn(), "0");
 		}
 		else
 		{
-			return new Token(TokenType.INTEGER, "0", getCol());
+			return new Token(TokenType.INTEGER, getColumn(), "0");
 		}
 	}
 	private Token handleNumber(int base)
 	{
-		String sourceCode = sourceFileInfo.getSourcecode();
 		StringBuffer result = new StringBuffer();
 		boolean hasDot = false, hasE = false;
 		char current = sourceCode.charAt(currentIndex);
@@ -663,9 +626,9 @@ public class Tokenizer
 					!isNumeric(sourceCode, currentIndex+1, base)))
 				{
 					Logger.error(
-						"illegal underscore", sourceFileInfo.getFilename(),
-						Token.getCurrentRow(), getCol(),
-						sourceFileInfo.getLine(Token.getCurrentRow()-1));
+						"illegal underscore", source.getFilename(),
+						Token.getCurrentRow(), getColumn(),
+						source.getLine(Token.getCurrentRow()-1));
 					currentIndex++;
 					break;
 				}
@@ -677,7 +640,7 @@ public class Tokenizer
 				{
 					currentIndex--;
 					return new Token(
-							TokenType.FLOAT, result.toString(), getCol());
+							TokenType.FLOAT, getColumn(), result.toString());
 				}
 				hasDot = true;
 			}
@@ -687,7 +650,7 @@ public class Tokenizer
 				{
 					currentIndex--;
 					return new Token(
-							TokenType.FLOAT, result.toString(), getCol());
+							TokenType.FLOAT, getColumn(), result.toString());
 				}
 				hasE = true;
 			}
@@ -707,7 +670,7 @@ public class Tokenizer
 				current++;
 				float value = Float.parseFloat(result.toString());
 				return new Token(
-						TokenType.FLOAT, Float.toString(value), getCol());
+						TokenType.FLOAT, getColumn(), Float.toString(value));
 			}
 			else if(current == 'd' || current == 'D')	
 			{
@@ -715,7 +678,7 @@ public class Tokenizer
 			}
 			double value = Double.parseDouble(result.toString());
 			return new Token(
-					TokenType.DOUBLE, Double.toString(value), getCol());
+					TokenType.DOUBLE, getColumn(), Double.toString(value));
 		}
 		else
 		{
@@ -724,25 +687,25 @@ public class Tokenizer
 				current++;
 				long value = Long.parseLong(result.toString(), base);
 				return new Token(
-						TokenType.LONG, Long.toString(value), getCol());
+						TokenType.LONG, getColumn(), Long.toString(value));
 			}
 			if(current == 'f' || current == 'F')
 			{
 				current++;
 				float value = Float.parseFloat(result.toString());
 				return new Token(
-						TokenType.FLOAT, Float.toString(value), getCol());
+						TokenType.FLOAT, getColumn(), Float.toString(value));
 			}
 			if(current == 'd' || current == 'D')
 			{
 				current++;
 				double value = Double.parseDouble(result.toString());
 				return new Token(
-						TokenType.DOUBLE, Double.toString(value), getCol());
+						TokenType.DOUBLE, getColumn(), Double.toString(value));
 			}
 			int value = Integer.parseInt(result.toString(), base);
 			return new Token(
-					TokenType.INTEGER, Integer.toString(value), getCol());
+					TokenType.INTEGER, getColumn(), Integer.toString(value));
 		}
 	}
 

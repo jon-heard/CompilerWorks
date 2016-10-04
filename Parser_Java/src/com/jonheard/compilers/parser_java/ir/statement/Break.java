@@ -1,23 +1,20 @@
 package com.jonheard.compilers.parser_java.ir.statement;
 
-import static com.jonheard.compilers.parser_java.JavaParser.*;
-
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
-import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
-import com.jonheard.util.RewindableQueue;
 
 public class Break extends BaseIrType
 {
-	public Break(RewindableQueue<Token> tokenQueue)
+	public Break(Parser_Java parser)
 	{
-		super(tokenQueue);
-		mustBe(tokenQueue, TokenType._BREAK);
-		mustBe(tokenQueue, TokenType.SEMICOLON);
+		super(parser);
+		parser.mustBe(TokenType._BREAK);
+		parser.mustBe(TokenType.SEMICOLON);
 	}
 	
-	public static boolean isNext(RewindableQueue<Token> tokenQueue)
+	public static boolean isNext(Parser_Java parser)
 	{
-		return see(tokenQueue, TokenType._BREAK);
+		return parser.see(TokenType._BREAK);
 	}
 }

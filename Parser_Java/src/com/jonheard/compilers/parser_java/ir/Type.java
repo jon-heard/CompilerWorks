@@ -1,21 +1,33 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.util.RewindableQueue;
+import java.util.ArrayList;
+import java.util.List;
 
-import static com.jonheard.compilers.parser_java.JavaParser.*;
-
-import com.jonheard.compilers.tokenizer_java.Token;
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Type extends BaseIrType
 {
-	public Type(RewindableQueue<Token> tokenQueue)
+	public Type(Parser_Java parser)
 	{
-		super(tokenQueue);
-		addChild(new QualifiedIdentifier(tokenQueue));
-		while(have(tokenQueue, TokenType.SQUARE_BRACE_LEFT))
+		super(parser);
+		addChild(new QualifiedIdentifier(parser));
+		if(parser.have(TokenType.LEFT))
 		{
-			mustBe(tokenQueue, TokenType.SQUARE_BRACE_RIGHT);
+			do
+			{
+				addChild(new Type(parser));
+			}
+			while(parser.have(TokenType.COMMA));
+			parser.mustBe(TokenType.RIGHT);
+		}
+		else
+		{
+			addChild(null);
+		}
+		while(parser.have(TokenType.SQUARE_BRACE_LEFT))
+		{
+			parser.mustBe(TokenType.SQUARE_BRACE_RIGHT);
 			incDimensionCount();
 		}
 	}
@@ -23,7 +35,15 @@ public class Type extends BaseIrType
 	@Override
 	public String getHeaderString()
 	{
-		return	"value='" + getValue() + "'";
+		StringBuffer result = new StringBuffer();
+		result.append("value='" + getValue() + "'");
+		if(getChildCount() > 1)
+		{
+			result.append(" genericTypes='");
+			
+			result.append("'");
+		}
+		return result.toString();
 	}
 	
 	@Override
@@ -38,7 +58,6 @@ public class Type extends BaseIrType
 			result.append("[]");
 		}
 		return result.toString();
-		
 	}
 	
 	public QualifiedIdentifier getBase()
@@ -46,6 +65,20 @@ public class Type extends BaseIrType
 		return (QualifiedIdentifier)getChild(0);
 	}
 
+	public List<Type> getGenericTypes()
+	{
+		List<Type> result = new ArrayList<Type>();
+		for(int i = 1; i < getChildCount(); i++)
+		{
+			BaseIrType child = getChild(i);
+			if(child instanceof Type)
+			{
+				result.add((Type)child);
+			}
+		}
+		return result;
+	}
+	
 	public int getDimensionCount() { return dimensionCount; }
 	
 	public String toJvmDescriptor()
@@ -82,9 +115,9 @@ public class Type extends BaseIrType
 		dimensionCount++;
 	}
 	
-	public static boolean isNext(RewindableQueue<Token> tokenQueue)
+	public static boolean isNext(Parser_Java parser)
 	{
-		return see(tokenQueue, TokenType.IDENTIFIER);
+		return Identifier.isNext(parser);
 	}
 
 	private int dimensionCount = 0;

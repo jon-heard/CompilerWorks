@@ -1,5 +1,5 @@
 
-package com.jonheard.compilers.tokenizer_Java;
+package com.jonheard.compilers.tokenizer_java;
 
 import static org.junit.Assert.*;
 
@@ -10,15 +10,21 @@ import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 import com.jonheard.compilers.tokenizer_java.Tokenizer;
 import com.jonheard.util.Logger;
+import com.jonheard.util.SourceFileInfo;
 
 public class TokenizerTest
 {
+	public TokenizerTest()
+	{
+		Logger.setPrintingToConsole(false);
+	}
+
 	@Test
 	public void basic()
 	{
 		String source = "public class private";
-		Tokenizer iterator = new Tokenizer("", source);
-		List<Token> tokens = iterator.tokenize();
+		Tokenizer iterator = new Tokenizer();
+		List<Token> tokens = iterator.tokenize(new SourceFileInfo("", source));
 		assertEquals(3, tokens.size());
 		assertEquals(TokenType._PUBLIC,			tokens.get(0).getType());
 		assertEquals(TokenType._CLASS,			tokens.get(1).getType());
@@ -29,34 +35,28 @@ public class TokenizerTest
 	public void linesRowsCols()
 	{
 		String source = "public class private \nprotected public\r\n class";
-		Tokenizer iterator = new Tokenizer("", source);
-		List<Token> tokens = iterator.tokenize();
+		Tokenizer iterator = new Tokenizer();
+		List<Token> tokens = iterator.tokenize(new SourceFileInfo("", source));
 		assertEquals(6, tokens.size());
 
 		assertEquals(TokenType._PUBLIC,			tokens.get(0).getType());
 		assertEquals(1, tokens.get(0).getRow());
-		assertEquals(0, tokens.get(0).getCol());
-		assertEquals("public class private ", tokens.get(0).getLine());
+		assertEquals(0, tokens.get(0).getColumn());
 		assertEquals(TokenType._CLASS,			tokens.get(1).getType());
 		assertEquals(1, tokens.get(1).getRow());
-		assertEquals(7, tokens.get(1).getCol());
-		assertEquals("public class private ", tokens.get(1).getLine());
+		assertEquals(7, tokens.get(1).getColumn());
 		assertEquals(TokenType._PRIVATE,		tokens.get(2).getType());
 		assertEquals(1, tokens.get(2).getRow());
-		assertEquals(13, tokens.get(2).getCol());
-		assertEquals("public class private ", tokens.get(2).getLine());
+		assertEquals(13, tokens.get(2).getColumn());
 		assertEquals(TokenType._PROTECTED,		tokens.get(3).getType());
 		assertEquals(2, tokens.get(3).getRow());
-		assertEquals(0, tokens.get(3).getCol());
-		assertEquals("protected public", tokens.get(3).getLine());
+		assertEquals(0, tokens.get(3).getColumn());
 		assertEquals(TokenType._PUBLIC,			tokens.get(4).getType());
 		assertEquals(2, tokens.get(4).getRow());
-		assertEquals(10, tokens.get(4).getCol());
-		assertEquals("protected public", tokens.get(4).getLine());
+		assertEquals(10, tokens.get(4).getColumn());
 		assertEquals(TokenType._CLASS,			tokens.get(5).getType());
 		assertEquals(3, tokens.get(5).getRow());
-		assertEquals(1, tokens.get(5).getCol());
-		assertEquals(" class", tokens.get(5).getLine());
+		assertEquals(1, tokens.get(5).getColumn());
 	}
 
 	@Test
@@ -64,8 +64,8 @@ public class TokenizerTest
 	{
 		String source = "public  classprivate\tprotected\rpublic\nclass " +
 				"\n\r\t\r\n\t private";
-		Tokenizer iterator = new Tokenizer("", source);
-		List<Token> tokens = iterator.tokenize();
+		Tokenizer iterator = new Tokenizer();
+		List<Token> tokens = iterator.tokenize(new SourceFileInfo("", source));
 		assertEquals(7, tokens.size());
 		assertEquals(TokenType._PUBLIC,			tokens.get(0).getType());
 		assertEquals(TokenType._CLASS,			tokens.get(1).getType());
@@ -81,8 +81,8 @@ public class TokenizerTest
 	{
 		String source = "public//1\nclass//2\rprivate//3\r\nprotected//\t" +
 				"class\n/*4*/public";
-		Tokenizer iterator = new Tokenizer("", source);
-		List<Token> tokens = iterator.tokenize();
+		Tokenizer iterator = new Tokenizer();
+		List<Token> tokens = iterator.tokenize(new SourceFileInfo("", source));
 		assertEquals(5, tokens.size());
 		assertEquals(TokenType._PUBLIC,			tokens.get(0).getType());
 		assertEquals(TokenType._CLASS,			tokens.get(1).getType());
@@ -95,8 +95,8 @@ public class TokenizerTest
 	public void identifiersAndOperators()
 	{
 		String source = "public=t+class/test;";
-		Tokenizer iterator = new Tokenizer("", source);
-		List<Token> tokens = iterator.tokenize();
+		Tokenizer iterator = new Tokenizer();
+		List<Token> tokens = iterator.tokenize(new SourceFileInfo("", source));
 		assertEquals(8, tokens.size());
 		assertEquals(TokenType._PUBLIC,			tokens.get(0).getType());
 		assertEquals(TokenType.EQUAL,			tokens.get(1).getType());
@@ -111,22 +111,11 @@ public class TokenizerTest
 	}
 
 	@Test
-	public void TextOutput()
-	{
-		String source = "public=t+class/test;";
-		Tokenizer iterator = new Tokenizer("", source);
-		String expected = "public\nequal\nidentifier:t\nplus\nclass\n" +
-				"slash\nidentifier:test\nsemicolon\n";
-		String actual = iterator.tokenizeToString();
-		assertEquals(expected, actual);
-	}
-
-	@Test
 	public void CharAndString()
 	{
 		String source = "'a' '~' '\n' \"hello\" \"\" \"\\n\"";
-		Tokenizer iterator = new Tokenizer("", source);
-		List<Token> tokens = iterator.tokenize();
+		Tokenizer iterator = new Tokenizer();
+		List<Token> tokens = iterator.tokenize(new SourceFileInfo("", source));
 		assertEquals(6, tokens.size());
 		assertEquals(TokenType.CHAR,			tokens.get(0).getType());
 			assertEquals("a",						tokens.get(0).getText());
@@ -146,8 +135,8 @@ public class TokenizerTest
 	public void integers()
 	{
 		String source = "56 56l 056 056L 0x56 0x56l 0 0L";
-		Tokenizer iterator = new Tokenizer("", source);
-		List<Token> tokens = iterator.tokenize();
+		Tokenizer iterator = new Tokenizer();
+		List<Token> tokens = iterator.tokenize(new SourceFileInfo("", source));
 		assertEquals(8, tokens.size());
 		assertEquals(TokenType.INTEGER,			tokens.get(0).getType());
 			assertEquals("56",						tokens.get(0).getText());
@@ -173,8 +162,8 @@ public class TokenizerTest
 		String source = "56f 56d 056F 056D " +
 				"0.5f 0.5 5e7f 5e7 5.1e7f 5.1e7 " +
 				".5f .5";
-		Tokenizer iterator = new Tokenizer("", source);
-		List<Token> tokens = iterator.tokenize();
+		Tokenizer iterator = new Tokenizer();
+		List<Token> tokens = iterator.tokenize(new SourceFileInfo("", source));
 		assertEquals(12, tokens.size());
 		assertEquals(TokenType.FLOAT,			tokens.get( 0).getType());
 			assertEquals("56.0",					tokens.get( 0).getText());
@@ -207,8 +196,8 @@ public class TokenizerTest
 	{
 		Logger.clearLogs();
 		String source = "#";
-		Tokenizer iterator = new Tokenizer("Test1.java", source);
-		iterator.tokenize();
+		Tokenizer iterator = new Tokenizer();
+		iterator.tokenize(new SourceFileInfo("Test1.java", source));
 		String expected =
 				"Test1.java:1: error: illegal character: #\n\t#\n\t^\n";
 		assertEquals(expected, Logger.getLogs());
@@ -222,8 +211,8 @@ public class TokenizerTest
 
 		Logger.clearLogs();
 		source = "a'";
-		iterator = new Tokenizer("Test1.java", source);
-		iterator.tokenize();
+		iterator = new Tokenizer();
+		iterator.tokenize(new SourceFileInfo("Test1.java", source));
 		expected =
 				"Test1.java:1: error: " +
 				"unclosed character literal\n\ta'\n\t ^\n";
@@ -231,8 +220,8 @@ public class TokenizerTest
 
 		Logger.clearLogs();
 		source = "'a";
-		iterator = new Tokenizer("Test1.java", source);
-		iterator.tokenize();
+		iterator = new Tokenizer();
+		iterator.tokenize(new SourceFileInfo("Test1.java", source));
 		expected =
 				"Test1.java:1: error: " +
 				"unclosed character literal\n\t'a\n\t^\n";
@@ -240,8 +229,8 @@ public class TokenizerTest
 
 		Logger.clearLogs();
 		source = "'aa";
-		iterator = new Tokenizer("Test1.java", source);
-		iterator.tokenize();
+		iterator = new Tokenizer();
+		iterator.tokenize(new SourceFileInfo("Test1.java", source));
 		expected =
 				"Test1.java:1: error: " +
 				"unclosed character literal\n\t'aa\n\t  ^\n";
@@ -249,8 +238,8 @@ public class TokenizerTest
 		
 		Logger.clearLogs();
 		source = "'\\";
-		iterator = new Tokenizer("Test1.java", source);
-		iterator.tokenize();
+		iterator = new Tokenizer();
+		iterator.tokenize(new SourceFileInfo("Test1.java", source));
 		expected =
 				"Test1.java:1: error: " +
 				"unclosed character literal\n\t'\\\n\t^\n";
@@ -258,8 +247,8 @@ public class TokenizerTest
 
 		Logger.clearLogs();
 		source = "'\\n";
-		iterator = new Tokenizer("Test1.java", source);
-		iterator.tokenize();
+		iterator = new Tokenizer();
+		iterator.tokenize(new SourceFileInfo("Test1.java", source));
 		expected =
 				"Test1.java:1: error: " +
 				"unclosed character literal\n\t'\\n\n\t ^\n";
@@ -267,8 +256,8 @@ public class TokenizerTest
 		
 		Logger.clearLogs();
 		source = "'\\na";
-		iterator = new Tokenizer("Test1.java", source);
-		iterator.tokenize();
+		iterator = new Tokenizer();
+		iterator.tokenize(new SourceFileInfo("Test1.java", source));
 		expected =
 				"Test1.java:1: error: " +
 				"unclosed character literal\n\t'\\na\n\t   ^\n";
@@ -284,8 +273,8 @@ public class TokenizerTest
 
 		Logger.clearLogs();
 		source = "\"abc\n\"";
-		iterator = new Tokenizer("Test1.java", source);
-		iterator.tokenize();
+		iterator = new Tokenizer();
+		iterator.tokenize(new SourceFileInfo("Test1.java", source));
 		expected =
 				"Test1.java:1: error: " +
 				"unclosed string literal\n\t\"abc\n\t^\n";
@@ -293,8 +282,8 @@ public class TokenizerTest
 
 		Logger.clearLogs();
 		source = "\"abc";
-		iterator = new Tokenizer("Test1.java", source);
-		iterator.tokenize();
+		iterator = new Tokenizer();
+		iterator.tokenize(new SourceFileInfo("Test1.java", source));
 		expected =
 				"Test1.java:1: error: " +
 				"unclosed string literal\n\t\"abc\n\t^\n";
@@ -302,8 +291,8 @@ public class TokenizerTest
 		
 		Logger.clearLogs();
 		source = "\"";
-		iterator = new Tokenizer("Test1.java", source);
-		iterator.tokenize();
+		iterator = new Tokenizer();
+		iterator.tokenize(new SourceFileInfo("Test1.java", source));
 		expected =
 				"Test1.java:1: error: " +
 				"unclosed string literal\n\t\"\n\t^\n";
@@ -316,8 +305,8 @@ public class TokenizerTest
 		String source = "++ -- + - ~ ! * / % << >> >>> < > <= >= == != & ^ " +
 				"| && || ? : = += -= *= /= %= &= ^= |= <<= >>= >>>= . ; , " +
 				"{ } [ ] ( )";
-		Tokenizer iterator = new Tokenizer("", source);
-		List<Token> tokens = iterator.tokenize();
+		Tokenizer tokenizer = new Tokenizer();
+		List<Token> tokens = tokenizer.tokenize(new SourceFileInfo("", source));
 		assertEquals(46, tokens.size());
 		assertEquals(TokenType.PLUS_PLUS,		tokens.get( 0).getType());
 		assertEquals(TokenType.DASH_DASH,		tokens.get( 1).getType());
@@ -379,8 +368,8 @@ public class TokenizerTest
 				"protected public return static strictfp super switch " +
 				"synchronized this throw throws transient true try " +
 				"volatile while";
-		Tokenizer iterator = new Tokenizer("", source);
-		List<Token> tokens = iterator.tokenize();
+		Tokenizer tokenizer = new Tokenizer();
+		List<Token> tokens = tokenizer.tokenize(new SourceFileInfo("", source));
 		assertEquals(44, tokens.size());
 		assertEquals(TokenType._ABSTRACT,		tokens.get( 0).getType());
 		assertEquals(TokenType._ASSERT,			tokens.get( 1).getType());

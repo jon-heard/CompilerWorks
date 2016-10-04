@@ -2,15 +2,13 @@ package com.jonheard.compilers.parser_java.ir;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.jonheard.compilers.tokenizer_java.Token;
-import com.jonheard.util.RewindableQueue;
+import com.jonheard.compilers.parser_java.Parser_Java;
 
 public class BaseIrType
 {
-	public BaseIrType(RewindableQueue<Token> tokenQueue)
+	public BaseIrType(Parser_Java parser)
 	{
-		line = tokenQueue.peek().getRow();
+		line = parser.getTokenQueue().peek().getRow();
 	}
 	public BaseIrType(int line)
 	{
@@ -29,11 +27,18 @@ public class BaseIrType
 
 	public BaseIrType getChild(int index)
 	{
-		if(index < 0 || index > children.size())
+		if(index < 0 || index >= children.size())
 		{
 			throw new ArrayIndexOutOfBoundsException(index);
 		}
 		return children.get(index);
+	}
+	
+	public void replaceChild(int childIndex, BaseIrType newValue)
+	{
+		if(newValue == children.get(childIndex)) return;
+		children.remove(childIndex);
+		children.add(childIndex, newValue);
 	}
 
 	public int getFirstPrintedChildIndex() { return 0; }

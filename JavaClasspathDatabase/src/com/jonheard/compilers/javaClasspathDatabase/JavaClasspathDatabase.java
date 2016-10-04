@@ -32,6 +32,30 @@ public class JavaClasspathDatabase
 		return true;
 	}
 	
+	public boolean addSource_Jdk()
+	{
+		String bootstrap = System.getProperty("sun.boot.class.path");
+		String[] bootstrapSources = bootstrap.split(";");
+		for(String source : bootstrapSources)
+		{
+			if(source.endsWith(".jar"))
+			{
+				 if(!addSource_Jar(source)&& !source.endsWith("sunrsasign.jar"))
+				 {
+					 return false;
+				 }
+			}
+			else
+			{
+				 if(!addSource_Folder(source) && !source.endsWith("classes"))
+				 {
+					 return false;
+				 }
+			}
+		}
+		return true;
+	}
+	
 	public Item getValue(String address)
 	{
 		if(memoization.containsKey(address))
@@ -40,7 +64,7 @@ public class JavaClasspathDatabase
 		}
 		
 		Item result = null;
-		Item furthestFound = new Item("", null);
+		Item furthestFound = new Item_Err_NotFound("");
 		List<Item> resultList = new ArrayList<Item>();
 		for(Source source : sourceList)
 		{

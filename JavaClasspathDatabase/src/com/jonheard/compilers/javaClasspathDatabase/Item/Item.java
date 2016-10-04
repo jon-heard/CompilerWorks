@@ -1,9 +1,10 @@
 package com.jonheard.compilers.javaClasspathDatabase.Item;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
-public class Item
+public class Item implements Iterable<Item>
 {
 	public Item(String name, Item parent)
 	{
@@ -72,4 +73,10 @@ public class Item
 	private Item parent;
 	protected HashMap<String, Item> children =
 			new HashMap<String, Item>();
+	
+	@Override
+	public Iterator<Item> iterator()
+	{
+		return children.values().iterator();
+	}
 }

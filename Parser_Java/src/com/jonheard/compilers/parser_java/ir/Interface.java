@@ -1,22 +1,20 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.util.RewindableQueue;
-
-import static com.jonheard.compilers.parser_java.JavaParser.*;
-
-import com.jonheard.compilers.tokenizer_java.Token;
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Interface extends BaseIrType
 {
-	public Interface(
-			RewindableQueue<Token> tokenQueue)
+	public Interface(Parser_Java parser)
 	{
-		super(tokenQueue);
-		addChild(new List_Modifier(tokenQueue));
-		mustBe(tokenQueue, TokenType._INTERFACE);
-		addChild(new Identifier(tokenQueue));
-		while(tokenQueue.poll().getType() != TokenType.CURL_BRACE_RIGHT) {}
+		super(parser);
+		addChild(new List_Modifier(parser));
+		parser.mustBe(TokenType._INTERFACE);
+		addChild(new Identifier(parser));
+		while(!parser.have(TokenType.CURL_BRACE_RIGHT))
+		{
+			parser.getTokenQueue().poll();
+		}
 	}
 
 	@Override
@@ -38,13 +36,13 @@ public class Interface extends BaseIrType
 		return (Identifier)getChild(1);
 	}
 	
-	public static boolean isNext(RewindableQueue<Token> tokenQueue)
+	public static boolean isNext(Parser_Java parser)
 	{
 		boolean result = false;
-		tokenQueue.remember();
-		new List_Modifier(tokenQueue);
-		result = see(tokenQueue, TokenType._INTERFACE);
-		tokenQueue.rewind();
+		parser.getTokenQueue().remember();
+		new List_Modifier(parser);
+		result = parser.see(TokenType._INTERFACE);
+		parser.getTokenQueue().rewind();
 		return result;
 	}
 }
