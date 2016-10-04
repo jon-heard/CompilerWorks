@@ -1,5 +1,8 @@
+change 'Identifier' to 'Id'
+check for line breaks invalidated by 'Identifier' to 'Id'
 
-add methodCall to processing
+Adjust methodCall processing to split on field references
+
 adjust classpathDB to combine sources
 
 start making real tests for parser

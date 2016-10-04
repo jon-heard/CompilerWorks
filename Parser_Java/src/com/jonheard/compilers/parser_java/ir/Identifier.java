@@ -42,4 +42,15 @@ public class Identifier extends BaseIrType
 	{
 		return parser.see(TokenType.IDENTIFIER);
 	}
+	
+	@Override
+	public boolean equals(Object rhs)
+	{
+		if(!(rhs instanceof Identifier))
+		{
+			return false;
+		}
+		Identifier other = (Identifier)rhs;
+		return this.value.equals(other.value);
+	}
 }

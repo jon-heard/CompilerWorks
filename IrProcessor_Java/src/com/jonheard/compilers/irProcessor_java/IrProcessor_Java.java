@@ -92,23 +92,24 @@ public class IrProcessor_Java
 	
 	private void handleMethodCall(MethodCall data)
 	{
-//		QualifiedIdentifier id = data.getIdentifier();
-//		Item path = libs.getValue(id.getValue());
-//		if(path instanceof Item_Err_NotFound)
-//		{
-//			QualifiedIdentifier newId = fullyQualifyIdentifier(id.getFirst());
-//			if(newId == null)
-//			{
-//				Logger.error(
-//						"cannot find symbol", source.getFilename(),
-//						id.getLine(), id.getColumn(),
-//						source.getLine(id.getLine()));
-//			}
-//			else
-//			{
-//				data.setIdentifier(newId);
-//			}
-//		}
+		QualifiedIdentifier id = data.getIdentifier();
+		Item path = libs.getValue(id.getValue());
+		if(path instanceof Item_Err_NotFound)
+		{
+			QualifiedIdentifier newId = fullyQualifyIdentifier(id.getFirst());
+			if(newId == null)
+			{
+				Logger.error(
+						"cannot find symbol", source.getFilename(),
+						id.getLine(), id.getColumn(),
+						source.getLine(id.getLine()));
+			}
+			else
+			{
+				QualifiedIdentifier finalId = mergeQualifiedIds(newId, id);
+				data.setIdentifier(finalId);
+			}
+		}
 	}
 	
 	private void handleImport(
@@ -173,5 +174,27 @@ public class IrProcessor_Java
 		}
 		return new QualifiedIdentifier(
 				id.getLine(), id.getColumn(), identifiers);
+	}
+	
+	private QualifiedIdentifier mergeQualifiedIds(
+			QualifiedIdentifier lhs, QualifiedIdentifier rhs)
+	{
+		List<Identifier> identifiers = new ArrayList<Identifier>();
+		Identifier middleId = rhs.getFirst();
+		for(int i = 0; i < lhs.getChildCount(); i++)
+		{
+			if(i == lhs.getChildCount()-1 && lhs.getChild(i).equals(middleId))
+			{
+				continue;
+			}
+			identifiers.add((Identifier)lhs.getChild(i));
+		}
+		for(int i = 0; i < rhs.getChildCount(); i++)
+		{
+			identifiers.add((Identifier)rhs.getChild(i));
+		}		
+		QualifiedIdentifier result = new QualifiedIdentifier(
+				rhs.getLine(), rhs.getColumn(), identifiers);
+		return result;
 	}
 }
