@@ -1,7 +1,7 @@
 
-get processor working (imports and packages)
-adjust classpathDB to combine sources
+Allow creation of QualfiedIdentifier from Item
 get processor working (types)
+adjust classpathDB to combine sources
 
 start making real tests for parser
 
