@@ -49,7 +49,7 @@ public class JavaCTest
 		UtilMethods.stringToFile(source, TEST_DIR+"/"+TEST_FILENAME_1);
 		JavaC compiler = new JavaC();
 
-		/// Tokenizing
+		// Tokenizing
 		String expectedTokens = JavaC.HEADER_TEXT +
 				"package\nidentifier:first\ndot\nidentifier:second\n" +
 				"semicolon\nimport\nidentifier:java\ndot\nidentifier:lang\n" +
@@ -67,7 +67,7 @@ public class JavaCTest
 				new String[] {TEST_DIR+"/"+TEST_FILENAME_1, "-t"});
 		assertEquals(expectedTokens, actualTokens);
 		
-		/// Parsing
+		// Parsing
 		String expectedParsed = JavaC.HEADER_TEXT + 
 				"<CompilationUnit line='1' importCount='2' typeCount='1'>\n" +
 				"	<Package line='1' identifier='first.second'/>\n" +
@@ -93,9 +93,31 @@ public class JavaCTest
 				new String[] {TEST_DIR+"/"+TEST_FILENAME_1, "-p"});
 		assertEquals(expectedParsed, actualParsed);
 
-//		String actualProcessed = compiler.compile(
-//				new String[] {TEST_DIR+"/"+TEST_FILENAME_1, "-r"});
-		System.out.println(actualParsed);
+		// Processing
+		String expectedProcessed = JavaC.HEADER_TEXT + 
+				"<CompilationUnit line='1' importCount='2' typeCount='1'>\n" +
+				"	<Package line='1' identifier='first.second'/>\n" +
+				"	<Import line='2' isOnDemand='true' isStatic='false' identifier='java.lang'/>\n" +
+				"	<Import line='3' isOnDemand='false' isStatic='false' identifier='javax.swing.JLabel'/>\n" +
+				"	<Class line='4' name='Test1' modifiers='public'>\n" +
+				"		<Method line='6' name='main' type='void' modifiers='public static'>\n" +
+				"			<List_Variable line='6'>\n" +
+				"				<Variable line='6' name='args' type='java.lang.String[]' modifiers=''/>\n" +
+				"			</List_Variable>\n" +
+				"			<CodeBlock line='7'>\n" +
+				"				<MethodCall line='8'>\n" +
+				"					<QualifiedIdentifier line='8' value='System.out.println'/>\n" +
+				"					<List_Expression line='8'>\n" +
+				"						<Literal_string line='8' value='Hello world'/>\n" +
+				"					</List_Expression>\n" +
+				"				</MethodCall>\n" +
+				"			</CodeBlock>\n" +
+				"		</Method>\n" +
+				"	</Class>\n" +
+				"</CompilationUnit>\n";
+		String actualProcessed = compiler.compile(
+				new String[] {TEST_DIR+"/"+TEST_FILENAME_1, "-r"});
+		System.out.println(actualProcessed);
 	}
 	
 	@Test

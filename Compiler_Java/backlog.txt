@@ -1,3 +1,8 @@
+
+get processor working (imports and packages)
+adjust classpathDB to combine sources
+get processor working (types)
+
 start making real tests for parser
 
 make db merge items on adding sources (test what happens with collision on nonstatic and static)

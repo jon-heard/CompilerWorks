@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.jonheard.compilers.javaClasspathDatabase.JavaClasspathDatabase;
 import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 import com.jonheard.compilers.parser_java.ir.*;
+import com.jonheard.compilers.parser_java.ir.Package;
 import com.jonheard.util.Logger;
 
 public class IrProcessor_Java
@@ -13,14 +14,11 @@ public class IrProcessor_Java
 	HashMap<String, Item> imports = new HashMap<String, Item>();
 	JavaClasspathDatabase libs;
 	
-	public IrProcessor_Java(JavaClasspathDatabase libs)
+	public void process(JavaClasspathDatabase libs, CompilationUnit toProcess)
 	{
 		this.libs = libs;
-	}
-	
-	public void process(CompilationUnit toProcess)
-	{
 		imports.clear();
+		handleImport(0, "java.lang", false, true);
 		process_helper(toProcess);
 	}
 	
@@ -33,55 +31,69 @@ public class IrProcessor_Java
 
 		if(ir instanceof Import)
 		{
-			Import val = (Import)ir;
-			String id = val.getIdentifier().getValue();
-			Item path = libs.getValue(id);
-			if(val.isStatic())
+			Import data = (Import)ir;
+			handleImport(
+					data.getLine(), data.getIdentifier().getValue(),
+					data.isStatic(), data.isOnDemand());
+		}
+		else if(ir instanceof Package)
+		{
+			Package data = (Package)ir;
+			handleImport(
+					data.getLine(), data.getIdentifier().getValue(),
+					false, true);
+		}
+		
+		return ir;
+	}
+	
+	private void handleImport(
+			int line, String pathString, boolean isStatic, boolean isOnDemand)
+	{
+		Item path = libs.getValue(pathString);
+		if(isStatic)
+		{
+			if(isOnDemand)
 			{
-				if(val.isOnDemand())
+				if(!(path instanceof Item_Class))
 				{
-					if(!(path instanceof Item_Class))
-					{
-						Logger.error("cannot find symbol", "", ir.getLine(), 0, "");
-					}
-					for(Item item : path)
-					{
-						imports.put(item.getName(), item);
-					}
+					Logger.error("cannot find symbol", "", line, 0, "");
 				}
-				else
+				for(Item item : path)
 				{
-					if(!(path instanceof Item_Member))
-					{
-						Logger.error("cannot find symbol", "", ir.getLine(), 0, "");
-					}
-					imports.put(path.getName(), path);
+					imports.put(item.getName(), item);
 				}
 			}
 			else
 			{
-				if(val.isOnDemand())
+				if(!(path instanceof Item_Member))
 				{
-					if(!(path instanceof Item_Package))
-					{
-						Logger.error("cannot find symbol", "", ir.getLine(), 0, "");
-					}
-					for(Item item : path)
-					{
-						imports.put(item.getName(), item);
-					}
+					Logger.error("cannot find symbol", "", line, 0, "");
 				}
-				else
-				{
-					if(!(path instanceof Item_Class))
-					{
-						Logger.error("cannot find symbol", "", ir.getLine(), 0, "");
-					}
-					imports.put(path.getName(), path);
-				}
+				imports.put(path.getName(), path);
 			}
 		}
-		
-		return ir;
+		else
+		{
+			if(isOnDemand)
+			{
+				if(!(path instanceof Item_Package))
+				{
+					Logger.error("cannot find symbol", "", line, 0, "");
+				}
+				for(Item item : path)
+				{
+					imports.put(item.getName(), item);
+				}
+			}
+			else
+			{
+				if(!(path instanceof Item_Class))
+				{
+					Logger.error("cannot find symbol", "", line, 0, "");
+				}
+				imports.put(path.getName(), path);
+			}
+		}
 	}
 }

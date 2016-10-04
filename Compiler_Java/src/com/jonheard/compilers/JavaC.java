@@ -3,6 +3,8 @@ package com.jonheard.compilers;
 
 import java.util.List;
 
+import com.jonheard.compilers.irProcessor_java.IrProcessor_Java;
+import com.jonheard.compilers.javaClasspathDatabase.JavaClasspathDatabase;
 import com.jonheard.compilers.parser_java.ParserStringConverter;
 import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.parser_java.ir.CompilationUnit;
@@ -104,15 +106,19 @@ public class JavaC
 			return result.toString();
 		}
 		
-//		// Process
-//		JavaClasspathDatabase libs = new JavaClasspathDatabase();
-//		libs.addSource_Jdk();
-//		IrProcessor_Java processor = new IrProcessor_Java(libs);
-//		if(finalStage == Stage.parse)
-//		{
-//			result.append(parser.parseToString());
-//			return result.toString();
-//		}
+		// Setup classpath database
+		JavaClasspathDatabase libs = new JavaClasspathDatabase();
+		libs.addSource_Jdk();
+
+		// Process
+		IrProcessor_Java processor = new IrProcessor_Java();
+		processor.process(libs, parsed);
+		if(finalStage == Stage.process)
+		{
+			ParserStringConverter converter = new ParserStringConverter();
+			result.append(converter.parsedToString(parsed));
+			return result.toString();
+		}
 		
 		return "";
 	}
