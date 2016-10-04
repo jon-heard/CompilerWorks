@@ -8,8 +8,8 @@ public class BaseIrType
 {
 	public BaseIrType(Parser_Java parser)
 	{
-		line = parser.getTokenQueue().peek().getRow();
-		column = parser.getTokenQueue().peek().getColumn();
+		line = parser.getNextToken().getRow();
+		column = parser.getNextToken().getColumn();
 	}
 	public BaseIrType(int line, int column)
 	{

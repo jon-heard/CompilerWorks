@@ -13,7 +13,7 @@ public class Parser_Expression
 {
 	public static BaseIrType parseExpressionStatment(Parser_Java parser)
 	{
-		Token next = parser.getTokenQueue().peek();
+		Token next = parser.getNextToken();
 		Expression result = parseExpression(parser);
 		switch(result.getType())
 		{

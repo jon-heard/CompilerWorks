@@ -11,7 +11,7 @@ public class Identifier extends BaseIrType
 	public Identifier(Parser_Java parser)
 	{
 		super(parser);
-		Token currentToken = parser.getTokenQueue().peek();
+		Token currentToken = parser.getNextToken();
 		if(parser.mustBe(TokenType.IDENTIFIER))
 		{
 			value = currentToken.getText();
