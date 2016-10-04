@@ -1,4 +1,4 @@
-package com.jonheard.compilers;
+package com.jonheard.util;
 
 public class SourceFileInfo
 {
@@ -11,6 +11,7 @@ public class SourceFileInfo
 	
 	public String getFilename() { return filename; }
 	public String getSourcecode() { return sourceCode; }
+	public int getLineCount() { return lines.length; }
 	public String getLine(int index) { return lines[index]; } 
 	
 	private String filename;

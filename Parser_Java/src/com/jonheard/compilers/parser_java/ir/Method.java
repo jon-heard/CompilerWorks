@@ -1,25 +1,21 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.util.RewindableQueue;
-
-import static com.jonheard.compilers.parser_java.JavaParser.*;
-
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.parser_java.ir.statement.CodeBlock;
-import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Method extends BaseIrType
 {
-	public Method(RewindableQueue<Token> tokenQueue)
+	public Method(Parser_Java parser)
 	{
-		super(tokenQueue);
-		addChild(new List_Modifier(tokenQueue));
-		addChild(new Type(tokenQueue));
-		addChild(new Identifier(tokenQueue));
-		mustBe(tokenQueue, TokenType.PAREN_LEFT);
-		addChild(new List_Variable(tokenQueue));
-		mustBe(tokenQueue, TokenType.PAREN_RIGHT);
-		addChild(new CodeBlock(tokenQueue));
+		super(parser);
+		addChild(new List_Modifier(parser));
+		addChild(new Type(parser));
+		addChild(new Identifier(parser));
+		parser.mustBe(TokenType.PAREN_LEFT);
+		addChild(new List_Variable(parser));
+		parser.mustBe(TokenType.PAREN_RIGHT);
+		addChild(new CodeBlock(parser));
 	}
 
 	@Override
@@ -69,25 +65,24 @@ public class Method extends BaseIrType
 		return result.toString();
 	}
 	
-	public static boolean isNext(
-			RewindableQueue<Token> tokenQueue)
+	public static boolean isNext(Parser_Java parser)
 	{
 		boolean result = false;
-		tokenQueue.remember();
-		new List_Modifier(tokenQueue);
-		if(Type.isNext(tokenQueue))
+		parser.getTokenQueue().remember();
+		new List_Modifier(parser);
+		if(Type.isNext(parser))
 		{
-			new Type(tokenQueue);
-			if(Identifier.isNext(tokenQueue))
+			new Type(parser);
+			if(Identifier.isNext(parser))
 			{
-				new Identifier(tokenQueue);
-				if(see(tokenQueue, TokenType.PAREN_LEFT))
+				new Identifier(parser);
+				if(parser.see(TokenType.PAREN_LEFT))
 				{
 					result = true;
 				}
 			}
 		}
-		tokenQueue.rewind();
+		parser.getTokenQueue().rewind();
 		return result;
 	}
 }

@@ -1,7 +1,6 @@
 package com.jonheard.compilers.parser_java.ir.expression;
 
-import static com.jonheard.compilers.parser_java.JavaParser.*;
-
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
 import com.jonheard.compilers.parser_java.ir.Identifier;
 import com.jonheard.compilers.parser_java.ir.List_Expression;
@@ -9,15 +8,13 @@ import com.jonheard.compilers.parser_java.ir.QualifiedIdentifier;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 import com.jonheard.util.Logger;
-import com.jonheard.util.RewindableQueue;
 
 public class Parser_Expression
 {
-	public static BaseIrType parseExpressionStatment(
-			RewindableQueue<Token> tokenQueue)
+	public static BaseIrType parseExpressionStatment(Parser_Java parser)
 	{
-		Token next = tokenQueue.peek();
-		Expression result = parseExpression(tokenQueue);
+		Token next = parser.getTokenQueue().peek();
+		Expression result = parseExpression(parser);
 		switch(result.getType())
 		{
 			case PRE_INCREMENT:
@@ -32,63 +29,61 @@ public class Parser_Expression
 			break;
 			default:
 				Logger.error("not a statement",
-						next.getFilename(), next.getRow(), next.getCol(),
-						next.getLine());
+						parser.getSource().getFilename(), next.getRow(),
+						next.getColumn(),
+						parser.getSource().getLine(next.getRow()));
 				break;				
 		}
-		mustBe(tokenQueue, TokenType.SEMICOLON);
+		parser.mustBe(TokenType.SEMICOLON);
 		return result;
 	}
 	
-	public static Expression parseExpression(
-			RewindableQueue<Token> tokenQueue)
+	public static Expression parseExpression(Parser_Java parser)
 	{
-		return tryAssignment(tokenQueue);
+		return tryAssignment(parser);
 	}
 
-	private static Expression tryAssignment(
-			RewindableQueue<Token> tokenQueue)
+	private static Expression tryAssignment(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
-		Expression lhs = tryConditional(tokenQueue);
-		if(have(tokenQueue, TokenType.EQUAL))
+		int line = parser.getTokenQueue().peek().getRow();
+		Expression lhs = tryConditional(parser);
+		if(parser.have(TokenType.EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGMENT, line,
-					lhs, tryAssignment(tokenQueue));
-		if(have(tokenQueue, TokenType.PLUS_EQUAL))
+					lhs, tryAssignment(parser));
+		if(parser.have(TokenType.PLUS_EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGMENT__ADD, line,
-					lhs, tryAssignment(tokenQueue));
-		if(have(tokenQueue, TokenType.DASH_EQUAL))
+					lhs, tryAssignment(parser));
+		if(parser.have(TokenType.DASH_EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGMENT__SUB, line,
-					lhs, tryAssignment(tokenQueue));
-		if(have(tokenQueue, TokenType.STAR_EQUAL))
+					lhs, tryAssignment(parser));
+		if(parser.have(TokenType.STAR_EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGMENT__MUL, line,
-					lhs, tryAssignment(tokenQueue));
-		if(have(tokenQueue, TokenType.SLASH_EQUAL))
+					lhs, tryAssignment(parser));
+		if(parser.have(TokenType.SLASH_EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGNMENT__DIV, line,
-					lhs, tryAssignment(tokenQueue));
-		if(have(tokenQueue, TokenType.PERCENT_EQUAL))
+					lhs, tryAssignment(parser));
+		if(parser.have(TokenType.PERCENT_EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGNMENT__MOD, line,
-					lhs, tryAssignment(tokenQueue));
+					lhs, tryAssignment(parser));
 		else
 			return lhs;
 	}
 	
-	private static Expression tryConditional(
-			RewindableQueue<Token> tokenQueue)
+	private static Expression tryConditional(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
-		Expression lhs = tryLogical(tokenQueue);
-		if(have(tokenQueue, TokenType.QUESTION))
+		int line = parser.getTokenQueue().peek().getRow();
+		Expression lhs = tryLogical(parser);
+		if(parser.have(TokenType.QUESTION))
 		{
-			Expression consequent = parseExpression(tokenQueue);
-			mustBe(tokenQueue, TokenType.COLON);
-			Expression alternative = parseExpression(tokenQueue);
+			Expression consequent = parseExpression(parser);
+			parser.mustBe(TokenType.COLON);
+			Expression alternative = parseExpression(parser);
 			lhs = new Expression(
 					ExpressionType.CONDITIONAL, line,
 					lhs, consequent, alternative);
@@ -96,172 +91,164 @@ public class Parser_Expression
 		return lhs;
 	}
 
-	private static Expression tryLogical(
-			RewindableQueue<Token> tokenQueue)
+	private static Expression tryLogical(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
-		Expression lhs = tryEquality(tokenQueue);
+		int line = parser.getTokenQueue().peek().getRow();
+		Expression lhs = tryEquality(parser);
 		boolean more = true;
 		while(more)
 		{
-			if(have(tokenQueue, TokenType.AND))
+			if(parser.have(TokenType.AND))
 				lhs = new Expression(
 						ExpressionType.LOGICAL_AND, line,
-						lhs, tryEquality(tokenQueue));
-			else if(have(tokenQueue, TokenType.PIPE))
+						lhs, tryEquality(parser));
+			else if(parser.have(TokenType.PIPE))
 				lhs = new Expression(
 						ExpressionType.LOGICAL_OR, line,
-						lhs, tryEquality(tokenQueue));
+						lhs, tryEquality(parser));
 			else
 				more = false;
 		}
 		return lhs;
 	}
 
-	private static Expression tryEquality(
-			RewindableQueue<Token> tokenQueue)
+	private static Expression tryEquality(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
-		Expression lhs = tryRelational(tokenQueue);
+		int line = parser.getTokenQueue().peek().getRow();
+		Expression lhs = tryRelational(parser);
 		boolean more = true;
 		while(more)
 		{
-			if(have(tokenQueue, TokenType.EQUAL_EQUAL))
+			if(parser.have(TokenType.EQUAL_EQUAL))
 				lhs = new Expression(
 						ExpressionType.EQUALITY, line,
-						lhs, tryRelational(tokenQueue));
+						lhs, tryRelational(parser));
 			else
 				more = false;
 		}
 		return lhs;
 	}
 	
-	private static Expression tryRelational(
-			RewindableQueue<Token> tokenQueue)
+	private static Expression tryRelational(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
-		Expression lhs = tryAdditive(tokenQueue);
-		if(have(tokenQueue, TokenType.RIGHT))
+		int line = parser.getTokenQueue().peek().getRow();
+		Expression lhs = tryAdditive(parser);
+		if(parser.have(TokenType.RIGHT))
 			lhs = new Expression(
 					ExpressionType.GREATER, line,
-					lhs, tryAdditive(tokenQueue));
-		if(have(tokenQueue, TokenType.LEFT))
+					lhs, tryAdditive(parser));
+		if(parser.have(TokenType.LEFT))
 			lhs = new Expression(
 					ExpressionType.LESS, line,
-					lhs, tryAdditive(tokenQueue));
-		if(have(tokenQueue, TokenType.RIGHT_EQUAL))
+					lhs, tryAdditive(parser));
+		if(parser.have(TokenType.RIGHT_EQUAL))
 			lhs = new Expression(
 					ExpressionType.GREATER_OR_EQUAL, line,
-					lhs, tryAdditive(tokenQueue));
-		if(have(tokenQueue, TokenType.LEFT_EQUAL))
+					lhs, tryAdditive(parser));
+		if(parser.have(TokenType.LEFT_EQUAL))
 			lhs = new Expression(
 					ExpressionType.LESS_OR_EQUAL, line,
-					lhs, tryAdditive(tokenQueue));
+					lhs, tryAdditive(parser));
 		return lhs;
 	}
 	
-	private static Expression tryAdditive(
-			RewindableQueue<Token> tokenQueue)
+	private static Expression tryAdditive(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
-		Expression lhs = tryMultiplicative(tokenQueue);
+		int line = parser.getTokenQueue().peek().getRow();
+		Expression lhs = tryMultiplicative(parser);
 		boolean more = true;
 		while(more)
 		{
-			if(have(tokenQueue, TokenType.PLUS))
+			if(parser.have(TokenType.PLUS))
 				lhs = new Expression(
 						ExpressionType.ADD, line,
-						lhs, tryMultiplicative(tokenQueue));
-			else if(have(tokenQueue, TokenType.DASH))
+						lhs, tryMultiplicative(parser));
+			else if(parser.have(TokenType.DASH))
 				lhs = new Expression(
 						ExpressionType.SUB, line,
-						lhs, tryMultiplicative(tokenQueue));
+						lhs, tryMultiplicative(parser));
 			else
 				more = false;
 		}
 		return lhs;
 	}
 
-	private static Expression tryMultiplicative(
-			RewindableQueue<Token> tokenQueue)
+	private static Expression tryMultiplicative(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
-		Expression lhs = tryUnary(tokenQueue);
+		int line = parser.getTokenQueue().peek().getRow();
+		Expression lhs = tryUnary(parser);
 		boolean more = true;
 		while(more)
 		{
-			if(have(tokenQueue, TokenType.STAR))
+			if(parser.have(TokenType.STAR))
 				lhs = new Expression(
 						ExpressionType.MUL, line,
-						lhs, tryUnary(tokenQueue));
-			else if(have(tokenQueue, TokenType.SLASH))
+						lhs, tryUnary(parser));
+			else if(parser.have(TokenType.SLASH))
 				lhs = new Expression(
 						ExpressionType.DIV, line,
-						lhs, tryUnary(tokenQueue));
-			else if(have(tokenQueue, TokenType.PERCENT))
+						lhs, tryUnary(parser));
+			else if(parser.have(TokenType.PERCENT))
 				lhs = new Expression(
 						ExpressionType.MOD, line,
-						lhs, tryUnary(tokenQueue));
+						lhs, tryUnary(parser));
 			else
 				more = false;
 		}
 		return lhs;
 	}
 	
-	private static Expression tryUnary(
-			RewindableQueue<Token> tokenQueue)
+	private static Expression tryUnary(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
-		if(have(tokenQueue, TokenType.PLUS_PLUS))
+		int line = parser.getTokenQueue().peek().getRow();
+		if(parser.have(TokenType.PLUS_PLUS))
 			return new Expression(
 					ExpressionType.PRE_INCREMENT, line,
-					tryUnary(tokenQueue));
-		else if(have(tokenQueue, TokenType.DASH_DASH))
+					tryUnary(parser));
+		else if(parser.have(TokenType.DASH_DASH))
 			return new Expression(
 					ExpressionType.PRE_DECREMENT, line,
-					tryUnary(tokenQueue));
-		else if(have(tokenQueue, TokenType.PLUS))
+					tryUnary(parser));
+		else if(parser.have(TokenType.PLUS))
 			return new Expression(
 					ExpressionType.POSITIVE, line,
-					tryUnary(tokenQueue));
-		else if(have(tokenQueue, TokenType.DASH))
+					tryUnary(parser));
+		else if(parser.have(TokenType.DASH))
 			return new Expression(
 					ExpressionType.NEGATIVE, line,
-					tryUnary(tokenQueue));
+					tryUnary(parser));
 		else
-			return trySimpleUnary(tokenQueue);
+			return trySimpleUnary(parser);
 	}
 	
-	private static Expression trySimpleUnary(
-			RewindableQueue<Token> tokenQueue)
+	private static Expression trySimpleUnary(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
-		if(have(tokenQueue, TokenType.EXCLAIM))
+		int line = parser.getTokenQueue().peek().getRow();
+		if(parser.have(TokenType.EXCLAIM))
 			return new Expression(
 					ExpressionType.LOGICAL_NOT, line,
-					tryUnary(tokenQueue));
-		else if(seeCast(tokenQueue))
+					tryUnary(parser));
+		else if(seeCast(parser))
 		{
-			mustBe(tokenQueue, TokenType.PAREN_LEFT);
-			QualifiedIdentifier type = new QualifiedIdentifier(tokenQueue);
-			mustBe(tokenQueue, TokenType.PAREN_RIGHT);
-			return new Cast(line, type, parseExpression(tokenQueue));
+			parser.mustBe(TokenType.PAREN_LEFT);
+			QualifiedIdentifier type = new QualifiedIdentifier(parser);
+			parser.mustBe(TokenType.PAREN_RIGHT);
+			return new Cast(line, type, parseExpression(parser));
 		}
 		else
-			return tryPostFix(tokenQueue);
+			return tryPostFix(parser);
 	}
 	
-	private static Expression tryPostFix(
-			RewindableQueue<Token> tokenQueue)
+	private static Expression tryPostFix(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
-		Expression lhs = tryPrimary(tokenQueue);
+		int line = parser.getTokenQueue().peek().getRow();
+		Expression lhs = tryPrimary(parser);
 		boolean more = true;
 		while(more)
 		{
-			if(have(tokenQueue, TokenType.PLUS_PLUS))
+			if(parser.have(TokenType.PLUS_PLUS))
 				lhs = new Expression(ExpressionType.POST_INCREMENT, line, lhs);
-			if(have(tokenQueue, TokenType.DASH_DASH))
+			if(parser.have(TokenType.DASH_DASH))
 				lhs = new Expression(ExpressionType.POST_DECREMENT, line, lhs);
 			//TODO: add dot and lbrack stuff (line 1506) 
 			else
@@ -270,24 +257,24 @@ public class Parser_Expression
 		return lhs;
 	}
 	
-	private static Expression tryPrimary(RewindableQueue<Token> tokenQueue)
+	private static Expression tryPrimary(Parser_Java parser)
 	{
-		int line = tokenQueue.peek().getRow();
+		int line = parser.getTokenQueue().peek().getRow();
 		Expression result = null;
 		// Parenthesized expression
-		if(have(tokenQueue, TokenType.PAREN_LEFT))
+		if(parser.have(TokenType.PAREN_LEFT))
 		{
-			result = parseExpression(tokenQueue);
-			mustBe(tokenQueue, TokenType.PAREN_RIGHT);
+			result = parseExpression(parser);
+			parser.mustBe(TokenType.PAREN_RIGHT);
 		}
 		// this
-		else if(have(tokenQueue, TokenType._THIS))
+		else if(parser.have(TokenType._THIS))
 		{
-			if(have(tokenQueue, TokenType.PAREN_LEFT))
+			if(parser.have(TokenType.PAREN_LEFT))
 			{
 				result = new ThisConstructor(
-						line, new List_Expression(tokenQueue));
-				mustBe(tokenQueue, TokenType.PAREN_RIGHT);
+						line, new List_Expression(parser));
+				parser.mustBe(TokenType.PAREN_RIGHT);
 			}
 			else
 			{
@@ -295,34 +282,34 @@ public class Parser_Expression
 			}
 		}
 		// super
-		else if(have(tokenQueue, TokenType._SUPER))
+		else if(parser.have(TokenType._SUPER))
 		{
-			if(have(tokenQueue, TokenType.DOT))
+			if(parser.have(TokenType.DOT))
 			{
 				//TODO: Fill in logic for "Super." expression
 			}
 			else
 			{
-				mustBe(tokenQueue, TokenType.PAREN_LEFT);
+				parser.mustBe(TokenType.PAREN_LEFT);
 				result = new SuperConstructor(
-						line, new List_Expression(tokenQueue));
-				mustBe(tokenQueue, TokenType.PAREN_RIGHT);
+						line, new List_Expression(parser));
+				parser.mustBe(TokenType.PAREN_RIGHT);
 			}
 		}
 		// new
-		else if(have(tokenQueue, TokenType._NEW))
+		else if(parser.have(TokenType._NEW))
 		{
 			//TODO: Fill in logic for "New" expression
 		}
 		// identifier
-		else if(QualifiedIdentifier.isNext(tokenQueue))
+		else if(QualifiedIdentifier.isNext(parser))
 		{
-			QualifiedIdentifier id = new QualifiedIdentifier(tokenQueue);
-			if(have(tokenQueue, TokenType.PAREN_LEFT))
+			QualifiedIdentifier id = new QualifiedIdentifier(parser);
+			if(parser.have(TokenType.PAREN_LEFT))
 			{
 				result = new MethodCall(
-						line, id, new List_Expression(tokenQueue));
-				mustBe(tokenQueue, TokenType.PAREN_RIGHT);
+						line, id, new List_Expression(parser));
+				parser.mustBe(TokenType.PAREN_RIGHT);
 			}
 			else if(id.getChildCount() == 1)
 			{
@@ -336,7 +323,7 @@ public class Parser_Expression
 		// literal
 		else
 		{
-			Token literalToken = tokenQueue.poll();
+			Token literalToken = parser.getTokenQueue().poll();
 			TokenType literalTokenType = literalToken.getType();
 			if(		literalTokenType != TokenType.INTEGER &&
 					literalTokenType != TokenType.LONG &&
@@ -350,8 +337,9 @@ public class Parser_Expression
 			{
 				Logger.error(
 						"illegal start of expression",
-						literalToken.getFilename(), literalToken.getRow(),
-						literalToken.getCol(), literalToken.getLine());
+						parser.getSource().getFilename(), literalToken.getRow(),
+						literalToken.getColumn(),
+						parser.getSource().getLine(literalToken.getRow()));
 			}
 			result = new Literal(line, literalToken);
 		}
@@ -359,7 +347,7 @@ public class Parser_Expression
 	}
 
 	
-	private static boolean seeCast(RewindableQueue<Token> tokenQueue)
+	private static boolean seeCast(Parser_Java parser)
 	{
 		//TODO: fill with cast checking
 		return false;

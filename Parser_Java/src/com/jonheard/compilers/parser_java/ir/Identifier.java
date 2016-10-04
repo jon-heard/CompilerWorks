@@ -1,9 +1,6 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.util.RewindableQueue;
-
-import static com.jonheard.compilers.parser_java.JavaParser.*;
-
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
@@ -11,11 +8,11 @@ public class Identifier extends BaseIrType
 {
 	private String value = "";
 	
-	public Identifier(RewindableQueue<Token> tokenQueue)
+	public Identifier(Parser_Java parser)
 	{
-		super(tokenQueue);
-		Token currentToken = tokenQueue.peek();
-		if(mustBe(tokenQueue, TokenType.IDENTIFIER))
+		super(parser);
+		Token currentToken = parser.getTokenQueue().peek();
+		if(parser.mustBe(TokenType.IDENTIFIER))
 		{
 			value = currentToken.getText();
 		}
@@ -36,8 +33,8 @@ public class Identifier extends BaseIrType
 		return value;
 	}
 	
-	public static boolean isNext(RewindableQueue<Token> tokenQueue)
+	public static boolean isNext(Parser_Java parser)
 	{
-		return see(tokenQueue, TokenType.IDENTIFIER);
+		return parser.see(TokenType.IDENTIFIER);
 	}
 }

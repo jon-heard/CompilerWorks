@@ -1,28 +1,25 @@
 package com.jonheard.compilers.parser_java.ir.statement;
 
-import static com.jonheard.compilers.parser_java.JavaParser.*;
-
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
-import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
-import com.jonheard.util.RewindableQueue;
 
 public class For extends BaseIrType
 {
-	public For(RewindableQueue<Token> tokenQueue)
+	public For(Parser_Java parser)
 	{
-		super(tokenQueue);
-		mustBe(tokenQueue, TokenType._FOR);
-		mustBe(tokenQueue, TokenType.PAREN_LEFT);
-		while(!have(tokenQueue, TokenType.PAREN_RIGHT))
+		super(parser);
+		parser.mustBe(TokenType._FOR);
+		parser.mustBe(TokenType.PAREN_LEFT);
+		while(!parser.have(TokenType.PAREN_RIGHT))
 		{
-			tokenQueue.poll();
+			parser.getTokenQueue().poll();
 		}
-		addChild(Parser_Statement.getNextStatement(tokenQueue));
+		addChild(Parser_Statement.getNextStatement(parser));
 	}
 	
-	public static boolean isNext(RewindableQueue<Token> tokenQueue)
+	public static boolean isNext(Parser_Java parser)
 	{
-		return see(tokenQueue, TokenType._FOR);
+		return parser.see(TokenType._FOR);
 	}
 }

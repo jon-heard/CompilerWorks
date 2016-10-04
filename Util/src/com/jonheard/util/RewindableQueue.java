@@ -18,29 +18,35 @@ public class RewindableQueue<T> extends LinkedList<T>
 	
 	public void remember()
 	{
-		remembering = true;
-		memory.clear();
+		memory.push(new Stack<T>());
+	}
+	
+	public void forget()
+	{
+		memory.pop();
 	}
 	
 	public void rewind()
 	{
-		remembering = false;
-		while(!memory.isEmpty())
+		if(!memory.isEmpty())
 		{
-			addFirst(memory.pop());
+			Stack<T> toRewind = memory.pop();
+			while(!toRewind.isEmpty())
+			{
+				addFirst(toRewind.pop());
+			}
 		}
 	}
 	
 	@Override
 	public T poll()
 	{
-		if(remembering)
+		if(!memory.isEmpty())
 		{
-			memory.push(peek());
+			memory.peek().push(peek());
 		}
 		return super.poll();
 	}
 	
-	private boolean remembering = false;
-	private Stack<T> memory = new Stack<T>();
+	private Stack<Stack<T>> memory = new Stack<Stack<T>>();
 }

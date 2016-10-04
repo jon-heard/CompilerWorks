@@ -1,8 +1,15 @@
 
 package com.jonheard.compilers;
 
-import com.jonheard.compilers.parser_java.JavaParser;
+import java.util.List;
+
+import com.jonheard.compilers.parser_java.ParserStringConverter;
+import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.ir.CompilationUnit;
+import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.Tokenizer;
+import com.jonheard.compilers.tokenizer_java.TokenizerStringConverter;
+import com.jonheard.util.SourceFileInfo;
 import com.jonheard.util.UtilMethods;
 
 public class JavaC
@@ -16,9 +23,10 @@ public class JavaC
 			"Usage: javac <source file> <options>\n" +
 			"where possible options include:\n" +
 			"-help (-h)      Print this help panel and quit\n" +
-			"-tokenize (-t)  Run the tokenizer step only, printing results" +
-			"-parse (-p)     Run up to the parser step only, printing results";
-	
+			"-tokenize (-t)  Run up to the tokenizer step, printing results" +
+			"-parse (-p)     Run up to the parser step, printing results" +
+			"-process (-r)   Run up to the processing step, printing results";
+
 	public static void main(String[] args)
 	{
 		JavaC app = new JavaC();
@@ -50,6 +58,10 @@ public class JavaC
 				case "-p":
 					finalStage = Stage.parse;
 					break;
+				case "-process":
+				case "-r":
+					finalStage = Stage.process;
+					break;
 				default:
 					sourceFile = args[i];
 					break;
@@ -62,33 +74,54 @@ public class JavaC
 			result.append(HELP_TEXT);
 			return result.toString();
 		}
+
 		// Load the file
-		String source = UtilMethods.fileToString(sourceFile);
-		if(source == null)
+		String sourceCode = UtilMethods.fileToString(sourceFile);
+		if(sourceCode == null)
 		{
 			result.append("ERROR: Invalid filename: " + sourceFile);
 			return result.toString();
 		}
-		Tokenizer t = new Tokenizer(sourceFile, source);
+		SourceFileInfo source = new SourceFileInfo(sourceFile, sourceCode);
+
+		// Tokenize
+		Tokenizer tokenizer = new Tokenizer();
+		List<Token> tokenized = tokenizer.tokenize(source);
 		if(finalStage == Stage.tokenize)
 		{
-			result.append(t.tokenizeToString());
+			TokenizerStringConverter converter = new TokenizerStringConverter();
+			result.append(converter.tokenizedToString(tokenized));
 			return result.toString();
 		}
-		JavaParser parser = new JavaParser(t.tokenize());
+
+		// Parse
+		Parser_Java parser = new Parser_Java();
+		CompilationUnit parsed = parser.parse(source, tokenized);
 		if(finalStage == Stage.parse)
 		{
-			result.append(parser.parseToString());
+			ParserStringConverter converter = new ParserStringConverter();
+			result.append(converter.parsedToString(parsed));
 			return result.toString();
 		}
-		return result.toString();
+		
+//		// Process
+//		JavaClasspathDatabase libs = new JavaClasspathDatabase();
+//		libs.addSource_Jdk();
+//		IrProcessor_Java processor = new IrProcessor_Java(libs);
+//		if(finalStage == Stage.parse)
+//		{
+//			result.append(parser.parseToString());
+//			return result.toString();
+//		}
+		
+		return "";
 	}
 
 	private enum Stage
 	{
 		tokenize,
 		parse,
-		evaluateTypes,
+		process,
 		buildClassFile
 	}
 }

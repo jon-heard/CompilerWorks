@@ -1,20 +1,16 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.util.RewindableQueue;
-
-import static com.jonheard.compilers.parser_java.JavaParser.*;
-
-import com.jonheard.compilers.tokenizer_java.Token;
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Package extends BaseIrType
 {
-	Package(RewindableQueue<Token> tokenQueue)
+	Package(Parser_Java parser)
 	{
-		super(tokenQueue);
-		tokenQueue.poll();
-		addChild(new QualifiedIdentifier(tokenQueue));
-		tokenQueue.poll();
+		super(parser);
+		parser.mustBe(TokenType._PACKAGE);
+		addChild(new QualifiedIdentifier(parser));
+		parser.mustBe(TokenType.SEMICOLON);
 	}
 
 	@Override
@@ -31,9 +27,9 @@ public class Package extends BaseIrType
 		return (QualifiedIdentifier)getChild(0);
 	}
 	
-	public static boolean isNext(RewindableQueue<Token> tokenQueue)
+	public static boolean isNext(Parser_Java parser)
 	{
-		return see(tokenQueue, TokenType._PACKAGE);
+		return parser.see(TokenType._PACKAGE);
 	}
 
 }

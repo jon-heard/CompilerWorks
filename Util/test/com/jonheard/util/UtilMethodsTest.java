@@ -241,13 +241,13 @@ public class UtilMethodsTest
 	@Test
 	public void enumContainsStringTest()
 	{
-		assertTrue(UtilMethods.enumContainsString(EnumTest1.class, "first"));
-		assertTrue(UtilMethods.enumContainsString(EnumTest1.class, "second"));
-		assertTrue(UtilMethods.enumContainsString(EnumTest1.class, "third"));
-		assertFalse(UtilMethods.enumContainsString(EnumTest1.class, ""));
+		assertTrue(UtilMethods.enumHasValue(EnumTest1.class, "first"));
+		assertTrue(UtilMethods.enumHasValue(EnumTest1.class, "second"));
+		assertTrue(UtilMethods.enumHasValue(EnumTest1.class, "third"));
+		assertFalse(UtilMethods.enumHasValue(EnumTest1.class, ""));
 		assertFalse(
-				UtilMethods.enumContainsString(EnumTest1.class, "fourth"));
-		assertFalse(UtilMethods.enumContainsString(EnumTest1.class, "FIRST"));
+				UtilMethods.enumHasValue(EnumTest1.class, "fourth"));
+		assertFalse(UtilMethods.enumHasValue(EnumTest1.class, "FIRST"));
 	}
 	
 	@Test

@@ -55,31 +55,31 @@ public class MethodParser
 			curArg++;
 			
 			/// NoArg ops
-			if(UtilMethods.enumContainsString(Op_NoArg.class, opName))
+			if(UtilMethods.enumHasValue(Op_NoArg.class, opName))
 			{
 				Op_NoArg op = Op_NoArg.valueOf(opName);
 				codeBuilder.addOp(op);
 			}
 			/// Class ops
-			else if(UtilMethods.enumContainsString(Op_Class.class, opName))
+			else if(UtilMethods.enumHasValue(Op_Class.class, opName))
 			{
 				Op_Class op = MethodCodeBuilder.Op_Class.valueOf(opName);
 				codeBuilder.addOp(op, args.get(curArg));
 			}
 			/// Byte ops
-			else if(UtilMethods.enumContainsString(Op_Byte.class, opName))
+			else if(UtilMethods.enumHasValue(Op_Byte.class, opName))
 			{
 				Op_Byte op = MethodCodeBuilder.Op_Byte.valueOf(opName);
 				codeBuilder.addOp(op, Integer.parseInt(args.get(curArg)));
 			}
 			/// Label ops
-			else if(UtilMethods.enumContainsString(Op_Label.class, opName))
+			else if(UtilMethods.enumHasValue(Op_Label.class, opName))
 			{
 				Op_Label op = MethodCodeBuilder.Op_Label.valueOf(opName);
 				codeBuilder.addOp(op, args.get(curArg));
 			}
 			/// Method ops
-			else if(UtilMethods.enumContainsString(Op_Method.class, opName))
+			else if(UtilMethods.enumHasValue(Op_Method.class, opName))
 			{
 				Op_Method op = MethodCodeBuilder.Op_Method.valueOf(opName);
 				codeBuilder.addOp(
@@ -88,7 +88,7 @@ public class MethodParser
 						args.get(curArg+2));
 			}
 			/// Field ops
-			else if(UtilMethods.enumContainsString(Op_Field.class, opName))
+			else if(UtilMethods.enumHasValue(Op_Field.class, opName))
 			{
 				Op_Field op = MethodCodeBuilder.Op_Field.valueOf(opName);
 				codeBuilder.addOp(
@@ -97,7 +97,7 @@ public class MethodParser
 						args.get(curArg+2));
 			}
 			/// String ops
-			else if(UtilMethods.enumContainsString(Op_String.class, opName))
+			else if(UtilMethods.enumHasValue(Op_String.class, opName))
 			{
 				Op_String op = MethodCodeBuilder.Op_String.valueOf(opName);
 				codeBuilder.addOp(op, args.get(curArg));

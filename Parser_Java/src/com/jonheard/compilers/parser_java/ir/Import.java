@@ -1,44 +1,35 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.util.RewindableQueue;
-
-import static com.jonheard.compilers.parser_java.JavaParser.*;
-
-import com.jonheard.compilers.tokenizer_java.Token;
+import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Import extends BaseIrType
 {
-	boolean isStatic = false;
-	boolean isOnDemand = false;
+	private boolean flag_isStatic = false;
+	private boolean flag_isOnDemand = false;
 
-	public Import(RewindableQueue<Token> tokenQueue)
+	public Import(Parser_Java parser)
 	{
-		super(tokenQueue);
-		mustBe(tokenQueue, TokenType._IMPORT);
-		if(see(tokenQueue, TokenType._STATIC))
+		super(parser);
+		parser.mustBe(TokenType._IMPORT);
+		if(parser.have(TokenType._STATIC))
 		{
-			isStatic = true;
-			tokenQueue.poll();
+			flag_isStatic = true;
 		}
-		QualifiedIdentifier identifier =
-				new QualifiedIdentifier(tokenQueue, true);
-		addChild(identifier);
-		if(identifier.isEndedWithDot())
+		addChild(new QualifiedIdentifier(parser));
+		if(parser.have(TokenType.DOT))
 		{
-			if(mustBe(tokenQueue, TokenType.STAR))
-			{
-				isOnDemand = true;
-			}
+			parser.mustBe(TokenType.STAR);
+			flag_isOnDemand = true;
 		}
-		mustBe(tokenQueue, TokenType.SEMICOLON);
+		parser.mustBe(TokenType.SEMICOLON);
 	}
 
 	@Override
 	public String getHeaderString()
 	{
-		return	"isOnDemaned='" + isOnDemand + "' " +
-				"isStatic='" + isStatic + "' " +
+		return	"isOnDemand='" + flag_isOnDemand + "' " +
+				"isStatic='" + flag_isStatic + "' " +
 				"identifier='" + getIdentifier().getValue() + "'";
 	}
 	
@@ -50,8 +41,18 @@ public class Import extends BaseIrType
 		return (QualifiedIdentifier)getChild(0);
 	}
 	
-	public static boolean isNext(RewindableQueue<Token> tokenQueue)
+	public boolean isStatic()
 	{
-		return see(tokenQueue, TokenType._IMPORT);
+		return flag_isStatic;
+	}
+	
+	public boolean isOnDemand()
+	{
+		return flag_isOnDemand;
+	}
+	
+	public static boolean isNext(Parser_Java parser)
+	{
+		return parser.see(TokenType._IMPORT);
 	}
 }

@@ -6,17 +6,15 @@ public class Token
 	{
 		this.type = type;
 		this.text = "";
-		this.col = col;
+		this.column = col;
 		this.row = currentRow;
-		this.sourceFileInfo = currentSourceFileInfo;
 	}
-	public Token(TokenType type, String text, int col)
+	public Token(TokenType type, int col, String text)
 	{
 		this.type = type;
+		this.column = col;
 		this.text = text;
-		this.col = col;
 		this.row = currentRow;
-		this.sourceFileInfo = currentSourceFileInfo;
 	}
 	public TokenType getType()
 	{
@@ -26,11 +24,8 @@ public class Token
 	{
 		return text;
 	}
-	public String getFilename() { return sourceFileInfo.getFilename(); }
 	public int getRow() { return row; }
-	public int getCol() { return col; }
-	public String getLine() { return sourceFileInfo.getLine(row-1); }
-	public SourceFileInfo getSourceFileInfo() { return sourceFileInfo; }
+	public int getColumn() { return column; }
 	
 	@Override
 	public String toString()
@@ -45,20 +40,26 @@ public class Token
 		}
 	}
 	
+	@Override
+	public boolean equals(Object rhs)
+	{
+		boolean result = false;
+		if(rhs instanceof Token)
+		{
+			Token rhsToken = (Token)rhs;
+			result = (rhsToken.type.equals(type) && rhsToken.text.equals(text));
+		}
+		return result;
+	}
+	
 	
 	public static int getCurrentRow() { return currentRow; }
 	public static void setCurrentRow(int row) { Token.currentRow = row; }
 	public static void incCurrentRow() { Token.currentRow++; }
-	public static void setCurrentSourceFileInfo(SourceFileInfo value)
-	{
-		Token.currentSourceFileInfo = value;
-	}
 
 	private TokenType type;
 	private String text;
-	private int row, col;
-	private SourceFileInfo sourceFileInfo;
+	private int row, column;
 	
 	private static int currentRow;
-	private static SourceFileInfo currentSourceFileInfo;
 }
