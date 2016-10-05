@@ -57,6 +57,12 @@ public class List_Modifier extends BaseIrType
 		if(hasFinal) result.add("final");		
 		return result;
 	}
+	
+	public boolean isPublic() { return hasPublic; }
+	public boolean isPrivate() { return hasPrivate; }
+	public boolean isProtected() { return hasProtected; }
+	public boolean isStatic() { return hasStatic; }
+	public boolean isFinal() { return hasFinal; }
 
 	private boolean hasPublic, hasPrivate, hasProtected, hasStatic, hasFinal;
 	
