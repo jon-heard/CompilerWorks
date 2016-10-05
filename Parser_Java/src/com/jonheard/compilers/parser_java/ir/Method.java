@@ -11,7 +11,7 @@ public class Method extends BaseIrType
 		super(parser);
 		addChild(new List_Modifier(parser));
 		addChild(new Type(parser));
-		addChild(new Identifier(parser));
+		addChild(new Id(parser));
 		parser.mustBe(TokenType.PAREN_LEFT);
 		addChild(new List_Variable(parser));
 		parser.mustBe(TokenType.PAREN_RIGHT);
@@ -39,9 +39,9 @@ public class Method extends BaseIrType
 		return (Type)getChild(1);
 	}
 	
-	public Identifier getName()
+	public Id getName()
 	{
-		return (Identifier)getChild(2);
+		return (Id)getChild(2);
 	}
 	
 	public List_Variable getParameterList()
@@ -73,9 +73,9 @@ public class Method extends BaseIrType
 		if(Type.isNext(parser))
 		{
 			new Type(parser);
-			if(Identifier.isNext(parser))
+			if(Id.isNext(parser))
 			{
-				new Identifier(parser);
+				new Id(parser);
 				if(parser.see(TokenType.PAREN_LEFT))
 				{
 					result = true;

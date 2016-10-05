@@ -13,10 +13,10 @@ public class TokenizerStringConverterTest
 		List<Token> source = new ArrayList<Token>();
 		source.add(new Token(TokenType._PUBLIC, 0));
 		source.add(new Token(TokenType.EQUAL, 0));
-		source.add(new Token(TokenType.IDENTIFIER, 0, "t"));
+		source.add(new Token(TokenType.ID, 0, "t"));
 		source.add(new Token(TokenType.INTEGER, 0, "42"));
 		
-		String expected = "public\nequal\nidentifier:t\ninteger:42\n";
+		String expected = "public\nequal\nid:t\ninteger:42\n";
 
 		TokenizerStringConverter c = new TokenizerStringConverter();
 		String actual = c.tokenizedToString(source);
@@ -27,12 +27,12 @@ public class TokenizerStringConverterTest
 	@Test
 	public void stringToTokenized()
 	{
-		String source = "public\nequal\nidentifier:t\ninteger:42\n";
+		String source = "public\nequal\nid:t\ninteger:42\n";
 		
 		List<Token> expected = new ArrayList<Token>();
 		expected.add(new Token(TokenType._PUBLIC, 0));
 		expected.add(new Token(TokenType.EQUAL, 0));
-		expected.add(new Token(TokenType.IDENTIFIER, 0, "t"));
+		expected.add(new Token(TokenType.ID, 0, "t"));
 		expected.add(new Token(TokenType.INTEGER, 0, "42"));
 		
 		TokenizerStringConverter c = new TokenizerStringConverter();
@@ -45,12 +45,12 @@ public class TokenizerStringConverterTest
 	@Test
 	public void stringToTokenized_commentsAndEmptyLines()
 	{
-		String source = "public\nequal\n \nidentifier:t\n // hi\ninteger:42\n";
+		String source = "public\nequal\n \nid:t\n // hi\ninteger:42\n";
 		
 		List<Token> expected = new ArrayList<Token>();
 		expected.add(new Token(TokenType._PUBLIC, 0));
 		expected.add(new Token(TokenType.EQUAL, 0));
-		expected.add(new Token(TokenType.IDENTIFIER, 0, "t"));
+		expected.add(new Token(TokenType.ID, 0, "t"));
 		expected.add(new Token(TokenType.INTEGER, 0, "42"));
 		
 		TokenizerStringConverter c = new TokenizerStringConverter();

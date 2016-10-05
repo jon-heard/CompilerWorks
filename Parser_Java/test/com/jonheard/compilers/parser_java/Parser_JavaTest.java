@@ -42,28 +42,28 @@ public class Parser_JavaTest
 		List<Token> result = new ArrayList<Token>();
 
 		result.add(new Token(TokenType._PACKAGE, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "com"));
+		result.add(new Token(TokenType.ID, 0, "com"));
 		result.add(new Token(TokenType.DOT, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "test"));
+		result.add(new Token(TokenType.ID, 0, "test"));
 		result.add(new Token(TokenType.SEMICOLON, 0));
 
 		result.add(new Token(TokenType._IMPORT, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "java"));
+		result.add(new Token(TokenType.ID, 0, "java"));
 		result.add(new Token(TokenType.DOT, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "util"));
+		result.add(new Token(TokenType.ID, 0, "util"));
 		result.add(new Token(TokenType.SEMICOLON, 0));
 		
 		result.add(new Token(TokenType._IMPORT, 0));
 		result.add(new Token(TokenType._STATIC, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "java"));
+		result.add(new Token(TokenType.ID, 0, "java"));
 		result.add(new Token(TokenType.DOT, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "lang"));
+		result.add(new Token(TokenType.ID, 0, "lang"));
 		result.add(new Token(TokenType.SEMICOLON, 0));
 
 		result.add(new Token(TokenType._IMPORT, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "java"));
+		result.add(new Token(TokenType.ID, 0, "java"));
 		result.add(new Token(TokenType.DOT, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "swing"));
+		result.add(new Token(TokenType.ID, 0, "swing"));
 		result.add(new Token(TokenType.DOT, 0));
 		result.add(new Token(TokenType.STAR, 0));
 		result.add(new Token(TokenType.SEMICOLON, 0));
@@ -71,31 +71,31 @@ public class Parser_JavaTest
 		result.add(new Token(TokenType._PUBLIC, 0));
 		result.add(new Token(TokenType._STATIC, 0));
 		result.add(new Token(TokenType._CLASS, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "Test1"));
+		result.add(new Token(TokenType.ID, 0, "Test1"));
 		result.add(new Token(TokenType.CURL_BRACE_LEFT, 0));
 		
 		result.add(new Token(TokenType._PUBLIC, 0));
 		result.add(new Token(TokenType._STATIC, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "int"));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "var1"));
+		result.add(new Token(TokenType.ID, 0, "int"));
+		result.add(new Token(TokenType.ID, 0, "var1"));
 
 		result.add(new Token(TokenType._PUBLIC, 0));
 		result.add(new Token(TokenType._STATIC, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "void"));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "main"));
+		result.add(new Token(TokenType.ID, 0, "void"));
+		result.add(new Token(TokenType.ID, 0, "main"));
 		result.add(new Token(TokenType.PAREN_LEFT, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "String"));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "args"));
+		result.add(new Token(TokenType.ID, 0, "String"));
+		result.add(new Token(TokenType.ID, 0, "args"));
 		result.add(new Token(TokenType.SQUARE_BRACE_LEFT, 0));
 		result.add(new Token(TokenType.SQUARE_BRACE_RIGHT, 0));
 		result.add(new Token(TokenType.PAREN_RIGHT, 0));
 		result.add(new Token(TokenType.CURL_BRACE_LEFT, 0));
 
-		result.add(new Token(TokenType.IDENTIFIER, 0, "System"));
+		result.add(new Token(TokenType.ID, 0, "System"));
 		result.add(new Token(TokenType.DOT, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "out"));
+		result.add(new Token(TokenType.ID, 0, "out"));
 		result.add(new Token(TokenType.DOT, 0));
-		result.add(new Token(TokenType.IDENTIFIER, 0, "println"));
+		result.add(new Token(TokenType.ID, 0, "println"));
 		result.add(new Token(TokenType.PAREN_LEFT, 0));
 		result.add(new Token(TokenType.STRING, 0, "Hello world"));
 		result.add(new Token(TokenType.PAREN_RIGHT, 0));

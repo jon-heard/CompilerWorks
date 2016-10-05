@@ -9,22 +9,22 @@ public class Package extends BaseIrType
 	{
 		super(parser);
 		parser.mustBe(TokenType._PACKAGE);
-		addChild(new QualifiedIdentifier(parser));
+		addChild(new QualifiedId(parser));
 		parser.mustBe(TokenType.SEMICOLON);
 	}
 
 	@Override
 	public String getHeaderString()
 	{
-		return	"identifier='" + getIdentifier().getValue() + "'";
+		return	"id='" + getId().getValue() + "'";
 	}
 	
 	@Override
 	public int getFirstPrintedChildIndex() { return 1; }
 	
-	public QualifiedIdentifier getIdentifier()
+	public QualifiedId getId()
 	{
-		return (QualifiedIdentifier)getChild(0);
+		return (QualifiedId)getChild(0);
 	}
 	
 	public static boolean isNext(Parser_Java parser)

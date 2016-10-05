@@ -10,7 +10,7 @@ public class Interface extends BaseIrType
 		super(parser);
 		addChild(new List_Modifier(parser));
 		parser.mustBe(TokenType._INTERFACE);
-		addChild(new Identifier(parser));
+		addChild(new Id(parser));
 		while(!parser.have(TokenType.CURL_BRACE_RIGHT))
 		{
 			parser.getTokenQueue().poll();
@@ -31,9 +31,9 @@ public class Interface extends BaseIrType
 	{
 		return (List_Modifier)getChild(0);
 	}
-	public Identifier getName()
+	public Id getName()
 	{
-		return (Identifier)getChild(1);
+		return (Id)getChild(1);
 	}
 	
 	public static boolean isNext(Parser_Java parser)

@@ -45,14 +45,14 @@ public class IrProcessor_Java
 		{
 			Import data = (Import)ir;
 			handleImport(
-					data.getLine(), data.getIdentifier().getValue(),
+					data.getLine(), data.getId().getValue(),
 					data.isStatic(), data.isOnDemand());
 		}
 		else if(ir instanceof Package)
 		{
 			Package data = (Package)ir;
 			handleImport(
-					data.getLine(), data.getIdentifier().getValue(),
+					data.getLine(), data.getId().getValue(),
 					false, true);
 		}
 		else if(ir instanceof Type)
@@ -71,11 +71,11 @@ public class IrProcessor_Java
 	
 	private void handleType(Type data)
 	{
-		QualifiedIdentifier id = data.getIdentifier();
+		QualifiedId id = data.getId();
 		Item path = libs.getValue(id.getValue());
 		if(path instanceof Item_Err_NotFound)
 		{
-			QualifiedIdentifier newId = fullyQualifyIdentifier(id.getFirst());
+			QualifiedId newId = fullyQualifyId(id.getFirst());
 			if(newId == null)
 			{
 				Logger.error(
@@ -85,18 +85,18 @@ public class IrProcessor_Java
 			}
 			else
 			{
-				data.setIdentifier(newId);
+				data.setId(newId);
 			}
 		}
 	}
 	
 	private void handleMethodCall(MethodCall data)
 	{
-		QualifiedIdentifier id = data.getIdentifier();
+		QualifiedId id = data.getId();
 		Item path = libs.getValue(id.getValue());
 		if(path instanceof Item_Err_NotFound)
 		{
-			QualifiedIdentifier newId = fullyQualifyIdentifier(id.getFirst());
+			QualifiedId newId = fullyQualifyId(id.getFirst());
 			if(newId == null)
 			{
 				Logger.error(
@@ -106,8 +106,8 @@ public class IrProcessor_Java
 			}
 			else
 			{
-				QualifiedIdentifier finalId = mergeQualifiedIds(newId, id);
-				data.setIdentifier(finalId);
+				QualifiedId finalId = mergeQualifiedIds(newId, id);
+				data.setId(finalId);
 			}
 		}
 	}
@@ -162,39 +162,39 @@ public class IrProcessor_Java
 		}
 	}
 	
-	private QualifiedIdentifier fullyQualifyIdentifier(Identifier id)
+	private QualifiedId fullyQualifyId(Id source)
 	{
-		if(!imports.containsKey(id.getValue())) return null;
+		if(!imports.containsKey(source.getValue())) return null;
 		String[] path =
-				imports.get(id.getValue()).getJavaAddress().split("\\.");
-		List<Identifier> identifiers = new ArrayList<Identifier>();
+				imports.get(source.getValue()).getJavaAddress().split("\\.");
+		List<Id> ids = new ArrayList<Id>();
 		for(String node : path)
 		{
-			identifiers.add(new Identifier(node));
+			ids.add(new Id(node));
 		}
-		return new QualifiedIdentifier(
-				id.getLine(), id.getColumn(), identifiers);
+		return new QualifiedId(
+				source.getLine(), source.getColumn(), ids);
 	}
 	
-	private QualifiedIdentifier mergeQualifiedIds(
-			QualifiedIdentifier lhs, QualifiedIdentifier rhs)
+	private QualifiedId mergeQualifiedIds(
+			QualifiedId lhs, QualifiedId rhs)
 	{
-		List<Identifier> identifiers = new ArrayList<Identifier>();
-		Identifier middleId = rhs.getFirst();
+		List<Id> ids = new ArrayList<Id>();
+		Id middleId = rhs.getFirst();
 		for(int i = 0; i < lhs.getChildCount(); i++)
 		{
 			if(i == lhs.getChildCount()-1 && lhs.getChild(i).equals(middleId))
 			{
 				continue;
 			}
-			identifiers.add((Identifier)lhs.getChild(i));
+			ids.add((Id)lhs.getChild(i));
 		}
 		for(int i = 0; i < rhs.getChildCount(); i++)
 		{
-			identifiers.add((Identifier)rhs.getChild(i));
+			ids.add((Id)rhs.getChild(i));
 		}		
-		QualifiedIdentifier result = new QualifiedIdentifier(
-				rhs.getLine(), rhs.getColumn(), identifiers);
+		QualifiedId result = new QualifiedId(
+				rhs.getLine(), rhs.getColumn(), ids);
 		return result;
 	}
 }

@@ -8,7 +8,7 @@ public class Type extends BaseIrType
 	public Type(Parser_Java parser)
 	{
 		super(parser);
-		addChild(new QualifiedIdentifier(parser));
+		addChild(new QualifiedId(parser));
 //		if(parser.have(TokenType.LEFT))
 //		{
 //			do
@@ -49,7 +49,7 @@ public class Type extends BaseIrType
 	public String getValue()
 	{
 		StringBuffer result = new StringBuffer();
-		result.append(getIdentifier().getValue());
+		result.append(getId().getValue());
 		for(int i = 0; i < getDimensionCount(); i++)
 		{
 			result.append("[]");
@@ -57,11 +57,11 @@ public class Type extends BaseIrType
 		return result.toString();
 	}
 	
-	public QualifiedIdentifier getIdentifier()
+	public QualifiedId getId()
 	{
-		return (QualifiedIdentifier)getChild(0);
+		return (QualifiedId)getChild(0);
 	}
-	public void setIdentifier(QualifiedIdentifier value)
+	public void setId(QualifiedId value)
 	{
 		replaceChild(0, value);
 	}
@@ -84,7 +84,7 @@ public class Type extends BaseIrType
 	
 	public String toJvmDescriptor()
 	{
-		String type = getIdentifier().getValue();
+		String type = getId().getValue();
 		int dimensionCount = getDimensionCount();
 		StringBuffer result = new StringBuffer();
 
@@ -118,7 +118,7 @@ public class Type extends BaseIrType
 	
 	public static boolean isNext(Parser_Java parser)
 	{
-		return Identifier.isNext(parser);
+		return Id.isNext(parser);
 	}
 
 	private int dimensionCount = 0;

@@ -127,7 +127,7 @@ public class Tokenizer
 				default:
 					if(isAlpha(sourceCode, currentIndex))
 					{
-						toAdd = handleIdentifier();
+						toAdd = handleId();
 					}
 					else
 					{
@@ -514,7 +514,7 @@ public class Tokenizer
 		return new Token(TokenType.STRING, getColumn(), text.toString());
 	}
 	
-	private Token handleIdentifier()
+	private Token handleId()
 	{
 		Token result = null;
 		if(isAlpha(sourceCode, currentIndex))
@@ -529,16 +529,16 @@ public class Tokenizer
 			}
 			else
 			{
-				int identifierEnd = currentIndex+1;
-				while(isAlphaNumeric(sourceCode, identifierEnd))
+				int idEnd = currentIndex+1;
+				while(isAlphaNumeric(sourceCode, idEnd))
 				{
-					identifierEnd++;
+					idEnd++;
 				}
 				result = new Token(
-					TokenType.IDENTIFIER,
+					TokenType.ID,
 					getColumn(),
-					sourceCode.substring(currentIndex, identifierEnd));
-				currentIndex=identifierEnd-1;
+					sourceCode.substring(currentIndex, idEnd));
+				currentIndex=idEnd-1;
 			}
 		}
 		return result;
@@ -716,7 +716,7 @@ public class Tokenizer
 		tokenTypeMap = new Trie<TokenType>();
 		for (TokenType i : EnumSet.allOf(TokenType.class))
         {
-			if(i.isIdentifier())
+			if(i.isKeyword())
 			{
 				tokenTypeMap.put(i.toString(), i);
 			}

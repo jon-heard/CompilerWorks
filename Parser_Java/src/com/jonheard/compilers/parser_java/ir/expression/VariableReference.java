@@ -1,12 +1,12 @@
 package com.jonheard.compilers.parser_java.ir.expression;
 
-import com.jonheard.compilers.parser_java.ir.Identifier;
+import com.jonheard.compilers.parser_java.ir.Id;
 import com.jonheard.compilers.tokenizer_java.Token;
 
 public class VariableReference extends Expression
 {
 
-	public VariableReference(Token next, Identifier id)
+	public VariableReference(Token next, Id id)
 	{
 		super(ExpressionType.VARIABLE_REFERENCE, next);
 		addChild(id);
@@ -21,8 +21,8 @@ public class VariableReference extends Expression
 	@Override
 	public int getFirstPrintedChildIndex() { return 1; }
 	
-	public Identifier getName()
+	public Id getName()
 	{
-		return (Identifier)getChild(0);
+		return (Id)getChild(0);
 	}
 }

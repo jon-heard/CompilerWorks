@@ -10,7 +10,7 @@ public class Variable extends BaseIrType
 		super(parser);
 		addChild(new List_Modifier(parser));
 		addChild(new Type(parser));
-		addChild(new Identifier(parser));
+		addChild(new Id(parser));
 		while(parser.have(TokenType.SQUARE_BRACE_LEFT))
 		{
 			parser.mustBe(TokenType.SQUARE_BRACE_RIGHT);
@@ -39,9 +39,9 @@ public class Variable extends BaseIrType
 		return (Type)getChild(1);
 	}
 	
-	public Identifier getName()
+	public Id getName()
 	{
-		return (Identifier)getChild(2);
+		return (Id)getChild(2);
 	}
 	
 	public static boolean isNext(Parser_Java parser)
@@ -52,7 +52,7 @@ public class Variable extends BaseIrType
 		if(Type.isNext(parser))
 		{
 			new Type(parser);
-			if(parser.see(TokenType.IDENTIFIER))
+			if(parser.see(TokenType.ID))
 			{
 				result = true;
 			}

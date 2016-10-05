@@ -2,9 +2,9 @@ package com.jonheard.compilers.parser_java.ir.expression;
 
 import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
-import com.jonheard.compilers.parser_java.ir.Identifier;
+import com.jonheard.compilers.parser_java.ir.Id;
 import com.jonheard.compilers.parser_java.ir.List_Expression;
-import com.jonheard.compilers.parser_java.ir.QualifiedIdentifier;
+import com.jonheard.compilers.parser_java.ir.QualifiedId;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 import com.jonheard.util.Logger;
@@ -231,7 +231,7 @@ public class Parser_Expression
 		else if(seeCast(parser))
 		{
 			parser.mustBe(TokenType.PAREN_LEFT);
-			QualifiedIdentifier type = new QualifiedIdentifier(parser);
+			QualifiedId type = new QualifiedId(parser);
 			parser.mustBe(TokenType.PAREN_RIGHT);
 			return new Cast(next, type, parseExpression(parser));
 		}
@@ -301,10 +301,10 @@ public class Parser_Expression
 		{
 			//TODO: Fill in logic for "New" expression
 		}
-		// identifier
-		else if(QualifiedIdentifier.isNext(parser))
+		// id
+		else if(QualifiedId.isNext(parser))
 		{
-			QualifiedIdentifier id = new QualifiedIdentifier(parser);
+			QualifiedId id = new QualifiedId(parser);
 			if(parser.have(TokenType.PAREN_LEFT))
 			{
 				result = new MethodCall(
@@ -313,7 +313,7 @@ public class Parser_Expression
 			}
 			else if(id.getChildCount() == 1)
 			{
-				result =new VariableReference(next, (Identifier)id.getChild(0));
+				result =new VariableReference(next, (Id)id.getChild(0));
 			}
 			else
 			{

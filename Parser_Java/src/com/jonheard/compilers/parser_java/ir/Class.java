@@ -10,7 +10,7 @@ public class Class extends BaseIrType
 		super(parser);
 		addChild(new List_Modifier(parser));
 		parser.mustBe(TokenType._CLASS);
-		addChild(new Identifier(parser));
+		addChild(new Id(parser));
 		parser.mustBe(TokenType.CURL_BRACE_LEFT);
 		while(!parser.have(TokenType.CURL_BRACE_RIGHT))
 		{
@@ -39,9 +39,9 @@ public class Class extends BaseIrType
 	{
 		return (List_Modifier)getChild(0);
 	}
-	public Identifier getName()
+	public Id getName()
 	{
-		return (Identifier)getChild(1);
+		return (Id)getChild(1);
 	}
 	
 	public static boolean isNext(Parser_Java parser)

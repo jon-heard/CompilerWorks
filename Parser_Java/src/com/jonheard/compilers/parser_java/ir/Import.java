@@ -16,7 +16,7 @@ public class Import extends BaseIrType
 		{
 			flag_isStatic = true;
 		}
-		addChild(new QualifiedIdentifier(parser));
+		addChild(new QualifiedId(parser));
 		if(parser.have(TokenType.DOT))
 		{
 			parser.mustBe(TokenType.STAR);
@@ -30,15 +30,15 @@ public class Import extends BaseIrType
 	{
 		return	"isOnDemand='" + flag_isOnDemand + "' " +
 				"isStatic='" + flag_isStatic + "' " +
-				"identifier='" + getIdentifier().getValue() + "'";
+				"id='" + getId().getValue() + "'";
 	}
 	
 	@Override
 	public int getFirstPrintedChildIndex() { return 1; }
 	
-	public QualifiedIdentifier getIdentifier()
+	public QualifiedId getId()
 	{
-		return (QualifiedIdentifier)getChild(0);
+		return (QualifiedId)getChild(0);
 	}
 	
 	public boolean isStatic()

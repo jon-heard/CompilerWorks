@@ -92,7 +92,7 @@ public class TokenizerTest
 	}
 	
 	@Test
-	public void identifiersAndOperators()
+	public void idsAndOperators()
 	{
 		String source = "public=t+class/test;";
 		Tokenizer iterator = new Tokenizer();
@@ -100,12 +100,12 @@ public class TokenizerTest
 		assertEquals(8, tokens.size());
 		assertEquals(TokenType._PUBLIC,			tokens.get(0).getType());
 		assertEquals(TokenType.EQUAL,			tokens.get(1).getType());
-		assertEquals(TokenType.IDENTIFIER,		tokens.get(2).getType());
+		assertEquals(TokenType.ID,		tokens.get(2).getType());
 			assertEquals("t",						tokens.get(2).getText());
 		assertEquals(TokenType.PLUS,			tokens.get(3).getType());
 		assertEquals(TokenType._CLASS,			tokens.get(4).getType());
 		assertEquals(TokenType.SLASH,			tokens.get(5).getType());
-		assertEquals(TokenType.IDENTIFIER,		tokens.get(6).getType());
+		assertEquals(TokenType.ID,		tokens.get(6).getType());
 			assertEquals("test",					tokens.get(6).getText());
 		assertEquals(TokenType.SEMICOLON,		tokens.get(7).getType());
 	}

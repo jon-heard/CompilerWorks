@@ -2,7 +2,7 @@ package com.jonheard.compilers.tokenizer_java;
 
 public enum TokenType
 {
-	IDENTIFIER,
+	ID,
 
 	STRING,
 	CHAR,
@@ -106,11 +106,11 @@ public enum TokenType
 	@Override
 	public String toString()
 	{
-		String result = isIdentifier() ? this.name().substring(1) : this.name();
+		String result = isKeyword() ? this.name().substring(1) : this.name();
 		return result.toLowerCase();
 	}
 	
-	public boolean isIdentifier()
+	public boolean isKeyword()
 	{
 		return this.name().charAt(0) == '_';
 	}

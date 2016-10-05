@@ -13,8 +13,8 @@ public class TokenTypeTest
 		TokenType t1 = TokenType._ABSTRACT;
 		TokenType t2 = TokenType.CARAT;
 		
-		assertTrue(t1.isIdentifier());
-		assertFalse(t2.isIdentifier());
+		assertTrue(t1.isKeyword());
+		assertFalse(t2.isKeyword());
 		
 		assertEquals("abstract", t1.toString());
 		assertEquals("carat", t2.toString());

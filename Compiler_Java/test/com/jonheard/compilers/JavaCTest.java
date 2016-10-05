@@ -51,16 +51,16 @@ public class JavaCTest
 
 		// Tokenizing
 		String expectedTokens = JavaC.HEADER_TEXT +
-				"package\nidentifier:first\ndot\nidentifier:second\n" +
-				"semicolon\nimport\nidentifier:java\ndot\nidentifier:util\n" +
-				"dot\nstar\nsemicolon\nimport\nidentifier:javax\ndot\n" +
-				"identifier:swing\ndot\nidentifier:JLabel\nsemicolon\n" +
-				"public\nclass\nidentifier:Test1\ncurl_brace_left\npublic\n" +
-				"static\nidentifier:void\nidentifier:main\nparen_left\n" +
-				"identifier:String\nsquare_brace_left\nsquare_brace_right\n" +
-				"identifier:args\nparen_right\ncurl_brace_left\n" +
-				"identifier:System\ndot\nidentifier:out\ndot\n" +
-				"identifier:println\nparen_left\nstring:Hello world\n" +
+				"package\nid:first\ndot\nid:second\n" +
+				"semicolon\nimport\nid:java\ndot\nid:util\n" +
+				"dot\nstar\nsemicolon\nimport\nid:javax\ndot\n" +
+				"id:swing\ndot\nid:JLabel\nsemicolon\n" +
+				"public\nclass\nid:Test1\ncurl_brace_left\npublic\n" +
+				"static\nid:void\nid:main\nparen_left\n" +
+				"id:String\nsquare_brace_left\nsquare_brace_right\n" +
+				"id:args\nparen_right\ncurl_brace_left\n" +
+				"id:System\ndot\nid:out\ndot\n" +
+				"id:println\nparen_left\nstring:Hello world\n" +
 				"paren_right\nsemicolon\ncurl_brace_right\ncurl_brace_right\n";
 		String actualTokens = compiler.compile(
 				new String[] {TEST_DIR+"/"+TEST_FILENAME_1, "-t"});
@@ -69,9 +69,9 @@ public class JavaCTest
 		// Parsing
 		String expectedParsed = JavaC.HEADER_TEXT + 
 				"<CompilationUnit line='1' importCount='2' typeCount='1'>\n" +
-				"	<Package line='1' identifier='first.second'/>\n" +
-				"	<Import line='2' isOnDemand='true' isStatic='false' identifier='java.util'/>\n" +
-				"	<Import line='3' isOnDemand='false' isStatic='false' identifier='javax.swing.JLabel'/>\n" +
+				"	<Package line='1' id='first.second'/>\n" +
+				"	<Import line='2' isOnDemand='true' isStatic='false' id='java.util'/>\n" +
+				"	<Import line='3' isOnDemand='false' isStatic='false' id='javax.swing.JLabel'/>\n" +
 				"	<Class line='4' name='Test1' modifiers='public'>\n" +
 				"		<Method line='6' name='main' type='void' modifiers='public static'>\n" +
 				"			<List_Variable line='6'>\n" +
@@ -79,7 +79,7 @@ public class JavaCTest
 				"			</List_Variable>\n" +
 				"			<CodeBlock line='7'>\n" +
 				"				<MethodCall line='8'>\n" +
-				"					<QualifiedIdentifier line='8' value='System.out.println'/>\n" +
+				"					<qualifiedId line='8' value='System.out.println'/>\n" +
 				"					<List_Expression line='8'>\n" +
 				"						<Literal_string line='8' value='Hello world'/>\n" +
 				"					</List_Expression>\n" +
@@ -95,9 +95,9 @@ public class JavaCTest
 		// Processing
 		String expectedProcessed = JavaC.HEADER_TEXT + 
 				"<CompilationUnit line='1' importCount='2' typeCount='1'>\n" +
-				"	<Package line='1' identifier='first.second'/>\n" +
-				"	<Import line='2' isOnDemand='true' isStatic='false' identifier='java.util'/>\n" +
-				"	<Import line='3' isOnDemand='false' isStatic='false' identifier='javax.swing.JLabel'/>\n" +
+				"	<Package line='1' id='first.second'/>\n" +
+				"	<Import line='2' isOnDemand='true' isStatic='false' id='java.util'/>\n" +
+				"	<Import line='3' isOnDemand='false' isStatic='false' id='javax.swing.JLabel'/>\n" +
 				"	<Class line='4' name='Test1' modifiers='public'>\n" +
 				"		<Method line='6' name='main' type='void' modifiers='public static'>\n" +
 				"			<List_Variable line='6'>\n" +
@@ -105,7 +105,7 @@ public class JavaCTest
 				"			</List_Variable>\n" +
 				"			<CodeBlock line='7'>\n" +
 				"				<MethodCall line='8'>\n" +
-				"					<QualifiedIdentifier line='8' value='System.out.println'/>\n" +
+				"					<qualifiedId line='8' value='System.out.println'/>\n" +
 				"					<List_Expression line='8'>\n" +
 				"						<Literal_string line='8' value='Hello world'/>\n" +
 				"					</List_Expression>\n" +

@@ -4,15 +4,15 @@ import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
-public class Identifier extends BaseIrType
+public class Id extends BaseIrType
 {
 	private String value = "";
 	
-	public Identifier(Parser_Java parser)
+	public Id(Parser_Java parser)
 	{
 		super(parser);
 		Token currentToken = parser.getNextToken();
-		if(parser.mustBe(TokenType.IDENTIFIER))
+		if(parser.mustBe(TokenType.ID))
 		{
 			value = currentToken.getText();
 		}
@@ -21,7 +21,7 @@ public class Identifier extends BaseIrType
 			value = "";
 		}
 	}
-	public Identifier(String value)
+	public Id(String value)
 	{
 		super(0, 0);
 		this.value = value;
@@ -40,17 +40,17 @@ public class Identifier extends BaseIrType
 	
 	public static boolean isNext(Parser_Java parser)
 	{
-		return parser.see(TokenType.IDENTIFIER);
+		return parser.see(TokenType.ID);
 	}
 	
 	@Override
 	public boolean equals(Object rhs)
 	{
-		if(!(rhs instanceof Identifier))
+		if(!(rhs instanceof Id))
 		{
 			return false;
 		}
-		Identifier other = (Identifier)rhs;
+		Id other = (Id)rhs;
 		return this.value.equals(other.value);
 	}
 }

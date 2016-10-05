@@ -1,12 +1,12 @@
 package com.jonheard.compilers.parser_java.ir.expression;
 
-import com.jonheard.compilers.parser_java.ir.QualifiedIdentifier;
+import com.jonheard.compilers.parser_java.ir.QualifiedId;
 import com.jonheard.compilers.tokenizer_java.Token;
 
 public class FieldReference extends Expression
 {
 
-	public FieldReference(Token next, QualifiedIdentifier id)
+	public FieldReference(Token next, QualifiedId id)
 	{
 		super(ExpressionType.FIELD_REFERENCE, next);
 		addChild(id);
@@ -21,8 +21,8 @@ public class FieldReference extends Expression
 	@Override
 	public int getFirstPrintedChildIndex() { return 1; }
 	
-	public QualifiedIdentifier getName()
+	public QualifiedId getName()
 	{
-		return (QualifiedIdentifier)getChild(0);
+		return (QualifiedId)getChild(0);
 	}
 }
