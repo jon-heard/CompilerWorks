@@ -25,4 +25,9 @@ public class VariableReference extends Expression
 	{
 		return (Id)getChild(0);
 	}
+	
+	public void setName(Id value)
+	{
+		replaceChild(0, value);
+	}
 }
