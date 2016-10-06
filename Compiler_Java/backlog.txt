@@ -1,8 +1,4 @@
 
-adjust MethodOrVariable to allow codeblock to force variable (but not simple)
-	perhaps set of parameters
-
-
 Adjust methodCall processing to split on field references
 finish assembly
 

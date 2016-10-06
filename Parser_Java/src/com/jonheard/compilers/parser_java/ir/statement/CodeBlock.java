@@ -15,7 +15,7 @@ public class CodeBlock extends BaseIrType
 		{
 			if(MethodOrVariable.isNext(parser))
 			{
-				addChild(new MethodOrVariable(parser));
+				addChild(new MethodOrVariable(parser, true,true,false,false));
 			}
 			else
 			{

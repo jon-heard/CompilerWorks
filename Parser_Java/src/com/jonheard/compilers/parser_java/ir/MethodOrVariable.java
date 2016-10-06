@@ -10,12 +10,14 @@ public class MethodOrVariable extends BaseIrType
 {
 	public MethodOrVariable(Parser_Java parser)
 	{
-		this(parser, false);
+		this(parser, false, false, false, false);
 	}
-	public MethodOrVariable(Parser_Java parser, boolean forceSimpleVariable)
+	public MethodOrVariable(Parser_Java parser,
+			boolean forceVariable, boolean forceNoModifiers,
+			boolean forceNoInitializer, boolean forceNoSemicolon)
 	{
 		super(parser);
-		if(forceSimpleVariable)
+		if(forceNoModifiers)
 		{
 			addChild(new List_Modifier());
 		}
@@ -25,7 +27,7 @@ public class MethodOrVariable extends BaseIrType
 		}
 		addChild(new Type(parser));
 		addChild(new Id(parser));
-		if(!forceSimpleVariable && parser.have(TokenType.PAREN_LEFT))
+		if(!forceVariable && parser.have(TokenType.PAREN_LEFT))
 		{
 			_isMethod = true;
 			addChild(new List_Variable(parser));
@@ -39,11 +41,11 @@ public class MethodOrVariable extends BaseIrType
 				parser.mustBe(TokenType.SQUARE_BRACE_RIGHT);
 				getType().incDimensionCount();
 			}
-			if(!forceSimpleVariable && parser.have(TokenType.EQUAL))
+			if(!forceNoInitializer && parser.have(TokenType.EQUAL))
 			{
 				addChild(Parser_Expression.parseExpression(parser));
 			}
-			if(!forceSimpleVariable)
+			if(!forceNoSemicolon)
 			{
 				parser.mustBe(TokenType.SEMICOLON);
 			}
