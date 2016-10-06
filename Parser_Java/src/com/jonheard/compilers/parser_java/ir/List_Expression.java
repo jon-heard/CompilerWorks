@@ -6,6 +6,10 @@ import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class List_Expression extends BaseIrType
 {
+	public List_Expression()
+	{
+		super(0, 0);
+	}
 	public List_Expression(Parser_Java parser)
 	{
 		super(parser);
