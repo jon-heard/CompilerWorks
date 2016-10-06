@@ -123,6 +123,7 @@ public class Tokenizer
 				case '1': case '2': case '3': case '4': case '5':
 				case '6': case '7': case '8': case '9':
 					toAdd = handleNumber(10);
+					currentIndex--; // other cases end on last character, match
 					break;
 				default:
 					if(isAlpha(sourceCode, currentIndex))
@@ -667,14 +668,14 @@ public class Tokenizer
 		{
 			if(current == 'f' || current == 'F')
 			{
-				current++;
+				currentIndex++;
 				float value = Float.parseFloat(result.toString());
 				return new Token(
 						TokenType.FLOAT, getColumn(), Float.toString(value));
 			}
 			else if(current == 'd' || current == 'D')	
 			{
-				current++;
+				currentIndex++;
 			}
 			double value = Double.parseDouble(result.toString());
 			return new Token(
@@ -684,21 +685,21 @@ public class Tokenizer
 		{
 			if(current == 'l' || current == 'L')
 			{
-				current++;
+				currentIndex++;
 				long value = Long.parseLong(result.toString(), base);
 				return new Token(
 						TokenType.LONG, getColumn(), Long.toString(value));
 			}
 			if(current == 'f' || current == 'F')
 			{
-				current++;
+				currentIndex++;
 				float value = Float.parseFloat(result.toString());
 				return new Token(
 						TokenType.FLOAT, getColumn(), Float.toString(value));
 			}
 			if(current == 'd' || current == 'D')
 			{
-				current++;
+				currentIndex++;
 				double value = Double.parseDouble(result.toString());
 				return new Token(
 						TokenType.DOUBLE, getColumn(), Double.toString(value));

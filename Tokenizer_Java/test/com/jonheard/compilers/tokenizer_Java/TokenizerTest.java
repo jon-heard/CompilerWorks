@@ -192,6 +192,41 @@ public class TokenizerTest
 	}
 	
 	@Test
+	public void checkForBug_tokensReadingTooFar()
+	{
+		String source = "5;51;25L;25.6;12.8f;\"hi\";'a';'\n';true;";
+		Tokenizer iterator = new Tokenizer();
+		List<Token> tokens = iterator.tokenize(new SourceFileInfo("", source));
+		assertEquals(18, tokens.size());
+		assertEquals(TokenType.INTEGER,			tokens.get( 0).getType());
+			assertEquals("5",					    tokens.get( 0).getText());
+			assertEquals(TokenType.SEMICOLON,		tokens.get( 1).getType());
+		assertEquals(TokenType.INTEGER,			tokens.get( 2).getType());
+			assertEquals("51",					    tokens.get( 2).getText());
+			assertEquals(TokenType.SEMICOLON,		tokens.get( 3).getType());
+		assertEquals(TokenType.LONG,			tokens.get( 4).getType());
+			assertEquals("25",					    tokens.get( 4).getText());
+			assertEquals(TokenType.SEMICOLON,		tokens.get( 5).getType());
+		assertEquals(TokenType.DOUBLE,			tokens.get( 6).getType());
+			assertEquals("25.6",				    tokens.get( 6).getText());
+			assertEquals(TokenType.SEMICOLON,		tokens.get( 7).getType());
+		assertEquals(TokenType.FLOAT,			tokens.get( 8).getType());
+			assertEquals("12.8",				    tokens.get( 8).getText());
+			assertEquals(TokenType.SEMICOLON,		tokens.get( 9).getType());
+		assertEquals(TokenType.STRING,			tokens.get(10).getType());
+			assertEquals("hi",					    tokens.get(10).getText());
+			assertEquals(TokenType.SEMICOLON,		tokens.get(11).getType());
+		assertEquals(TokenType.CHAR,			tokens.get(12).getType());
+			assertEquals("a",					    tokens.get(12).getText());
+			assertEquals(TokenType.SEMICOLON,		tokens.get(13).getType());
+		assertEquals(TokenType.CHAR,			tokens.get(14).getType());
+			assertEquals("\n",					    tokens.get(14).getText());
+			assertEquals(TokenType.SEMICOLON,		tokens.get(15).getType());
+		assertEquals(TokenType._TRUE,			tokens.get(16).getType());
+			assertEquals(TokenType.SEMICOLON,		tokens.get(17).getType());
+	}
+	
+	@Test
 	public void errors_illegalCharacter()
 	{
 		Logger.clearLogs();
