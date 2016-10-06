@@ -105,7 +105,7 @@ public class IrProcessor_Java
 		}
 		for(Item item : path)
 		{
-			getCurrentScope().add(item.getName(), item.getJavaAddress());
+			getCurrentScope().add(item.getName(), "", item.getJavaAddress());
 		}
 	}
 
@@ -117,7 +117,7 @@ public class IrProcessor_Java
 		{
 			for(Item item : path)
 			{
-				getCurrentScope().add(item.getName(), item.getJavaAddress());
+				getCurrentScope().add(item.getName(),"",item.getJavaAddress());
 			}
 		}
 	}
@@ -159,7 +159,7 @@ public class IrProcessor_Java
 					for(Item item : path)
 					{
 						getCurrentScope().add(
-								item.getName(), item.getJavaAddress());
+								item.getName(), "", item.getJavaAddress());
 						return;
 					}
 				}
@@ -169,7 +169,7 @@ public class IrProcessor_Java
 				if(path instanceof Item_Class)
 				{
 					getCurrentScope().add(
-							path.getName(), path.getJavaAddress());
+							path.getName(), "", path.getJavaAddress());
 					return;
 				}
 			}

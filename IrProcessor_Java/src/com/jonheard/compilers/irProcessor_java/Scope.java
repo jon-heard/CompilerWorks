@@ -40,6 +40,7 @@ public class Scope
 	
 	public void add(String name, String javaType)
 	{
+		System.out.println(javaType + " #" + stackCounter);
 		items.put(name, new ScopeItem(javaType, "#" + stackCounter));
 		stackCounter++;
 	}
