@@ -14,14 +14,7 @@ public class Class extends BaseIrType
 		parser.mustBe(TokenType.CURL_BRACE_LEFT);
 		while(!parser.have(TokenType.CURL_BRACE_RIGHT))
 		{
-			if(Method.isNext(parser))
-			{
-				addChild(new Method(parser));
-			}
-			else
-			{
-				addChild(new Variable(parser));				
-			}
+			addChild(new MethodOrVariable(parser));
 		}
 	}
 

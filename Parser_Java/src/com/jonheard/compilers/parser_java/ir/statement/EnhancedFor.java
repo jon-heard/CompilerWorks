@@ -2,7 +2,7 @@ package com.jonheard.compilers.parser_java.ir.statement;
 
 import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
-import com.jonheard.compilers.parser_java.ir.Variable;
+import com.jonheard.compilers.parser_java.ir.MethodOrVariable;
 import com.jonheard.compilers.parser_java.ir.expression.Parser_Expression;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
@@ -13,7 +13,7 @@ public class EnhancedFor extends BaseIrType
 		super(parser);
 		parser.mustBe(TokenType._FOR);
 		parser.mustBe(TokenType.PAREN_LEFT);
-		addChild(new Variable(parser));
+		addChild(new MethodOrVariable(parser));
 		parser.mustBe(TokenType.COLON);
 		addChild(Parser_Expression.parseExpression(parser));
 		parser.mustBe(TokenType.PAREN_RIGHT);
@@ -27,9 +27,9 @@ public class EnhancedFor extends BaseIrType
 		if(parser.have(TokenType._FOR))
 		{
 			parser.mustBe(TokenType.PAREN_LEFT);
-			if(Variable.isNext(parser))
+			if(MethodOrVariable.isNext(parser))
 			{
-				new Variable(parser);
+				new MethodOrVariable(parser);
 			}
 			if(parser.see(TokenType.COLON))
 			{

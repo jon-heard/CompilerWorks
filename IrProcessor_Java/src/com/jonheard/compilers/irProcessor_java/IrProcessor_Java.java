@@ -85,30 +85,12 @@ public class IrProcessor_Java
 		for(int i = data.getFirstPrintedChildIndex(); i < data.getChildCount();
 				i++)
 		{
-			BaseIrType current = data.getChild(i);
-			String name = null;
-			Item_Class type = null;
-			String descriptor = null;
-			boolean isStatic = false;
-			if(current instanceof Method)
-			{
-				Method mCurrent = ((Method)current); 
-				name = mCurrent.getName().getValue();
-				descriptor = mCurrent.toJvmDescriptor();
-				isStatic = mCurrent.getModifiers().isStatic();
-			}
-			else if(current instanceof Variable)
-			{
-				Variable vCurrent = ((Variable)current); 
-				name = vCurrent.getName().getValue();
-				descriptor = vCurrent.getType().toJvmDescriptor();
-				isStatic = vCurrent.getModifiers().isStatic();
-			}
-			if(name != null)
-			{
-				members.put("name", new Item_Member(
-						name, thiss, type, descriptor, isStatic));
-			}
+			MethodOrVariable mCurrent = (MethodOrVariable)data.getChild(i);
+			String name = mCurrent.getName().getValue();
+			String descriptor = mCurrent.toJvmDescriptor();
+			boolean isStatic = mCurrent.getModifiers().isStatic();
+			members.put("name", new Item_Member(
+					name, thiss, null, descriptor, isStatic));
 		}
 	}
 
