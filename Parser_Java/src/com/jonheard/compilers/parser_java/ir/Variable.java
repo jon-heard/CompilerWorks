@@ -16,6 +16,7 @@ public class Variable extends BaseIrType
 			parser.mustBe(TokenType.SQUARE_BRACE_RIGHT);
 			getType().incDimensionCount();
 		}
+		parser.mustBe(TokenType.SEMICOLON);
 	}
 
 	@Override
