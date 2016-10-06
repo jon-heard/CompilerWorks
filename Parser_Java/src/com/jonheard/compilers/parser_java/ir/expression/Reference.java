@@ -34,6 +34,11 @@ public class Reference extends Expression
 		replaceChild(0, value);
 	}
 	
+	public QualifiedId getOwner()
+	{
+		
+	}
+	
 	public boolean isMethodCall()
 	{
 		return _isMethodCall;
@@ -52,6 +57,9 @@ public class Reference extends Expression
 	{
 		return isMethodCall() ? 1 : 2;
 	}
+	
+	@Override
+	public void calcJavaType() {}
 		
 	private boolean _isMethodCall = true;
 }

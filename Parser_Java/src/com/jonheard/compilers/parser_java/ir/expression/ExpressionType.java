@@ -21,6 +21,7 @@ public enum ExpressionType
 	DIV,
 	MOD,
 	CAST,
+	CONCATENATE,
 
 	CONDITIONAL,
 	

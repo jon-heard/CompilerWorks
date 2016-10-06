@@ -44,7 +44,7 @@ public class JavaCTest
 				"	static int i = 1;\n" +
 				"	public static void main(String[] args)\n" +
 				"	{\n" +
-				"		int j = 3;\n" +
+				"		float j = 3;\n" +
 				"		System.out.println(i + j);\n" +
 				"	}\n" +
 				"}";

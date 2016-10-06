@@ -10,6 +10,7 @@ import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 import com.jonheard.compilers.parser_java.ir.*;
 import com.jonheard.compilers.parser_java.ir.Class;
 import com.jonheard.compilers.parser_java.ir.Package;
+import com.jonheard.compilers.parser_java.ir.expression.Expression;
 import com.jonheard.compilers.parser_java.ir.expression.Reference;
 import com.jonheard.compilers.parser_java.ir.statement.CodeBlock;
 import com.jonheard.util.Logger;
@@ -82,7 +83,10 @@ public class IrProcessor_Java
 			scopes.pop();
 		}
 		
-		
+		if(ir instanceof Expression)
+		{
+			((Expression)ir).calcJavaType();
+		}
 
 		return ir;
 	}
@@ -131,7 +135,7 @@ public class IrProcessor_Java
 					for(Item item : path)
 					{
 						getCurrentScope().add(
-								item.getName(), item.getJavaAddress());
+								item.getName(), "", item.getJavaAddress());
 						return;
 					}
 				}
@@ -141,7 +145,7 @@ public class IrProcessor_Java
 				if(path instanceof Item_Member)
 				{
 					getCurrentScope().add(
-							path.getName(), path.getJavaAddress());
+							path.getName(), "", path.getJavaAddress());
 					return;
 				}
 			}
@@ -185,7 +189,8 @@ public class IrProcessor_Java
 		{
 			MethodOrVariable mCurrent = (MethodOrVariable)data.getChild(i);
 			String name = mCurrent.getId().getValue();
-			getCurrentScope().add(name, "this." + name);
+			getCurrentScope().add(
+					name, mCurrent.getJavaType().getValue(), "this." + name);
 		}
 	}
 
@@ -202,7 +207,7 @@ public class IrProcessor_Java
 		if(path instanceof Item_Err_NotFound)
 		{
 			id = data.getJavaType().getId().getFirst().getValue();
-			id = getScopedValue(id);
+			ScopeItem scopedId = getScopedValue(id);
 			if(id == null)
 			{
 				Logger.error(
@@ -212,9 +217,10 @@ public class IrProcessor_Java
 			}
 			else
 			{
-				List<Id> items = makeIdListFromAddress(id);
+				List<Id> items = makeIdListFromAddress(scopedId.getValue());
 				data.getJavaType().setId(new QualifiedId(
-						data.getJavaType().getLine(), data.getJavaType().getColumn(),
+						data.getJavaType().getLine(),
+						data.getJavaType().getColumn(),
 						items));
 
 			}
@@ -223,8 +229,10 @@ public class IrProcessor_Java
 		if(	getCurrentScope().getScopeType() == ScopeType.CODE_BLOCK ||
 			getCurrentScope().getScopeType() == ScopeType.METHOD)
 		{
-			getCurrentScope().add(data.getId().getValue());
-			String newIdValue = getCurrentScope().get(data.getId().getValue());
+			getCurrentScope().add(
+					data.getId().getValue(), data.getJavaType().getValue());
+			String newIdValue =
+					getCurrentScope().get(data.getId().getValue()).getValue();
 			data.setId(new Id(newIdValue));
 		}
 		
@@ -242,7 +250,7 @@ public class IrProcessor_Java
 		if(path instanceof Item_Err_NotFound)
 		{
 			id = data.getId().getFirst().getValue();
-			id = getScopedValue(id);
+			ScopeItem scopedId = getScopedValue(id);
 			if(id == null)
 			{
 				Logger.error(
@@ -252,7 +260,7 @@ public class IrProcessor_Java
 			}
 			else
 			{
-				List<Id> lhs = makeIdListFromAddress(id);
+				List<Id> lhs = makeIdListFromAddress(scopedId.getValue());
 				if(!lhs.get(0).getValue().startsWith("#"))
 				{
 					List<Id> rhs = makeIdListFromQualifiedId(data.getId());
@@ -264,11 +272,12 @@ public class IrProcessor_Java
 				}
 				data.setId(new QualifiedId(
 						data.getId().getLine(), data.getId().getColumn(), lhs));
+				data.setJavaType(scopedId.getJavaType());
 			}
 		}
 	}
 	
-	private String getScopedValue(String key)
+	private ScopeItem getScopedValue(String key)
 	{
 		for(Scope scope : scopes)
 		{
