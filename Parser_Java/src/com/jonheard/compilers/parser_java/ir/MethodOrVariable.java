@@ -55,7 +55,7 @@ public class MethodOrVariable extends BaseIrType
 	@Override
 	public String getHeaderString()
 	{
-		return	"name='" + getId().getValue() + "' " +
+		return	"id='" + getId().getValue() + "' " +
 				"type='" + getJavaType().getValue() + "' " +
 				"modifiers='" + getModifiers().getValue() + "' " +
 				"isMethod='" + isMethod() + "'";

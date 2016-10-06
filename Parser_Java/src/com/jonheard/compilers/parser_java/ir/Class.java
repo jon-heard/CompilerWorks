@@ -21,7 +21,7 @@ public class Class extends BaseIrType
 	@Override
 	public String getHeaderString()
 	{
-		return	"name='" + getName().getValue() + "'" +
+		return	"id='" + getName().getValue() + "'" +
 				" modifiers='" + getModifiers().getValue() + "'";
 	}
 	

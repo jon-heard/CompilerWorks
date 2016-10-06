@@ -73,17 +73,17 @@ public class JavaCTest
 				"	<Package line='1' id='first.second'/>\n" +
 				"	<Import line='2' isOnDemand='true' isStatic='false' id='java.util'/>\n" +
 				"	<Import line='3' isOnDemand='false' isStatic='false' id='javax.swing.JLabel'/>\n" +
-				"	<Class line='4' name='Test1' modifiers='public'>\n" +
-				"		<Variable line='6' name='i' type='int' modifiers='static'/>\n" +
-				"		<Method line='7' name='main' type='void' modifiers='public static'>\n" +
+				"	<Class line='4' id='Test1' modifiers='public'>\n" +
+				"		<Variable line='6' id='i' type='int' modifiers='static'/>\n" +
+				"		<Method line='7' id='main' type='void' modifiers='public static'>\n" +
 				"			<List_Variable line='7'>\n" +
-				"				<Variable line='7' name='args' type='String[]' modifiers=''/>\n" +
+				"				<Variable line='7' id='args' type='String[]' modifiers=''/>\n" +
 				"			</List_Variable>\n" +
 				"			<CodeBlock line='8'>\n" +
 				"				<MethodCall line='9'>\n" +
 				"					<QualifiedId line='9' value='System.out.println'/>\n" +
 				"					<List_Expression line='9'>\n" +
-				"						<VariableReference line='9' name='i'/>\n" +
+				"						<VariableReference line='9' id='i'/>\n" +
 				"					</List_Expression>\n" +
 				"				</MethodCall>\n" +
 				"			</CodeBlock>\n" +
@@ -101,10 +101,10 @@ public class JavaCTest
 				"	<Package line='1' id='first.second'/>\n" +
 				"	<Import line='2' isOnDemand='true' isStatic='false' id='java.util'/>\n" +
 				"	<Import line='3' isOnDemand='false' isStatic='false' id='javax.swing.JLabel'/>\n" +
-				"	<Class line='4' name='Test1' modifiers='public'>\n" +
-				"		<Method line='6' name='main' type='void' modifiers='public static'>\n" +
+				"	<Class line='4' id='Test1' modifiers='public'>\n" +
+				"		<Method line='6' id='main' type='void' modifiers='public static'>\n" +
 				"			<List_Variable line='6'>\n" +
-				"				<Variable line='6' name='args' type='java.lang.String[]' modifiers=''/>\n" +
+				"				<Variable line='6' id='args' type='java.lang.String[]' modifiers=''/>\n" +
 				"			</List_Variable>\n" +
 				"			<CodeBlock line='7'>\n" +
 				"				<MethodCall line='8'>\n" +

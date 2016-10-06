@@ -1,5 +1,8 @@
 package com.jonheard.compilers.parser_java.ir.expression;
 
+import java.util.ArrayList;
+
+import com.jonheard.compilers.parser_java.ir.Id;
 import com.jonheard.compilers.parser_java.ir.List_Expression;
 import com.jonheard.compilers.parser_java.ir.QualifiedId;
 import com.jonheard.compilers.tokenizer_java.Token;
@@ -17,37 +20,28 @@ public class Reference extends Expression
 		super(ExpressionType.REFERENCE, next);
 		addChild(id);
 		addChild(parameters);
+		addChild(new QualifiedId(0, 0, new ArrayList<Id>()));
 	}
 	
-	public QualifiedId getId()
-	{
-		return (QualifiedId)getChild(0);
-	}
+	public QualifiedId getId() { return (QualifiedId)getChild(0); }
 
 	public List_Expression getParameters()
 	{
 		return (List_Expression)getChild(1);
 	}
 	
-	public void setId(QualifiedId value)
-	{
-		replaceChild(0, value);
-	}
+	public void setId(QualifiedId value) { replaceChild(0, value); }
 	
-	public QualifiedId getOwner()
-	{
-		
-	}
+	public QualifiedId getOwner() { return (QualifiedId)getChild(2); }
 	
-	public boolean isMethodCall()
-	{
-		return _isMethodCall;
-	}
+	public void setOwner(QualifiedId value) { replaceChild(2, value); }
+	
+	public boolean isMethodCall() { return _isMethodCall; }
 	
 	@Override
 	public String getHeaderString()
 	{
-		return	"name='" + getId().getValue() + "' " +
+		return	"id='" + getId().getValue() + "' " +
 				"isMethodCall='" + isMethodCall() + "' " +
 				super.getHeaderString();
 	}

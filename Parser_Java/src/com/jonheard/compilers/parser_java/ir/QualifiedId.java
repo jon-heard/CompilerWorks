@@ -1,7 +1,6 @@
 package com.jonheard.compilers.parser_java.ir;
 
 import java.util.List;
-
 import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
