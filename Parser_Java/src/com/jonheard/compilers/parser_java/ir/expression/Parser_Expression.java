@@ -14,7 +14,7 @@ public class Parser_Expression
 	{
 		Token next = parser.getNextToken();
 		Expression result = parseExpression(parser);
-		switch(result.getType())
+		switch(result.getExpressionType())
 		{
 			case PRE_INCREMENT:
 			case PRE_DECREMENT:
@@ -27,7 +27,7 @@ public class Parser_Expression
 			case NEW_ARRAY:
 			break;
 			default:
-				if(result.getType() == ExpressionType.REFERENCE)
+				if(result.getExpressionType() == ExpressionType.REFERENCE)
 				{
 					if(((Reference)result).isMethodCall())
 					{
@@ -325,7 +325,7 @@ public class Parser_Expression
 		else
 		{
 			Token literalToken = parser.getTokenQueue().poll();
-			TokenType literalTokenType = literalToken.getType();
+			TokenType literalTokenType = literalToken.getTokenType();
 			if(		literalTokenType != TokenType.INTEGER &&
 					literalTokenType != TokenType.LONG &&
 					literalTokenType != TokenType.FLOAT &&

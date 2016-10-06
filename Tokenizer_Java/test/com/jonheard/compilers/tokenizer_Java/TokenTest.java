@@ -16,8 +16,8 @@ public class TokenTest
 		Token t2 = new Token(TokenType.INTEGER, 23, "57");
 		
 		assertEquals(82, Token.getCurrentLine());
-		assertEquals(TokenType._ABSTRACT, t1.getType());
-		assertEquals(TokenType.INTEGER, t2.getType());
+		assertEquals(TokenType._ABSTRACT, t1.getTokenType());
+		assertEquals(TokenType.INTEGER, t2.getTokenType());
 		assertEquals("", t1.getText());
 		assertEquals("57", t2.getText());
 		assertEquals(81, t1.getLine());

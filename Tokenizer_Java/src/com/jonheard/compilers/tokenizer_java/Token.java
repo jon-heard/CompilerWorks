@@ -16,7 +16,7 @@ public class Token
 		this.text = text;
 		this.line = currentLine;
 	}
-	public TokenType getType()
+	public TokenType getTokenType()
 	{
 		return type;
 	}

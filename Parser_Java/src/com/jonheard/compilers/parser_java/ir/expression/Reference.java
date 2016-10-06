@@ -43,7 +43,8 @@ public class Reference extends Expression
 	public String getHeaderString()
 	{
 		return	"name='" + getId().getValue() + "' " +
-				"isMethodCall='" + isMethodCall() + "'";
+				"isMethodCall='" + isMethodCall() + "' " +
+				super.getHeaderString();
 	}
 	
 	@Override

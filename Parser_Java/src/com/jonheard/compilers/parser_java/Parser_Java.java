@@ -30,7 +30,7 @@ public class Parser_Java
 	{
 		if(tokenQueue == null || type == null) return false;
 		if(tokenQueue.isEmpty()) return false;
-		return getNextToken().getType() == type;
+		return getNextToken().getTokenType() == type;
 	}
 	
 	public boolean have(TokenType type)
@@ -56,7 +56,7 @@ public class Parser_Java
 		}
 
 		Token next = getNextToken();
-		if(next.getType() == type)
+		if(next.getTokenType() == type)
 		{
 			mustBeHasErrored = false;
 			tokenQueue.poll();

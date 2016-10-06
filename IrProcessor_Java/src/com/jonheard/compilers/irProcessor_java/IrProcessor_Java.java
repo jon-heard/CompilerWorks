@@ -2,7 +2,7 @@
 package com.jonheard.compilers.irProcessor_java;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.jonheard.compilers.javaClasspathDatabase.JavaClasspathDatabase;
@@ -10,6 +10,8 @@ import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 import com.jonheard.compilers.parser_java.ir.*;
 import com.jonheard.compilers.parser_java.ir.Class;
 import com.jonheard.compilers.parser_java.ir.Package;
+import com.jonheard.compilers.parser_java.ir.expression.Reference;
+import com.jonheard.compilers.parser_java.ir.statement.CodeBlock;
 import com.jonheard.util.Logger;
 import com.jonheard.util.SourceFileInfo;
 
@@ -21,219 +23,281 @@ public class IrProcessor_Java
 	{
 		this.source = source;
 		this.libs = libs;
-		imports.clear();
-		handleImport(0, "java.lang", false, true);
+		scopes.clear();
 		process_helper(toProcess);
 	}
 
-	private HashMap<String, Item> imports = new HashMap<String, Item>();
-	private HashMap<String, Item> members = new HashMap<String, Item>();
+	private LinkedList<Scope> scopes = new LinkedList<Scope>();
 	private SourceFileInfo source;
 	private JavaClasspathDatabase libs;
+	
+	private Scope getCurrentScope()
+	{
+		return scopes.peek();
+	}
 
 	private BaseIrType process_helper(BaseIrType ir)
 	{
-		if(ir instanceof Import)
+		if(ir instanceof CompilationUnit)
 		{
-			Import data = (Import)ir;
-			handleImport(
-					data.getLine(), data.getId().getValue(),
-					data.isStatic(), data.isOnDemand());
+			handleCompilationUnit(ir);
 		}
 		else if(ir instanceof Package)
 		{
-			Package data = (Package)ir;
-			handleImport(
-					data.getLine(), data.getId().getValue(),
-					false, true);
+			handlePackage(ir);
+		}
+		else if(ir instanceof Import)
+		{
+			handleImport(ir);
 		}
 		else if(ir instanceof Class)
 		{
-			Class data = (Class)ir;
-			handleClass(data);
+			handleClass(ir);
 		}
-		else if(ir instanceof Type)
+		else if(ir instanceof CodeBlock)
 		{
-			Type data = (Type)ir;
-			handleType(data);
+			handleCodeBlock(ir);
 		}
-//		else if(ir instanceof MethodCall)
-//		{
-//			MethodCall data = (MethodCall)ir;
-//			handleMethodCall(data);
-//		}
-//		else if(ir instanceof VariableReference)
-//		{
-//			VariableReference data = (VariableReference)ir;
-//			handleVariableReference(data);
-//		}
-		
+		else if(ir instanceof MethodOrVariable)
+		{
+			handleMethodOrVariable(ir);
+		}
+		else if(ir instanceof Reference)
+		{
+			handleReference(ir);
+		}
+
+
 		for(int i = 0; i < ir.getChildCount(); i++)
 		{
 			ir.replaceChild(i, process_helper(ir.getChild(i)));
 		}
+		
+		if(	ir instanceof CompilationUnit ||
+			ir instanceof Class ||
+			(ir instanceof MethodOrVariable &&
+					((MethodOrVariable)ir).isMethod()) ||
+			ir instanceof CodeBlock)
+		{
+			scopes.pop();
+		}
+		
+		
 
 		return ir;
 	}
 	
-	private void handleClass(Class data)
+	private void handleCompilationUnit(BaseIrType ir)
 	{
-		members.clear();
-		Item_Class thiss = new Item_Class("this", null, null);
-		for(int i = data.getFirstPrintedChildIndex(); i < data.getChildCount();
-				i++)
+		CompilationUnit data = (CompilationUnit)ir;
+		scopes.push(new Scope(ScopeType.COMPILATION_UNIT));
+		Item path = libs.getValue("java.lang");
+		if(path instanceof Item_Err_NotFound)
 		{
-			MethodOrVariable mCurrent = (MethodOrVariable)data.getChild(i);
-			String name = mCurrent.getName().getValue();
-			String descriptor = mCurrent.toJvmDescriptor();
-			boolean isStatic = mCurrent.getModifiers().isStatic();
-			members.put("name", new Item_Member(
-					name, thiss, null, descriptor, isStatic));
+			Logger.error(
+					"namespace 'java.lang' not found", source.getFilename(),
+					data.getLine(), data.getColumn(),
+					source.getLine(data.getLine()));
+		}
+		for(Item item : path)
+		{
+			getCurrentScope().add(item.getName(), item.getJavaAddress());
 		}
 	}
 
-	private void handleType(Type data)
+	private void handlePackage(BaseIrType ir)
 	{
-		QualifiedId id = data.getId();
-		Item path = libs.getValue(id.getValue());
-		if(path instanceof Item_Err_NotFound)
+		Package data = (Package)ir;
+		Item path = libs.getValue(data.getId().getValue());
+		if(!(path instanceof Item_Err_NotFound))
 		{
-			QualifiedId newId = fullyQualifyId(id.getFirst());
-			if(newId == null)
+			for(Item item : path)
 			{
-				Logger.error(
-						"cannot find symbol", source.getFilename(),
-						id.getLine(), id.getColumn(),
-						source.getLine(id.getLine()));
-			}
-			else
-			{
-				data.setId(newId);
+				getCurrentScope().add(item.getName(), item.getJavaAddress());
 			}
 		}
 	}
 	
-//	private void handleMethodCall(MethodCall data)
-//	{
-//		QualifiedId id = data.getId();
-//		Item path = libs.getValue(id.getValue());
-//		if(path instanceof Item_Err_NotFound)
-//		{
-//			QualifiedId newId = fullyQualifyId(id.getFirst());
-//			if(newId == null)
-//			{
-//				Logger.error(
-//						"cannot find symbol", source.getFilename(),
-//						id.getLine(), id.getColumn(),
-//						source.getLine(id.getLine()));
-//			}
-//			else
-//			{
-//				QualifiedId finalId = mergeQualifiedIds(newId, id);
-//				data.setId(finalId);
-//			}
-//		}
-//	}
-//	
-//	private void handleVariableReference(VariableReference data)
-//	{
-////		QualifiedId id = data.getName();
-////		if(members.containsKey(id.getValue()))
-////		{
-////			Id first = id.getFirst();
-////			List<Id> children = new ArrayList<Id>();
-////			children.add(new Id("this"));
-////			QualifiedId newId = new QualifiedId(
-////					first.getLine(), first.getColumn(), children);
-////			QualifiedId finalId = mergeQualifiedIds(newId, id); 
-////			data.setId(finalId);
-////		}
-//	}
-	
-	private void handleImport(
-			int line, String pathString, boolean isStatic, boolean isOnDemand)
+	private void handleImport(BaseIrType ir)
 	{
-		Item path = libs.getValue(pathString);
-		if(isStatic)
+		Import data = (Import)ir;
+		Item path = libs.getValue(data.getId().getValue());
+		if(data.isStatic())
 		{
-			if(isOnDemand)
+			if(data.isOnDemand())
 			{
-				if(!(path instanceof Item_Class))
+				if(path instanceof Item_Class)
 				{
-					Logger.error("cannot find symbol", "", line, 0, "");
-				}
-				for(Item item : path)
-				{
-					imports.put(item.getName(), item);
+					for(Item item : path)
+					{
+						getCurrentScope().add(
+								item.getName(), item.getJavaAddress());
+						return;
+					}
 				}
 			}
 			else
 			{
-				if(!(path instanceof Item_Member))
+				if(path instanceof Item_Member)
 				{
-					Logger.error("cannot find symbol", "", line, 0, "");
+					getCurrentScope().add(
+							path.getName(), path.getJavaAddress());
+					return;
 				}
-				imports.put(path.getName(), path);
 			}
 		}
 		else
 		{
-			if(isOnDemand)
+			if(data.isOnDemand())
 			{
-				if(!(path instanceof Item_Package))
+				if(path instanceof Item_Package)
 				{
-					Logger.error("cannot find symbol", "", line, 0, "");
-				}
-				for(Item item : path)
-				{
-					imports.put(item.getName(), item);
+					for(Item item : path)
+					{
+						getCurrentScope().add(
+								item.getName(), item.getJavaAddress());
+						return;
+					}
 				}
 			}
 			else
 			{
-				if(!(path instanceof Item_Class))
+				if(path instanceof Item_Class)
 				{
-					Logger.error("cannot find symbol", "", line, 0, "");
+					getCurrentScope().add(
+							path.getName(), path.getJavaAddress());
+					return;
 				}
-				imports.put(path.getName(), path);
 			}
+		}
+		Logger.error(
+				"cannot find symbol: " + data.getId().getValue(),
+				source.getFilename(), data.getLine(), data.getColumn(),
+				source.getLine(data.getLine()));
+	}
+
+	private void handleClass(BaseIrType ir)
+	{
+		Class data = (Class)ir;
+		scopes.push(new Scope(ScopeType.CLASS, getCurrentScope()));
+		for(int i = data.getFirstPrintedChildIndex(); i < data.getChildCount();
+				i++)
+		{
+			MethodOrVariable mCurrent = (MethodOrVariable)data.getChild(i);
+			String name = mCurrent.getId().getValue();
+			getCurrentScope().add(name, "this." + name);
 		}
 	}
 
-
-	private QualifiedId fullyQualifyId(Id source)
+	private void handleCodeBlock(BaseIrType ir)
 	{
-		if(!imports.containsKey(source.getValue())) return null;
-		String[] path =
-				imports.get(source.getValue()).getJavaAddress().split("\\.");
-		List<Id> ids = new ArrayList<Id>();
-		for(String node : path)
-		{
-			ids.add(new Id(node));
-		}
-		return new QualifiedId(
-				source.getLine(), source.getColumn(), ids);
+		scopes.push(new Scope(ScopeType.CODE_BLOCK, getCurrentScope()));
 	}
 	
-	private QualifiedId mergeQualifiedIds(
-			QualifiedId lhs, QualifiedId rhs)
+	private void handleMethodOrVariable(BaseIrType ir)
 	{
-		List<Id> ids = new ArrayList<Id>();
-		Id middleId = rhs.getFirst();
-		for(int i = 0; i < lhs.getChildCount(); i++)
+		MethodOrVariable data = (MethodOrVariable)ir;
+		String id = data.getJavaType().getId().getValue();
+		Item path = libs.getValue(id);
+		if(path instanceof Item_Err_NotFound)
 		{
-			if(i == lhs.getChildCount()-1 && lhs.getChild(i).equals(middleId))
+			id = data.getJavaType().getId().getFirst().getValue();
+			id = getScopedValue(id);
+			if(id == null)
 			{
-				continue;
+				Logger.error(
+						"cannot find symbol: " + data.getId().getValue(),
+						source.getFilename(), data.getLine(), data.getColumn(),
+						source.getLine(data.getLine()));
 			}
-			ids.add((Id)lhs.getChild(i));
+			else
+			{
+				List<Id> items = makeIdListFromAddress(id);
+				data.getJavaType().setId(new QualifiedId(
+						data.getJavaType().getLine(), data.getJavaType().getColumn(),
+						items));
+
+			}
 		}
-		for(int i = 0; i < rhs.getChildCount(); i++)
+		
+		if(	getCurrentScope().getScopeType() == ScopeType.CODE_BLOCK ||
+			getCurrentScope().getScopeType() == ScopeType.METHOD)
 		{
-			ids.add((Id)rhs.getChild(i));
-		}		
-		QualifiedId result = new QualifiedId(
-				rhs.getLine(), rhs.getColumn(), ids);
+			getCurrentScope().add(data.getId().getValue());
+			String newIdValue = getCurrentScope().get(data.getId().getValue());
+			data.setId(new Id(newIdValue));
+		}
+		
+		if(data.isMethod())
+		{
+			scopes.push(new Scope(ScopeType.METHOD, getCurrentScope()));
+		}
+	}
+	
+	private void handleReference(BaseIrType ir)
+	{
+		Reference data = (Reference)ir;
+		String id = data.getId().getValue();
+		Item path = libs.getValue(id);
+		if(path instanceof Item_Err_NotFound)
+		{
+			id = data.getId().getFirst().getValue();
+			id = getScopedValue(id);
+			if(id == null)
+			{
+				Logger.error(
+						"cannot find symbol: " + data.getId().getValue(),
+						source.getFilename(), data.getLine(), data.getColumn(),
+						source.getLine(data.getLine()));
+			}
+			else
+			{
+				List<Id> lhs = makeIdListFromAddress(id);
+				if(!lhs.get(0).getValue().startsWith("#"))
+				{
+					List<Id> rhs = makeIdListFromQualifiedId(data.getId());
+					if(lhs.get(lhs.size()-1).equals(rhs.get(0)))
+					{
+						rhs.remove(0);
+					}
+					lhs.addAll(rhs);
+				}
+				data.setId(new QualifiedId(
+						data.getId().getLine(), data.getId().getColumn(), lhs));
+			}
+		}
+	}
+	
+	private String getScopedValue(String key)
+	{
+		for(Scope scope : scopes)
+		{
+			if(scope.contains(key))
+			{
+				return scope.get(key);
+			}
+		}
+		return null;
+	}
+
+	private List<Id> makeIdListFromAddress(String source)
+	{
+		String[] path = source.split("\\.");
+		List<Id> result = new ArrayList<Id>();
+		for(String node : path)
+		{
+			result.add(new Id(node));
+		}
+		return result;
+	}
+	
+	private List<Id> makeIdListFromQualifiedId(QualifiedId source)
+	{
+		List<Id> result = new ArrayList<Id>();
+		for(int i = 0; i < source.getChildCount(); i++)
+		{
+			result.add((Id)source.getChild(i));
+		}
 		return result;
 	}
 }

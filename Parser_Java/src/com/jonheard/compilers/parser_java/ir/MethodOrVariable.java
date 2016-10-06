@@ -39,7 +39,7 @@ public class MethodOrVariable extends BaseIrType
 			while(parser.have(TokenType.SQUARE_BRACE_LEFT))
 			{
 				parser.mustBe(TokenType.SQUARE_BRACE_RIGHT);
-				getType().incDimensionCount();
+				getJavaType().incDimensionCount();
 			}
 			if(!forceNoInitializer && parser.have(TokenType.EQUAL))
 			{
@@ -55,8 +55,8 @@ public class MethodOrVariable extends BaseIrType
 	@Override
 	public String getHeaderString()
 	{
-		return	"name='" + getName().getValue() + "' " +
-				"type='" + getType().getValue() + "' " +
+		return	"name='" + getId().getValue() + "' " +
+				"type='" + getJavaType().getValue() + "' " +
 				"modifiers='" + getModifiers().getValue() + "' " +
 				"isMethod='" + isMethod() + "'";
 	}
@@ -69,14 +69,19 @@ public class MethodOrVariable extends BaseIrType
 		return (List_Modifier)getChild(0);
 	}
 	
-	public Type getType()
+	public Type getJavaType()
 	{
 		return (Type)getChild(1);
 	}
 	
-	public Id getName()
+	public Id getId()
 	{
 		return (Id)getChild(2);
+	}
+	
+	public void setId(Id value)
+	{
+		replaceChild(2, value);
 	}
 	
 	public boolean isMethod()
@@ -112,12 +117,12 @@ public class MethodOrVariable extends BaseIrType
 			result.append('(');
 			for(int i = 0; i < params.getChildCount(); i++)
 			{
-				Type pType = ((MethodOrVariable)params.getChild(i)).getType();
+				Type pType = ((MethodOrVariable)params.getChild(i)).getJavaType();
 				result.append(pType.toJvmDescriptor());
 			}
 			result.append(')');
 		}
-		result.append(getType().toJvmDescriptor());
+		result.append(getJavaType().toJvmDescriptor());
 		return result.toString();
 	}
 	

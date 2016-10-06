@@ -12,7 +12,7 @@ public class Literal extends Expression
 	}
 	
 	@Override
-	public String getTypeName()
+	public String getIrTypeName()
 	{
 		return "Literal_" + getLiteralType().toString();
 	}
@@ -25,7 +25,7 @@ public class Literal extends Expression
 	
 	public TokenType getLiteralType()
 	{
-		return data.getType();
+		return data.getTokenType();
 	}
 	
 	public String getLiteralValue()

@@ -9,7 +9,7 @@ public class Expression extends BaseIrType
 	public Expression(ExpressionType type, Token first)
 	{
 		super(first.getLine(), first.getColumn());
-		this.type = type;
+		this.expressionType = type;
 	}
 	public Expression(ExpressionType type, Token first, Expression lhs)
 	{
@@ -30,16 +30,24 @@ public class Expression extends BaseIrType
 		addChild(rhs);
 	}
 	
+	public String getJavaType() { return javaType; }
+
+	public void setJavaType(String value) { javaType = value; }
+	
 	@Override
-	public String getTypeName()
+	public String getIrTypeName()
 	{
-		return UtilMethods.constNameToCamelName(getType().name(), true);
+		return UtilMethods.constNameToCamelName(getExpressionType()+"", true);
 	}
 	
-	public ExpressionType getType()
+	public ExpressionType getExpressionType() { return expressionType; }
+	
+	@Override
+	public String getHeaderString()
 	{
-		return type;
+		return	"type='" + javaType + "'";
 	}
 	
-	private ExpressionType type;
+	private ExpressionType expressionType;
+	private String javaType = "";
 }

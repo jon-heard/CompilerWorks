@@ -52,7 +52,7 @@ public class BaseIrType
 
 	public String getHeaderString() { return ""; }
 	
-	public String getTypeName()
+	public String getIrTypeName()
 	{
 		String result = this.getClass().getName();
 		result = result.substring(result.lastIndexOf('.')+1);
@@ -74,11 +74,11 @@ public class BaseIrType
 		headerString = " line='" + getLine() + "'" + headerString;
 		if(children.size() <= getFirstPrintedChildIndex())
 		{
-			result.append(tabs + "<" + getTypeName() + headerString + "/>\n");
+			result.append(tabs + "<" + getIrTypeName() + headerString + "/>\n");
 		}
 		else
 		{
-			String typeName = getTypeName();
+			String typeName = getIrTypeName();
 			result.append(tabs + "<" + typeName + headerString + ">\n");
 			for(int i = getFirstPrintedChildIndex(); i < children.size(); i++)
 			{

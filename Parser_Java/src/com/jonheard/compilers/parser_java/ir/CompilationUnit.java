@@ -43,7 +43,7 @@ public class CompilationUnit extends BaseIrType
 						next.getColumn(),
 						parser.getSource().getLine(next.getLine()));
 			}
-			typeCount++;
+			javaTypeCount++;
 		}
 	}
 	
@@ -51,7 +51,7 @@ public class CompilationUnit extends BaseIrType
 	public String getHeaderString()
 	{
 		return  "importCount='" + getImportCount() + "' " +
-				"typeCount='" + getTypeCount() + "'";
+				"typeCount='" + getJavaTypeCount() + "'";
 	}
 	
 	@Override
@@ -74,12 +74,12 @@ public class CompilationUnit extends BaseIrType
 		return importCount;
 	}
 
-	public int getTypeCount()
+	public int getJavaTypeCount()
 	{
-		return typeCount;
+		return javaTypeCount;
 	}
 
 	private int importCount = 0;
-	private int typeCount = 0;
+	private int javaTypeCount = 0;
 	private boolean unnamedPackage = true;
 }
