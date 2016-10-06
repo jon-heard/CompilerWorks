@@ -1,3 +1,5 @@
+stack id's are being used for everything
+java.lang.system should be java.lang.system.out.println
 
 finish assembly
 

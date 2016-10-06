@@ -42,6 +42,7 @@ public class Reference extends Expression
 	public String getHeaderString()
 	{
 		return	"id='" + getId().getValue() + "' " +
+				"owner='" + getOwner().getValue() + "' " +
 				"isMethodCall='" + isMethodCall() + "' " +
 				super.getHeaderString();
 	}

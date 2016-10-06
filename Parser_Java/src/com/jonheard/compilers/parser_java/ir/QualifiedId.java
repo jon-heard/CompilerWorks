@@ -54,7 +54,10 @@ public class QualifiedId extends BaseIrType
 			result.append(((Id)getChild(i)).getValue());
 			result.append(".");
 		}
-		result.deleteCharAt(result.length()-1);
+		if(result.length() > 0)
+		{
+			result.deleteCharAt(result.length()-1);
+		}
 		return result.toString();
 	}
 	
