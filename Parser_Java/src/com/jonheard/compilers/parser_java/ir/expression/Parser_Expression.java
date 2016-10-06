@@ -2,7 +2,6 @@ package com.jonheard.compilers.parser_java.ir.expression;
 
 import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
-import com.jonheard.compilers.parser_java.ir.Id;
 import com.jonheard.compilers.parser_java.ir.List_Expression;
 import com.jonheard.compilers.parser_java.ir.QualifiedId;
 import com.jonheard.compilers.tokenizer_java.Token;
@@ -21,13 +20,20 @@ public class Parser_Expression
 			case PRE_DECREMENT:
 			case POST_INCREMENT:
 			case POST_DECREMENT:
-			case METHOD_CALL:
+			case REFERENCE:
 			case SUPER_CONSTRUCTOR:
 			case THIS_CONSTRUCTOR:
 			case NEW_OBJECT:
 			case NEW_ARRAY:
 			break;
 			default:
+				if(result.getType() == ExpressionType.REFERENCE)
+				{
+					if(((Reference)result).isMethodCall())
+					{
+						break;
+					}
+				}
 				Logger.error("not a statement",
 						parser.getSource().getFilename(), next.getLine(),
 						next.getColumn(),
@@ -307,17 +313,12 @@ public class Parser_Expression
 			QualifiedId id = new QualifiedId(parser);
 			if(parser.have(TokenType.PAREN_LEFT))
 			{
-				result = new MethodCall(
-						next, id, new List_Expression(parser));
+				result = new Reference(next, id, new List_Expression(parser));
 				parser.mustBe(TokenType.PAREN_RIGHT);
-			}
-			else if(id.getChildCount() == 1)
-			{
-				result =new VariableReference(next, (Id)id.getChild(0));
 			}
 			else
 			{
-				result = new FieldReference(next, id);
+				result = new Reference(next, id);
 			}
 		}
 		// literal

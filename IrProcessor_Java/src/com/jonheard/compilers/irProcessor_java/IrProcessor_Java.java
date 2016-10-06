@@ -10,8 +10,6 @@ import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 import com.jonheard.compilers.parser_java.ir.*;
 import com.jonheard.compilers.parser_java.ir.Class;
 import com.jonheard.compilers.parser_java.ir.Package;
-import com.jonheard.compilers.parser_java.ir.expression.MethodCall;
-import com.jonheard.compilers.parser_java.ir.expression.VariableReference;
 import com.jonheard.util.Logger;
 import com.jonheard.util.SourceFileInfo;
 
@@ -59,16 +57,16 @@ public class IrProcessor_Java
 			Type data = (Type)ir;
 			handleType(data);
 		}
-		else if(ir instanceof MethodCall)
-		{
-			MethodCall data = (MethodCall)ir;
-			handleMethodCall(data);
-		}
-		else if(ir instanceof VariableReference)
-		{
-			VariableReference data = (VariableReference)ir;
-			handleVariableReference(data);
-		}
+//		else if(ir instanceof MethodCall)
+//		{
+//			MethodCall data = (MethodCall)ir;
+//			handleMethodCall(data);
+//		}
+//		else if(ir instanceof VariableReference)
+//		{
+//			VariableReference data = (VariableReference)ir;
+//			handleVariableReference(data);
+//		}
 		
 		for(int i = 0; i < ir.getChildCount(); i++)
 		{
@@ -115,42 +113,42 @@ public class IrProcessor_Java
 		}
 	}
 	
-	private void handleMethodCall(MethodCall data)
-	{
-		QualifiedId id = data.getId();
-		Item path = libs.getValue(id.getValue());
-		if(path instanceof Item_Err_NotFound)
-		{
-			QualifiedId newId = fullyQualifyId(id.getFirst());
-			if(newId == null)
-			{
-				Logger.error(
-						"cannot find symbol", source.getFilename(),
-						id.getLine(), id.getColumn(),
-						source.getLine(id.getLine()));
-			}
-			else
-			{
-				QualifiedId finalId = mergeQualifiedIds(newId, id);
-				data.setId(finalId);
-			}
-		}
-	}
-	
-	private void handleVariableReference(VariableReference data)
-	{
-//		QualifiedId id = data.getName();
-//		if(members.containsKey(id.getValue()))
+//	private void handleMethodCall(MethodCall data)
+//	{
+//		QualifiedId id = data.getId();
+//		Item path = libs.getValue(id.getValue());
+//		if(path instanceof Item_Err_NotFound)
 //		{
-//			Id first = id.getFirst();
-//			List<Id> children = new ArrayList<Id>();
-//			children.add(new Id("this"));
-//			QualifiedId newId = new QualifiedId(
-//					first.getLine(), first.getColumn(), children);
-//			QualifiedId finalId = mergeQualifiedIds(newId, id); 
-//			data.setId(finalId);
+//			QualifiedId newId = fullyQualifyId(id.getFirst());
+//			if(newId == null)
+//			{
+//				Logger.error(
+//						"cannot find symbol", source.getFilename(),
+//						id.getLine(), id.getColumn(),
+//						source.getLine(id.getLine()));
+//			}
+//			else
+//			{
+//				QualifiedId finalId = mergeQualifiedIds(newId, id);
+//				data.setId(finalId);
+//			}
 //		}
-	}
+//	}
+//	
+//	private void handleVariableReference(VariableReference data)
+//	{
+////		QualifiedId id = data.getName();
+////		if(members.containsKey(id.getValue()))
+////		{
+////			Id first = id.getFirst();
+////			List<Id> children = new ArrayList<Id>();
+////			children.add(new Id("this"));
+////			QualifiedId newId = new QualifiedId(
+////					first.getLine(), first.getColumn(), children);
+////			QualifiedId finalId = mergeQualifiedIds(newId, id); 
+////			data.setId(finalId);
+////		}
+//	}
 	
 	private void handleImport(
 			int line, String pathString, boolean isStatic, boolean isOnDemand)

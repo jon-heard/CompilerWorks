@@ -4,12 +4,17 @@ import com.jonheard.compilers.parser_java.ir.List_Expression;
 import com.jonheard.compilers.parser_java.ir.QualifiedId;
 import com.jonheard.compilers.tokenizer_java.Token;
 
-public class MethodCall extends Expression
+public class Reference extends Expression
 {
-	public MethodCall(
+	public Reference(Token next, QualifiedId id)
+	{
+		this(next, id, new List_Expression());
+		_isMethodCall = false;
+	}
+	public Reference(
 			Token next, QualifiedId id, List_Expression parameters)
 	{
-		super(ExpressionType.METHOD_CALL, next);
+		super(ExpressionType.REFERENCE, next);
 		addChild(id);
 		addChild(parameters);
 	}
@@ -28,4 +33,24 @@ public class MethodCall extends Expression
 	{
 		replaceChild(0, value);
 	}
+	
+	public boolean isMethodCall()
+	{
+		return _isMethodCall;
+	}
+	
+	@Override
+	public String getHeaderString()
+	{
+		return	"name='" + getId().getValue() + "' " +
+				"isMethodCall='" + isMethodCall() + "'";
+	}
+	
+	@Override
+	public int getFirstPrintedChildIndex()
+	{
+		return isMethodCall() ? 1 : 2;
+	}
+		
+	private boolean _isMethodCall = true;
 }
