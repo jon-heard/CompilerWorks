@@ -8,8 +8,10 @@ import java.util.List;
 import com.jonheard.compilers.javaClasspathDatabase.JavaClasspathDatabase;
 import com.jonheard.compilers.javaClasspathDatabase.Item.*;
 import com.jonheard.compilers.parser_java.ir.*;
+import com.jonheard.compilers.parser_java.ir.Class;
 import com.jonheard.compilers.parser_java.ir.Package;
 import com.jonheard.compilers.parser_java.ir.expression.MethodCall;
+import com.jonheard.compilers.parser_java.ir.expression.VariableReference;
 import com.jonheard.util.Logger;
 import com.jonheard.util.SourceFileInfo;
 
@@ -24,23 +26,15 @@ public class IrProcessor_Java
 		imports.clear();
 		handleImport(0, "java.lang", false, true);
 		process_helper(toProcess);
-		for(Item item : imports.values())
-		{
-			System.out.println(item.getJavaAddress());
-		}
 	}
 
 	private HashMap<String, Item> imports = new HashMap<String, Item>();
+	private HashMap<String, Item> members = new HashMap<String, Item>();
 	private SourceFileInfo source;
 	private JavaClasspathDatabase libs;
 
 	private BaseIrType process_helper(BaseIrType ir)
 	{
-		for(int i = 0; i < ir.getChildCount(); i++)
-		{
-			ir.replaceChild(i, process_helper(ir.getChild(i)));
-		}
-
 		if(ir instanceof Import)
 		{
 			Import data = (Import)ir;
@@ -55,6 +49,11 @@ public class IrProcessor_Java
 					data.getLine(), data.getId().getValue(),
 					false, true);
 		}
+		else if(ir instanceof Class)
+		{
+			Class data = (Class)ir;
+			handleClass(data);
+		}
 		else if(ir instanceof Type)
 		{
 			Type data = (Type)ir;
@@ -65,10 +64,54 @@ public class IrProcessor_Java
 			MethodCall data = (MethodCall)ir;
 			handleMethodCall(data);
 		}
+		else if(ir instanceof VariableReference)
+		{
+			VariableReference data = (VariableReference)ir;
+			handleVariableReference(data);
+		}
 		
+		for(int i = 0; i < ir.getChildCount(); i++)
+		{
+			ir.replaceChild(i, process_helper(ir.getChild(i)));
+		}
+
 		return ir;
 	}
 	
+	private void handleClass(Class data)
+	{
+		members.clear();
+		Item_Class thiss = new Item_Class("this", null, null);
+		for(int i = data.getFirstPrintedChildIndex(); i < data.getChildCount();
+				i++)
+		{
+			BaseIrType current = data.getChild(i);
+			String name = null;
+			Item_Class type = null;
+			String descriptor = null;
+			boolean isStatic = false;
+			if(current instanceof Method)
+			{
+				Method mCurrent = ((Method)current); 
+				name = mCurrent.getName().getValue();
+				descriptor = mCurrent.toJvmDescriptor();
+				isStatic = mCurrent.getModifiers().isStatic();
+			}
+			else if(current instanceof Variable)
+			{
+				Variable vCurrent = ((Variable)current); 
+				name = vCurrent.getName().getValue();
+				descriptor = vCurrent.getType().toJvmDescriptor();
+				isStatic = vCurrent.getModifiers().isStatic();
+			}
+			if(name != null)
+			{
+				members.put("name", new Item_Member(
+						name, thiss, type, descriptor, isStatic));
+			}
+		}
+	}
+
 	private void handleType(Type data)
 	{
 		QualifiedId id = data.getId();
@@ -110,6 +153,21 @@ public class IrProcessor_Java
 				data.setId(finalId);
 			}
 		}
+	}
+	
+	private void handleVariableReference(VariableReference data)
+	{
+//		QualifiedId id = data.getName();
+//		if(members.containsKey(id.getValue()))
+//		{
+//			Id first = id.getFirst();
+//			List<Id> children = new ArrayList<Id>();
+//			children.add(new Id("this"));
+//			QualifiedId newId = new QualifiedId(
+//					first.getLine(), first.getColumn(), children);
+//			QualifiedId finalId = mergeQualifiedIds(newId, id); 
+//			data.setId(finalId);
+//		}
 	}
 	
 	private void handleImport(
@@ -161,7 +219,8 @@ public class IrProcessor_Java
 			}
 		}
 	}
-	
+
+
 	private QualifiedId fullyQualifyId(Id source)
 	{
 		if(!imports.containsKey(source.getValue())) return null;

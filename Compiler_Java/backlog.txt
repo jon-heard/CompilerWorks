@@ -1,37 +1,37 @@
-change 'Identifier' to 'Id'
-check for line breaks invalidated by 'Identifier' to 'Id'
 
 Adjust methodCall processing to split on field references
+finish assembly
 
 adjust classpathDB to combine sources
-
 start making real tests for parser
+ClassBuilder: shift to using logger
+
+check line breaks
+use * imports when applicable
+make sure public stuff is on top, private at bottom
+comment
+simple getters and setters can be on one line
+list/array names are ploural.  If name ends in 's', add 'Items' to the ends
+use iterator whenever possible
+comments
+	Use no triple comments
+	file head comments
+	class comments
+	all public member comments
 
 make db merge items on adding sources (test what happens with collision on nonstatic and static)
+make stringToParsed()
 
+multiple variables in one declaration
+declaration initializers
+interfaces
+enums
+exceptions
+abstract
+Nested types
+annotations
+labels
 
-- Parser: add expression
-- Parser: incorporate expression into varDeclaration
-
-- get a running program compiled
-
-- Compiler / Util: comment
-- Tokenizer / ClassBuilder: comment
-
-- Tokenizer test: binary
-- error: binary & hex need at least one digit
-- error: no underscore at end or start of number
-
-- ClassBuilder: shift to using logger
-
-- Parser: comment
-
-- multiple variables in one declaration
-- declaration initializers
-- interfaces
-- enums
-- exceptions
-- abstract
-- Nested types
-- annotations
-- labels
+Tokenizer test: binary
+error: binary & hex need at least one digit
+error: no underscore at end or start of number

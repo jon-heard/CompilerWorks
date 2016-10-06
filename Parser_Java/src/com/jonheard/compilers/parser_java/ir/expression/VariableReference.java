@@ -5,7 +5,6 @@ import com.jonheard.compilers.tokenizer_java.Token;
 
 public class VariableReference extends Expression
 {
-
 	public VariableReference(Token next, Id id)
 	{
 		super(ExpressionType.VARIABLE_REFERENCE, next);
@@ -24,10 +23,5 @@ public class VariableReference extends Expression
 	public Id getName()
 	{
 		return (Id)getChild(0);
-	}
-	
-	public void setName(Id value)
-	{
-		replaceChild(0, value);
 	}
 }
