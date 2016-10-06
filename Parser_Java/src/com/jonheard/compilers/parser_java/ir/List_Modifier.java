@@ -10,6 +10,10 @@ import com.jonheard.util.RewindableQueue;
 
 public class List_Modifier extends BaseIrType
 {
+	public List_Modifier()
+	{
+		super(0, 0);
+	}
 	public List_Modifier(Parser_Java parser)
 	{
 		super(parser);
