@@ -93,6 +93,10 @@ public class BaseIrType
 	{
 		children.add(child);
 	}
+	protected void removeChild(int index)
+	{
+		children.remove(index);
+	}
 
 	private int line, column;
 	private List<BaseIrType> children = new ArrayList<BaseIrType>();
