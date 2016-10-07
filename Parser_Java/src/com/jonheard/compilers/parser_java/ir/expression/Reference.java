@@ -35,12 +35,12 @@ public class Reference extends Expression
 	
 	public void setId(QualifiedId value) { replaceChild(0, value); }
 	
-	public Reference getChild()
+	public Reference getSubReference()
 	{
 		return (getChildCount() > 2) ? (Reference)getChild(2) : null;
 	}
 	
-	public void setChild(Reference value)
+	public void setSubReference(Reference value)
 	{
 		if(getChildCount() > 2)
 		{
@@ -69,7 +69,15 @@ public class Reference extends Expression
 	}
 	
 	@Override
-	public void calcJavaType() {}
+	public void calcJavaType()
+	{
+		Reference subReference = getSubReference();
+		if(getJavaType().equals("") && subReference != null)
+		{
+			subReference.calcJavaType();
+			setJavaType(subReference.getJavaType());
+		}
+	}
 		
 	private boolean _isMethodCall = true;
 }
