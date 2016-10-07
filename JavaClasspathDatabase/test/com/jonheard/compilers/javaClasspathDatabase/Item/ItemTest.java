@@ -37,10 +37,9 @@ public class ItemTest
 		assertTrue(childList.contains("two"));
 		assertTrue(childList.contains("four"));
 		List<Item> items = i3.getForwardAddress();
-		assertEquals(3, items.size());
-		assertEquals(i1, items.get(0));
-		assertEquals(i2, items.get(1));
-		assertEquals(i3, items.get(2));
+		assertEquals(2, items.size());
+		assertEquals(i2, items.get(0));
+		assertEquals(i3, items.get(1));
 	}
 	
 	public void Item_Non()

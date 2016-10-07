@@ -69,7 +69,7 @@ public class Item implements Iterable<Item>
 	{
 		LinkedList<Item> result = new LinkedList<Item>();
 		Item current = this;
-		while(current != null)
+		while(current != null && !(current instanceof Item_Non))
 		{
 			result.addFirst(current);
 			current = current.getParent();
