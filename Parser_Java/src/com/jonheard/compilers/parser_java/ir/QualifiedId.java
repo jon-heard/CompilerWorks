@@ -1,5 +1,6 @@
 package com.jonheard.compilers.parser_java.ir;
 
+import java.util.LinkedList;
 import java.util.List;
 import com.jonheard.compilers.parser_java.Parser_Java;
 import com.jonheard.compilers.tokenizer_java.TokenType;
@@ -59,6 +60,20 @@ public class QualifiedId extends BaseIrType
 			result.deleteCharAt(result.length()-1);
 		}
 		return result.toString();
+	}
+	
+	public QualifiedId split(int rightOfSplit)
+	{
+		List<Id> transfers = new LinkedList<Id>();
+		for(int i = rightOfSplit; i < getChildCount(); i++)
+		{
+			transfers.add((Id)getChild(i));
+		}
+		while(getChildCount() > rightOfSplit)
+		{
+			removeChild(rightOfSplit);
+		}
+		return new QualifiedId(getLine(), getColumn(), transfers);
 	}
 	
 	public static boolean isNext(Parser_Java parser)

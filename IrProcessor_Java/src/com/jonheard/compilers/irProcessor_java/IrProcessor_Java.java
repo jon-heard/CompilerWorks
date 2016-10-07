@@ -41,31 +41,31 @@ public class IrProcessor_Java
 	{
 		if(ir instanceof CompilationUnit)
 		{
-			handleCompilationUnit(ir);
+			preHandleCompilationUnit(ir);
 		}
 		else if(ir instanceof Package)
 		{
-			handlePackage(ir);
+			preHandlePackage(ir);
 		}
 		else if(ir instanceof Import)
 		{
-			handleImport(ir);
+			preHandleImport(ir);
 		}
 		else if(ir instanceof Class)
 		{
-			handleClass(ir);
+			preHandleClass(ir);
 		}
 		else if(ir instanceof CodeBlock)
 		{
-			handleCodeBlock(ir);
+			preHandleCodeBlock(ir);
 		}
 		else if(ir instanceof MethodOrVariable)
 		{
-			handleMethodOrVariable(ir);
+			preHandleMethodOrVariable(ir);
 		}
 		else if(ir instanceof Reference)
 		{
-			handleReference(ir);
+			preHandleReference(ir);
 		}
 
 
@@ -82,8 +82,12 @@ public class IrProcessor_Java
 		{
 			scopes.pop();
 		}
-		
-		if(ir instanceof Expression)
+		else if(ir instanceof Reference)
+		{
+			postHandleReference(ir);
+			((Expression)ir).calcJavaType();
+		}
+		else if(ir instanceof Expression)
 		{
 			((Expression)ir).calcJavaType();
 		}
@@ -91,7 +95,7 @@ public class IrProcessor_Java
 		return ir;
 	}
 	
-	private void handleCompilationUnit(BaseIrType ir)
+	private void preHandleCompilationUnit(BaseIrType ir)
 	{
 		CompilationUnit data = (CompilationUnit)ir;
 		scopes.push(new Scope(ScopeType.COMPILATION_UNIT));
@@ -109,7 +113,7 @@ public class IrProcessor_Java
 		}
 	}
 
-	private void handlePackage(BaseIrType ir)
+	private void preHandlePackage(BaseIrType ir)
 	{
 		Package data = (Package)ir;
 		Item path = libs.getValue(data.getId().getValue());
@@ -122,7 +126,7 @@ public class IrProcessor_Java
 		}
 	}
 	
-	private void handleImport(BaseIrType ir)
+	private void preHandleImport(BaseIrType ir)
 	{
 		Import data = (Import)ir;
 		Item path = libs.getValue(data.getId().getValue());
@@ -180,7 +184,7 @@ public class IrProcessor_Java
 				source.getLine(data.getLine()));
 	}
 
-	private void handleClass(BaseIrType ir)
+	private void preHandleClass(BaseIrType ir)
 	{
 		Class data = (Class)ir;
 		scopes.push(new Scope(ScopeType.CLASS, getCurrentScope()));
@@ -194,12 +198,12 @@ public class IrProcessor_Java
 		}
 	}
 
-	private void handleCodeBlock(BaseIrType ir)
+	private void preHandleCodeBlock(BaseIrType ir)
 	{
 		scopes.push(new Scope(ScopeType.CODE_BLOCK, getCurrentScope()));
 	}
 	
-	private void handleMethodOrVariable(BaseIrType ir)
+	private void preHandleMethodOrVariable(BaseIrType ir)
 	{
 		MethodOrVariable data = (MethodOrVariable)ir;
 		String id = data.getJavaType().getId().getValue();
@@ -242,7 +246,7 @@ public class IrProcessor_Java
 		}
 	}
 	
-	private void handleReference(BaseIrType ir)
+	private void preHandleReference(BaseIrType ir)
 	{
 		Reference data = (Reference)ir;
 		String id = data.getId().getValue();
@@ -274,6 +278,32 @@ public class IrProcessor_Java
 						data.getId().getLine(), data.getId().getColumn(), lhs));
 				data.setJavaType(scopedId.getJavaType());
 			}
+		}
+	}
+	
+	private void postHandleReference(BaseIrType ir)
+	{
+		Reference data = (Reference)ir;
+		QualifiedId id = data.getId();
+		if(id.getValue().startsWith("this."))
+		{
+			QualifiedId newId = id.split(1);
+			Reference newReference = new Reference(
+					id.getLine(), id.getColumn()+5, newId);
+			data.setSubReference(newReference);
+		}
+		else
+		{
+			List<Item> path = libs.getValue(id.getValue()).getForwardAddress();
+			int last = 0;
+			while(path.get(last) instanceof Item_Package)
+			{
+				last++;
+			}
+			QualifiedId newId = id.split(last+1);
+			Reference newReference = new Reference(
+					id.getLine(), id.getColumn(), newId);
+			data.setSubReference(newReference);
 		}
 	}
 	
