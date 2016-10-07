@@ -2,6 +2,7 @@ package com.jonheard.compilers.javaClasspathDatabase.Item;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -20,6 +21,7 @@ public class ItemTest
 		Item i1 = new Item_Non("one");
 		Item i2 = new Item("two", i1);
 		Item i3 = new Item("three", i2);
+		Item i4 = new Item("four", i1);
 		assertEquals(null, i1.getParent());
 		assertEquals("two", i2.getName());
 		assertEquals(i1, i2.getParent());
@@ -33,7 +35,12 @@ public class ItemTest
 		Set<String> childList = i1.getChildList();
 		assertEquals(2, childList.size());
 		assertTrue(childList.contains("two"));
-		assertTrue(childList.contains("three"));
+		assertTrue(childList.contains("four"));
+		List<Item> items = i3.getForwardAddress();
+		assertEquals(3, items.size());
+		assertEquals(i1, items.get(0));
+		assertEquals(i2, items.get(1));
+		assertEquals(i3, items.get(2));
 	}
 	
 	public void Item_Non()

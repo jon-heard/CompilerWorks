@@ -2,6 +2,8 @@ package com.jonheard.compilers.javaClasspathDatabase.Item;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class Item implements Iterable<Item>
@@ -63,10 +65,31 @@ public class Item implements Iterable<Item>
 		}
 	}
 	
+	public List<Item> getForwardAddress()
+	{
+		LinkedList<Item> result = new LinkedList<Item>();
+		Item current = this;
+		while(current != null)
+		{
+			result.addFirst(current);
+			current = current.getParent();
+		}
+		return result;
+	}
+	
 	@Override
 	public String toString()
 	{
 		return "Item(" + getName() + "," + getParent().getName() + ")"; 
+	}
+	
+	public Item getTopLevel()
+	{
+		if(parent != null)
+		{
+			return parent.getTopLevel();
+		}
+		return this;
 	}
 	
 	private String name;
