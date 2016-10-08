@@ -77,6 +77,15 @@ public class QualifiedId extends BaseIrType
 		return new QualifiedId(getLine(), getColumn(), transfers);
 	}
 	
+	public void addPrefix(String value)
+	{
+		String[] valueItems = value.split("\\.");
+		for(String valueItem : valueItems)
+		{
+			
+		}
+	}
+	
 	public static boolean isNext(Parser_Java parser)
 	{
 		return Id.isNext(parser);

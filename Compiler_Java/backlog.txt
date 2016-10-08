@@ -3,6 +3,8 @@ change "getScopedValue" to take an entire key, extract the first and get the typ
 Add QualifiedId.addPrefix(string)
 Add Reference.addPrefix(string)
 replace preHandleReference chunk with addPrefix
+look into removing QualfieidId constructor without parser
+look into removing makeIdListFromAddress and makeIdListFromQualfiedId
 add getting type after prefixing in preHandleReference
 
 finish assembly

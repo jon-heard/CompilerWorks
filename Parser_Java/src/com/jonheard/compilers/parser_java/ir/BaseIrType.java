@@ -89,10 +89,16 @@ public class BaseIrType
 		return result.toString();
 	}
 
+	protected void prependChild(BaseIrType child)
+	{
+		children.add(0, child);
+	}
+
 	protected void addChild(BaseIrType child)
 	{
 		children.add(child);
 	}
+
 	protected void removeChild(int index)
 	{
 		children.remove(index);
