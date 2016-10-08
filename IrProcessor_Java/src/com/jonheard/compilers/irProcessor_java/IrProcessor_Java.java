@@ -263,18 +263,16 @@ public class IrProcessor_Java
 			}
 			else
 			{
-				List<Id> lhs = makeIdListFromAddress(scopedId.getValue());
-				if(!lhs.get(0).getValue().startsWith("#"))
+				String prefix = scopedId.getValue();
+				if(!prefix.startsWith("#"))
 				{
-					List<Id> rhs = makeIdListFromQualifiedId(data.getId());
-					if(lhs.get(lhs.size()-1).equals(rhs.get(0)))
-					{
-						rhs.remove(0);
-					}
-					lhs.addAll(rhs);
+					prefix = prefix.substring(0, prefix.lastIndexOf("."));
+					data.addPrefix(prefix);
 				}
-				data.setId(new QualifiedId(
-						data.getId().getLine(), data.getId().getColumn(), lhs));
+				else
+				{
+					data.setId(prefix);
+				}
 				data.setJavaType(scopedId.getJavaType());
 			}
 		}
