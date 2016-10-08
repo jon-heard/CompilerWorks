@@ -1,5 +1,4 @@
 
-look into having scope not include type (get in some other way) as it's barely used
 look into having the scopeItems only include prefixes
 
 finish assembly
@@ -10,6 +9,7 @@ ClassBuilder: shift to using logger
 
 check line breaks
 use * imports when applicable
+don't overuse member chaining
 make sure public stuff is on top, private at bottom
 comment
 simple getters and setters can be on one line

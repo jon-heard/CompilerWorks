@@ -14,17 +14,16 @@ public class Scope
 		}
 	}
 	
-	public ScopeType getScopeType()
-	{
-		return type;
-	}
+	public ScopeType getScopeType() { return type; }
 
-	public boolean contains(String name)
+	public boolean contains(String name) { return items.containsKey(name); }
+	
+	public boolean containsJavaType(String name)
 	{
-		return items.containsKey(name);
+		return javaTypes.containsKey(name);
 	}
 	
-	public ScopeItem get(String name)
+	public String get(String name)
 	{
 		if(items.containsKey(name))
 		{
@@ -33,20 +32,35 @@ public class Scope
 		return null;
 	}
 	
-	public String add(String name, String javaType, String fullName)
+	public String getJavaType(String name)
 	{
-		items.put(name, new ScopeItem(javaType, fullName));
-		return fullName;
+		if(javaTypes.containsKey(name))
+		{
+			return javaTypes.get(name);
+		}
+		return null;
+	}
+	
+	public String add(String name, String scopedName)
+	{
+		items.put(name, scopedName);
+		return scopedName;
 	}
 
-	public String add(String name, String javaType)
+	public String add(String name)
 	{
-		String fullName = "#" + stackCounter;
+		String scopedName = "#" + stackCounter;
 		stackCounter++;
-		return add(name, javaType, fullName);
+		return add(name, scopedName);
+	}
+	
+	public void addJavaType(String name, String javaType)
+	{
+		javaTypes.put(name, javaType);
 	}
 
 	private ScopeType type;
 	private int stackCounter = 0;
-	private HashMap<String, ScopeItem> items = new HashMap<String, ScopeItem>();
+	private HashMap<String, String> items = new HashMap<String, String>();
+	private HashMap<String, String> javaTypes = new HashMap<String, String>();
 }

@@ -1,7 +1,5 @@
-
 package com.jonheard.compilers.irProcessor_java;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -109,7 +107,7 @@ public class IrProcessor_Java
 		}
 		for(Item item : path)
 		{
-			getCurrentScope().add(item.getName(), "", item.getJavaAddress());
+			getCurrentScope().add(item.getName(), item.getJavaAddress());
 		}
 	}
 
@@ -121,7 +119,7 @@ public class IrProcessor_Java
 		{
 			for(Item item : path)
 			{
-				getCurrentScope().add(item.getName(),"",item.getJavaAddress());
+				getCurrentScope().add(item.getName(), item.getJavaAddress());
 			}
 		}
 	}
@@ -139,7 +137,7 @@ public class IrProcessor_Java
 					for(Item item : path)
 					{
 						getCurrentScope().add(
-								item.getName(), "", item.getJavaAddress());
+								item.getName(), item.getJavaAddress());
 						return;
 					}
 				}
@@ -149,7 +147,7 @@ public class IrProcessor_Java
 				if(path instanceof Item_Member)
 				{
 					getCurrentScope().add(
-							path.getName(), "", path.getJavaAddress());
+							path.getName(), path.getJavaAddress());
 					return;
 				}
 			}
@@ -163,7 +161,7 @@ public class IrProcessor_Java
 					for(Item item : path)
 					{
 						getCurrentScope().add(
-								item.getName(), "", item.getJavaAddress());
+								item.getName(), item.getJavaAddress());
 						return;
 					}
 				}
@@ -173,7 +171,7 @@ public class IrProcessor_Java
 				if(path instanceof Item_Class)
 				{
 					getCurrentScope().add(
-							path.getName(), "", path.getJavaAddress());
+							path.getName(), path.getJavaAddress());
 					return;
 				}
 			}
@@ -193,8 +191,9 @@ public class IrProcessor_Java
 		{
 			MethodOrVariable mCurrent = (MethodOrVariable)data.getChild(i);
 			String name = mCurrent.getId().getValue();
-			getCurrentScope().add(
-					name, mCurrent.getJavaType().getValue(), "this." + name);
+			getCurrentScope().add(name, "this." + name);
+			getCurrentScope().addJavaType(
+					name, mCurrent.getJavaType().getValue());
 		}
 	}
 
@@ -211,7 +210,7 @@ public class IrProcessor_Java
 		if(path instanceof Item_Err_NotFound)
 		{
 			id = data.getJavaType().getId().getFirst().getValue();
-			ScopeItem scopedId = getScopedValue(id);
+			String scopedId = getScopedValue(id);
 			if(id == null)
 			{
 				Logger.error(
@@ -221,17 +220,18 @@ public class IrProcessor_Java
 			}
 			else
 			{
-				data.getJavaType().getId().setValue(scopedId.getValue());
+				data.getJavaType().getId().setValue(scopedId);
 			}
 		}
 		
 		if(	getCurrentScope().getScopeType() == ScopeType.CODE_BLOCK ||
 			getCurrentScope().getScopeType() == ScopeType.METHOD)
 		{
-			getCurrentScope().add(
+			getCurrentScope().add(data.getId().getValue());
+			getCurrentScope().addJavaType(
 					data.getId().getValue(), data.getJavaType().getValue());
 			String newIdValue =
-					getCurrentScope().get(data.getId().getValue()).getValue();
+					getCurrentScope().get(data.getId().getValue());
 			data.setId(new Id(newIdValue));
 		}
 		
@@ -247,7 +247,7 @@ public class IrProcessor_Java
 		Item path = libs.getValue(data.getId().getValue());
 		if(path instanceof Item_Err_NotFound)
 		{
-			ScopeItem scopedId = getScopedValue(
+			String scopedId = getScopedValue(
 					data.getId().getFirst().getValue());
 			if(scopedId == null)
 			{
@@ -258,7 +258,9 @@ public class IrProcessor_Java
 			}
 			else
 			{
-				String prefix = scopedId.getValue();
+				String prefix = scopedId;
+				String javaType = getScopedJavaType(
+						data.getId().getFirst().getValue());
 				if(!prefix.startsWith("#"))
 				{
 					prefix = prefix.substring(0, prefix.lastIndexOf("."));
@@ -277,13 +279,13 @@ public class IrProcessor_Java
 					}
 					else
 					{
-						data.setJavaType(scopedId.getJavaType());
+						data.setJavaType(javaType);
 					}
 				}
 				else
 				{
 					data.setId(prefix);
-					data.setJavaType(scopedId.getJavaType());
+					data.setJavaType(javaType);
 				}
 			}
 		}
@@ -326,14 +328,28 @@ public class IrProcessor_Java
 		while(data != null);
 	}
 	
-	private ScopeItem getScopedValue(String key)
+	private String getScopedValue(String key)
 	{
-		ScopeItem result = null;
+		String result = null;
 		for(Scope scope : scopes)
 		{
 			if(scope.contains(key))
 			{
 				result = scope.get(key);
+				break;
+			}
+		}
+		return result;
+	}
+	
+	private String getScopedJavaType(String key)
+	{
+		String result = null;
+		for(Scope scope : scopes)
+		{
+			if(scope.containsJavaType(key))
+			{
+				result = scope.getJavaType(key);
 				break;
 			}
 		}
