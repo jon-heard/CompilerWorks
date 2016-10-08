@@ -16,11 +16,11 @@ public class IrToJvm_Java
 	
 	private void convertIr(BaseIrType ir, Object owner)
 	{
-		Object converted = null;
+		Object newOwner = owner;
 		if(ir instanceof Class)
 		{
 			Class data = (Class)ir;
-			converted = new ClassRep(
+			newOwner = new ClassRep(
 					data.getName().getValue(),
 					"",
 					data.getModifiers().toStringCollection(),
@@ -34,7 +34,7 @@ public class IrToJvm_Java
 				ClassRep classOwner = (ClassRep)owner;
 				if(data.isMethod())
 				{
-					converted = classOwner.addMethod(
+					newOwner = classOwner.addMethod(
 							data.getId().getValue(),
 							data.getJavaType().toJvmDescriptor(),
 							data.getModifiers().toStringCollection());
@@ -47,11 +47,15 @@ public class IrToJvm_Java
 							data.getModifiers().toStringCollection());
 				}
 			}
+			else
+			{
+				
+			}
 		}
 
 		for(int i = 0; i < ir.getChildCount(); i++)
 		{
-			convertIr(ir.getChild(i), converted);
+			convertIr(ir.getChild(i), newOwner);
 		}
 	}
 	

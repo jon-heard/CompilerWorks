@@ -40,18 +40,6 @@ public class Reference extends Expression
 		return (getChildCount() > 2) ? (Reference)getChild(2) : null;
 	}
 	
-	public void setSubReference(Reference value)
-	{
-		if(getChildCount() > 2)
-		{
-			replaceChild(2, value);
-		}
-		else
-		{
-			addChild(value);
-		}
-	}
-	
 	public boolean isMethodCall() { return _isMethodCall; }
 	
 	@Override
@@ -66,6 +54,26 @@ public class Reference extends Expression
 	public int getFirstPrintedChildIndex()
 	{
 		return isMethodCall() ? 1 : 2;
+	}
+	
+	public Reference makeSubReference()
+	{
+		return makeSubReference(1);
+	}
+	public Reference makeSubReference(int secondStartIndex)
+	{
+		if(getSubReference() != null) return null;
+		QualifiedId id = getId();
+		QualifiedId subId = id.split(secondStartIndex);
+		if(subId == null) return null;
+		Reference subReference = new Reference(getLine(), getColumn(), subId);
+		subReference.replaceChild(1, getChild(1));
+		replaceChild(1, new List_Expression());
+		subReference._isMethodCall = _isMethodCall;
+		_isMethodCall = false;
+		subReference.setJavaType(getJavaType());
+		addChild(subReference);
+		return subReference;
 	}
 	
 	@Override

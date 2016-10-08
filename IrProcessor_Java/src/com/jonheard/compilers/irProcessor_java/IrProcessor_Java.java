@@ -284,27 +284,24 @@ public class IrProcessor_Java
 	private void postHandleReference(BaseIrType ir)
 	{
 		Reference data = (Reference)ir;
-		QualifiedId id = data.getId();
-		if(id.getValue().startsWith("this."))
+		String firstValue = data.getId().getFirst().getValue();
+		if(!firstValue.equals("this") && !firstValue.startsWith("#"))
 		{
-			QualifiedId newId = id.split(1);
-			Reference newReference = new Reference(
-					id.getLine(), id.getColumn()+5, newId);
-			data.setSubReference(newReference);
-		}
-		else
-		{
-			List<Item> path = libs.getValue(id.getValue()).getForwardAddress();
-			int last = 0;
-			while(path.get(last) instanceof Item_Package)
+			List<Item> path = libs.getValue(data.getId().getValue()).
+					getForwardAddress();
+			int splitPoint = 0;
+			while(path.get(splitPoint) instanceof Item_Package)
 			{
-				last++;
+				splitPoint++;
 			}
-			QualifiedId newId = id.split(last+1);
-			Reference newReference = new Reference(
-					id.getLine(), id.getColumn(), newId);
-			data.setSubReference(newReference);
+			splitPoint++;
+			data = data.makeSubReference(splitPoint);
 		}
+		do
+		{
+			data = data.makeSubReference();
+		}
+		while(data != null);
 	}
 	
 	private ScopeItem getScopedValue(String key)

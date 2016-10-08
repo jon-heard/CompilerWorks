@@ -25,9 +25,10 @@ public class JavaC
 			"Usage: javac <source file> <options>\n" +
 			"where possible options include:\n" +
 			"-help (-h)      Print this help panel and quit\n" +
-			"-tokenize (-t)  Run up to the tokenizer step, printing results" +
-			"-parse (-p)     Run up to the parser step, printing results" +
-			"-process (-r)   Run up to the processing step, printing results";
+			"-tokenize (-t)  Run up to the tokenizing step, printing results" +
+			"-parse (-p)     Run up to the parsing step, printing results" +
+			"-process (-r)   Run up to the processing step, printing results" +
+			"-assemble (-a)  Run up to the assembling step, printing results";
 
 	public static void main(String[] args)
 	{
@@ -62,6 +63,10 @@ public class JavaC
 					break;
 				case "-process":
 				case "-r":
+					finalStage = Stage.process;
+					break;
+				case "-assemble":
+				case "-a":
 					finalStage = Stage.process;
 					break;
 				default:
@@ -119,6 +124,9 @@ public class JavaC
 			result.append(converter.parsedToString(parsed));
 			return result.toString();
 		}
+		
+		// Assemble
+		
 		
 		return "";
 	}

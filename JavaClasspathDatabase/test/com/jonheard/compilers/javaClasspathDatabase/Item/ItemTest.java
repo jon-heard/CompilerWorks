@@ -21,6 +21,7 @@ public class ItemTest
 		Item i1 = new Item_Non("one");
 		Item i2 = new Item("two", i1);
 		Item i3 = new Item("three", i2);
+		@SuppressWarnings("unused")
 		Item i4 = new Item("four", i1);
 		assertEquals(null, i1.getParent());
 		assertEquals("two", i2.getName());

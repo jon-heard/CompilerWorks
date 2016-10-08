@@ -62,16 +62,17 @@ public class QualifiedId extends BaseIrType
 		return result.toString();
 	}
 	
-	public QualifiedId split(int rightOfSplit)
+	public QualifiedId split(int secondStartIndex)
 	{
+		if(secondStartIndex >= getChildCount()) return null;
 		List<Id> transfers = new LinkedList<Id>();
-		for(int i = rightOfSplit; i < getChildCount(); i++)
+		for(int i = secondStartIndex; i < getChildCount(); i++)
 		{
 			transfers.add((Id)getChild(i));
 		}
-		while(getChildCount() > rightOfSplit)
+		while(getChildCount() > secondStartIndex)
 		{
-			removeChild(rightOfSplit);
+			removeChild(secondStartIndex);
 		}
 		return new QualifiedId(getLine(), getColumn(), transfers);
 	}
