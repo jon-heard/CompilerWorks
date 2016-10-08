@@ -3,6 +3,7 @@ package com.jonheard.compilers;
 
 import java.util.List;
 
+import com.jonheard.compilers.JvmGenerator_Java.JvmGeneratorStringConverter;
 import com.jonheard.compilers.JvmGenerator_Java.JvmGenerator_Java;
 import com.jonheard.compilers.assembler_jvm.backEnd.ClassRep;
 import com.jonheard.compilers.irProcessor_java.IrProcessor_Java;
@@ -132,10 +133,10 @@ public class JavaC
 		ClassRep generated = generator.generate(source, parsed);
 		if(finalStage == Stage.generate)
 		{
-//			JvmGeneratorStringConverter converter = new
-//					JvmGeneratorStringConverter();
-//			result.append(converter.generatedToString(generated));
-//			return result.toString();
+			JvmGeneratorStringConverter converter = new
+					JvmGeneratorStringConverter();
+			result.append(converter.generatedToString(generated));
+			return result.toString();
 		}
 		
 		
