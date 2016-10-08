@@ -24,7 +24,7 @@ public class QualifiedId extends BaseIrType
 		}
 		parser.getTokenQueue().rewind();
 	}
-	public QualifiedId(int line, int column, List<Id> children)
+	private QualifiedId(int line, int column, List<Id> children)
 	{
 		super(line, column);
 		for(Id child : children)
