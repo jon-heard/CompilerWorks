@@ -249,12 +249,11 @@ public class IrProcessor_Java
 	private void preHandleReference(BaseIrType ir)
 	{
 		Reference data = (Reference)ir;
-		String id = data.getId().getValue();
-		Item path = libs.getValue(id);
+		Item path = libs.getValue(data.getId().getValue());
 		if(path instanceof Item_Err_NotFound)
 		{
-			id = data.getId().getFirst().getValue();
-			ScopeItem scopedId = getScopedValue(id);
+			ScopeItem scopedId = getScopedValue(
+					data.getId().getFirst().getValue());
 			if(id == null)
 			{
 				Logger.error(
@@ -306,14 +305,16 @@ public class IrProcessor_Java
 	
 	private ScopeItem getScopedValue(String key)
 	{
+		ScopeItem result = null;
 		for(Scope scope : scopes)
 		{
 			if(scope.contains(key))
 			{
-				return scope.get(key);
+				result = scope.get(key);
+				break;
 			}
 		}
-		return null;
+		return result;
 	}
 
 	private List<Id> makeIdListFromAddress(String source)

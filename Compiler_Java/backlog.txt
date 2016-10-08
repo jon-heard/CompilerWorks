@@ -1,7 +1,9 @@
 
-finish owner-child system in references
-flag vars (search: boolean is) to be without "is"
-
+change "getScopedValue" to take an entire key, extract the first and get the type too
+Add QualifiedId.addPrefix(string)
+Add Reference.addPrefix(string)
+replace preHandleReference chunk with addPrefix
+add getting type after prefixing in preHandleReference
 
 finish assembly
 
