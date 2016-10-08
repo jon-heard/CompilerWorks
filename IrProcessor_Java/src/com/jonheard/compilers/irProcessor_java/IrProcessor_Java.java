@@ -221,12 +221,7 @@ public class IrProcessor_Java
 			}
 			else
 			{
-				List<Id> items = makeIdListFromAddress(scopedId.getValue());
-				data.getJavaType().setId(new QualifiedId(
-						data.getJavaType().getLine(),
-						data.getJavaType().getColumn(),
-						items));
-
+				data.getJavaType().getId().setValue(scopedId.getValue());
 			}
 		}
 		
