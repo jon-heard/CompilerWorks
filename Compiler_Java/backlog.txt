@@ -1,8 +1,6 @@
 
-look into removing makeIdListFromAddress and makeIdListFromQualfiedId
-look into having the scopeItems only include prefixes
-add getting type after prefixing in preHandleReference
 look into having scope not include type (get in some other way) as it's barely used
+look into having the scopeItems only include prefixes
 
 finish assembly
 

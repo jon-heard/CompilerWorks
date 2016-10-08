@@ -263,14 +263,44 @@ public class IrProcessor_Java
 				{
 					prefix = prefix.substring(0, prefix.lastIndexOf("."));
 					data.addPrefix(prefix);
+					path = libs.getValue(data.getId().getValue());
+					if(path instanceof Item_Member)
+					{
+						String type = ((Item_Member)path).getDescriptor();
+						int parenIndex = type.indexOf(")");
+						if(parenIndex != -1)
+						{
+							type = type.substring(parenIndex+1);
+						}
+						type = descriptorToType(type);
+						data.setJavaType(type);						
+					}
+					else
+					{
+						data.setJavaType(scopedId.getJavaType());
+					}
 				}
 				else
 				{
 					data.setId(prefix);
+					data.setJavaType(scopedId.getJavaType());
 				}
-				data.setJavaType(scopedId.getJavaType());
 			}
 		}
+	}
+	private String descriptorToType(String value)
+	{
+		if(value.equals("B")) value = "byte";
+		else if(value.equals("C")) value = "char";
+		else if(value.equals("D")) value = "double";
+		else if(value.equals("F")) value = "float";
+		else if(value.equals("I")) value = "int";
+		else if(value.equals("J")) value = "long";
+		else if(value.equals("S")) value = "short";
+		else if(value.equals("Z")) value = "boolean";
+		else if(value.equals("V")) value = "void";
+		else value = value.substring(1, value.length()-1).replace('/', '.');
+		return value;
 	}
 	
 	private void postHandleReference(BaseIrType ir)
