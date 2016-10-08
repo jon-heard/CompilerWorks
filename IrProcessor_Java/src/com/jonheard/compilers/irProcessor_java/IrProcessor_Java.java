@@ -254,7 +254,7 @@ public class IrProcessor_Java
 		{
 			ScopeItem scopedId = getScopedValue(
 					data.getId().getFirst().getValue());
-			if(id == null)
+			if(scopedId == null)
 			{
 				Logger.error(
 						"cannot find symbol: " + data.getId().getValue(),
