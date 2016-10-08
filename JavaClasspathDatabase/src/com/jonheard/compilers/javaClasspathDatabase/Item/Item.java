@@ -53,6 +53,18 @@ public class Item implements Iterable<Item>
 		}
 	}
 	
+	public String getJavaAddressPrefix()
+	{
+		if(parent == null || parent instanceof Item_Non)
+		{
+			return "";
+		}
+		else
+		{
+			return parent.getJavaAddress();
+		}
+	}
+	
 	public String getFileAddress()
 	{
 		if(parent == null || parent instanceof Item_Non)
