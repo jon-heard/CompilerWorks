@@ -1,20 +1,19 @@
-package com.jonheard.compilers.irToJvm_java;
+package com.jonheard.compilers.JvmGenerator_Java;
 
 import com.jonheard.compilers.assembler_jvm.backEnd.*;
 import com.jonheard.compilers.parser_java.ir.*;
 import com.jonheard.compilers.parser_java.ir.Class;
 import com.jonheard.util.SourceFileInfo;
 
-public class IrToJvm_Java
+public class JvmGenerator_Java
 {
-	public ClassRep convert(SourceFileInfo source, BaseIrType ir)
+	public ClassRep generate(SourceFileInfo source, BaseIrType ir)
 	{
 		this.source = source;
-		convertIr(ir, null);
-		return result;
+		return generateHelper(ir, null);
 	}
 	
-	private void convertIr(BaseIrType ir, Object owner)
+	private ClassRep generateHelper(BaseIrType ir, Object owner)
 	{
 		Object newOwner = owner;
 		if(ir instanceof Class)
@@ -55,8 +54,10 @@ public class IrToJvm_Java
 
 		for(int i = 0; i < ir.getChildCount(); i++)
 		{
-			convertIr(ir.getChild(i), newOwner);
+			generateHelper(ir.getChild(i), newOwner);
 		}
+		
+		return null;
 	}
 	
 	private SourceFileInfo source;

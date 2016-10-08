@@ -1,6 +1,4 @@
 
-look into having the scopeItems only include prefixes
-
 finish assembly
 
 adjust classpathDB to combine sources

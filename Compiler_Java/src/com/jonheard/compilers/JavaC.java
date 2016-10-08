@@ -3,6 +3,8 @@ package com.jonheard.compilers;
 
 import java.util.List;
 
+import com.jonheard.compilers.JvmGenerator_Java.JvmGenerator_Java;
+import com.jonheard.compilers.assembler_jvm.backEnd.ClassRep;
 import com.jonheard.compilers.irProcessor_java.IrProcessor_Java;
 import com.jonheard.compilers.javaClasspathDatabase.JavaClasspathDatabase;
 import com.jonheard.compilers.parser_java.ParserStringConverter;
@@ -23,12 +25,12 @@ public class JavaC
 
 	public static final String HELP_TEXT =
 			"Usage: javac <source file> <options>\n" +
-			"where possible options include:\n" +
-			"-help (-h)      Print this help panel and quit\n" +
-			"-tokenize (-t)  Run up to the tokenizing step, printing results" +
-			"-parse (-p)     Run up to the parsing step, printing results" +
-			"-process (-r)   Run up to the processing step, printing results" +
-			"-assemble (-a)  Run up to the assembling step, printing results";
+			"Options:\n" +
+			"-help (-h)     Print this help panel and quit\n" +
+			"-tokenize (-t) Run up to the tokenizing step, printing results" +
+			"-parse (-p)    Run up to the parsing step, printing results" +
+			"-process (-r)  Run up to the processing step, printing results" +
+			"-generate (-g) Run up to the jvm generating step, printing results";
 
 	public static void main(String[] args)
 	{
@@ -42,7 +44,7 @@ public class JavaC
 		result.append(HEADER_TEXT);
 
 		boolean help = false;
-		Stage finalStage = Stage.buildClassFile;
+		Stage finalStage = Stage.all;
 		String sourceFile = "";
 
 		for(int i = 0; i < args.length; i++)
@@ -65,9 +67,9 @@ public class JavaC
 				case "-r":
 					finalStage = Stage.process;
 					break;
-				case "-assemble":
-				case "-a":
-					finalStage = Stage.process;
+				case "-generate":
+				case "-g":
+					finalStage = Stage.generate;
 					break;
 				default:
 					sourceFile = args[i];
@@ -125,7 +127,16 @@ public class JavaC
 			return result.toString();
 		}
 		
-		// Assemble
+		// Generate
+		JvmGenerator_Java generator = new JvmGenerator_Java();
+		ClassRep generated = generator.generate(source, parsed);
+		if(finalStage == Stage.generate)
+		{
+//			JvmGeneratorStringConverter converter = new
+//					JvmGeneratorStringConverter();
+//			result.append(converter.generatedToString(generated));
+//			return result.toString();
+		}
 		
 		
 		return "";
@@ -136,6 +147,7 @@ public class JavaC
 		tokenize,
 		parse,
 		process,
-		buildClassFile
+		generate,
+		all
 	}
 }
