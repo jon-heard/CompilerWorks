@@ -33,7 +33,7 @@ public class Reference extends Expression
 		return (List_Expression)getChild(1);
 	}
 	
-	public void setId(QualifiedId value) { replaceChild(0, value); }
+	public void setId(String value) { getId().setValue(value); }
 	
 	public Reference getSubReference()
 	{

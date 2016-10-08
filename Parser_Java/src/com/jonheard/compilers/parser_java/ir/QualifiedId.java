@@ -61,7 +61,29 @@ public class QualifiedId extends BaseIrType
 		}
 		return result.toString();
 	}
-	
+
+	public void setValue(String value)
+	{
+		while(getChildCount() > 0)
+		{
+			removeChild(0);
+		}
+		String[] valueItems = value.split("\\.");
+		for(int i = 0; i < valueItems.length; i++)
+		{
+			addChild(new Id(valueItems[i]));
+		}
+	}
+
+	public void addPrefix(String value)
+	{
+		String[] valueItems = value.split("\\.");
+		for(int i = valueItems.length-1; i >= 0; i--)
+		{
+			prependChild(new Id(valueItems[i]));
+		}
+	}
+
 	public QualifiedId split(int secondStartIndex)
 	{
 		if(secondStartIndex >= getChildCount()) return null;
@@ -76,16 +98,7 @@ public class QualifiedId extends BaseIrType
 		}
 		return new QualifiedId(getLine(), getColumn(), transfers);
 	}
-	
-	public void addPrefix(String value)
-	{
-		String[] valueItems = value.split("\\.");
-		for(String valueItem : valueItems)
-		{
-			prependChild(new Id(valueItem));
-		}
-	}
-	
+
 	public static boolean isNext(Parser_Java parser)
 	{
 		return Id.isNext(parser);
