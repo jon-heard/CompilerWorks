@@ -10,15 +10,6 @@ public class JvmAssembler
 {
 	public static final String VERSION = "0.7.0";
 	
-//	private static boolean isVerbose = false;
-//	public static void verboseLog(String toPrint)
-//	{
-//		if(isVerbose)
-//		{
-//			System.out.println(toPrint);
-//		}
-//	}
-	
 	public static void main(String[] args)
 	{
 		/// Print console header
@@ -36,10 +27,6 @@ public class JvmAssembler
 		{
 			if(arg.startsWith("-"))
 			{
-//				if(arg.equals("-verbose") || arg.equals("-v"))
-//				{
-//					isVerbose = true;
-//				}
 				if(arg.equals("-help") || arg.equals("-h"))
 				{
 					printHelpText();
@@ -84,7 +71,6 @@ public class JvmAssembler
 		}
 
 		/// Load the source file into a string
-//		verboseLog("Loading the sourcefile '" + sourceFileName + "'.");
 		String sourceData = UtilMethods.fileToString(sourceFileName);
 		if(sourceData == null)
 		{
@@ -95,7 +81,6 @@ public class JvmAssembler
 		}
 
 		/// Parse the source file into a ClassRep object
-//		verboseLog("Parsing the source file '" + sourceFileName + "'.");
 		ClassParser parser = new ClassParser();
 		ClassRep classRep = parser.parseSource(sourceFileName, sourceData);
 		if(classRep == null)
@@ -108,7 +93,6 @@ public class JvmAssembler
 		
 		/// Store the ClassRep into a class file
 		String classFileName = classRep.getName() + ".class";
-//		verboseLog("Saving the class file '" + classFileName + "'.");
 		if(!UtilMethods.byteArrayToFile(
 				classRep.getJvmBytes(), classFileName))
 		{
@@ -123,14 +107,11 @@ public class JvmAssembler
 	{
 		System.out.println("Command line arguments include:");
 		System.out.println("   -help (or -h)     Show this help message");
-//		System.out.println("   -verbose (or -v)  Log all activity to console");
 		System.out.println("   non '-'           argument source file to " +
 				"assemble");
 		System.out.println("Examples:");
 		System.out.println("   jvmasm src.asm");
 		System.out.println("      Assemble the file 'src.asm'");
-//		System.out.println("   jvmasm -v src.asm");
-//		System.out.println("      Assemble 'src.asm', printing steps to console");
 		System.out.println("   jvmasm -h");
 		System.out.println("      Show this help message");
 	}
