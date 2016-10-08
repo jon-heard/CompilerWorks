@@ -309,25 +309,4 @@ public class IrProcessor_Java
 		}
 		return result;
 	}
-
-	private List<Id> makeIdListFromAddress(String source)
-	{
-		String[] path = source.split("\\.");
-		List<Id> result = new ArrayList<Id>();
-		for(String node : path)
-		{
-			result.add(new Id(node));
-		}
-		return result;
-	}
-	
-	private List<Id> makeIdListFromQualifiedId(QualifiedId source)
-	{
-		List<Id> result = new ArrayList<Id>();
-		for(int i = 0; i < source.getChildCount(); i++)
-		{
-			result.add((Id)source.getChild(i));
-		}
-		return result;
-	}
 }

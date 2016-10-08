@@ -1,5 +1,4 @@
 
-look into removing QualfieidId constructor without parser
 look into removing makeIdListFromAddress and makeIdListFromQualfiedId
 look into having the scopeItems only include prefixes
 add getting type after prefixing in preHandleReference
