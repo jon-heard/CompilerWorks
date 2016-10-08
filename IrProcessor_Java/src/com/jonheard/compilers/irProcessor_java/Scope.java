@@ -33,17 +33,19 @@ public class Scope
 		return null;
 	}
 	
-	public void add(String name, String javaType, String fullname)
+	public String add(String name, String javaType, String fullName)
 	{
-		items.put(name, new ScopeItem(javaType, fullname));
+		items.put(name, new ScopeItem(javaType, fullName));
+		return fullName;
 	}
-	
-	public void add(String name, String javaType)
+
+	public String add(String name, String javaType)
 	{
-		items.put(name, new ScopeItem(javaType, "#" + stackCounter));
+		String fullName = "#" + stackCounter;
 		stackCounter++;
+		return add(name, javaType, fullName);
 	}
-	
+
 	private ScopeType type;
 	private int stackCounter = 0;
 	private HashMap<String, ScopeItem> items = new HashMap<String, ScopeItem>();
