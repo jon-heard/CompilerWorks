@@ -61,10 +61,6 @@ public class Type extends BaseIrType
 	{
 		return (QualifiedId)getChild(0);
 	}
-	public void setId(QualifiedId value)
-	{
-		replaceChild(0, value);
-	}
 
 //	public List<Type> getGenericTypes()
 //	{
