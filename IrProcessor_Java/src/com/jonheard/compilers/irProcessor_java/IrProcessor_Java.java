@@ -107,7 +107,7 @@ public class IrProcessor_Java
 		}
 		for(Item item : path)
 		{
-			getCurrentScope().add(item.getName(), item.getJavaAddress());
+			getCurrentScope().add(item.getName(), item.getJavaAddressPrefix());
 		}
 	}
 
@@ -119,7 +119,8 @@ public class IrProcessor_Java
 		{
 			for(Item item : path)
 			{
-				getCurrentScope().add(item.getName(), item.getJavaAddress());
+				getCurrentScope().add(
+						item.getName(), item.getJavaAddressPrefix());
 			}
 		}
 	}
@@ -137,7 +138,7 @@ public class IrProcessor_Java
 					for(Item item : path)
 					{
 						getCurrentScope().add(
-								item.getName(), item.getJavaAddress());
+								item.getName(), item.getJavaAddressPrefix());
 						return;
 					}
 				}
@@ -147,7 +148,7 @@ public class IrProcessor_Java
 				if(path instanceof Item_Member)
 				{
 					getCurrentScope().add(
-							path.getName(), path.getJavaAddress());
+							path.getName(), path.getJavaAddressPrefix());
 					return;
 				}
 			}
@@ -161,7 +162,7 @@ public class IrProcessor_Java
 					for(Item item : path)
 					{
 						getCurrentScope().add(
-								item.getName(), item.getJavaAddress());
+								item.getName(), item.getJavaAddressPrefix());
 						return;
 					}
 				}
@@ -171,7 +172,7 @@ public class IrProcessor_Java
 				if(path instanceof Item_Class)
 				{
 					getCurrentScope().add(
-							path.getName(), path.getJavaAddress());
+							path.getName(), path.getJavaAddressPrefix());
 					return;
 				}
 			}
@@ -191,7 +192,7 @@ public class IrProcessor_Java
 		{
 			MethodOrVariable mCurrent = (MethodOrVariable)data.getChild(i);
 			String name = mCurrent.getId().getValue();
-			getCurrentScope().add(name, "this." + name);
+			getCurrentScope().add(name, "this");
 			getCurrentScope().addJavaType(
 					name, mCurrent.getJavaType().getValue());
 		}
@@ -261,9 +262,13 @@ public class IrProcessor_Java
 				String prefix = scopedId;
 				String javaType = getScopedJavaType(
 						data.getId().getFirst().getValue());
-				if(!prefix.startsWith("#"))
+				if(prefix.startsWith("#"))
 				{
-					prefix = prefix.substring(0, prefix.lastIndexOf("."));
+					data.setId(prefix);
+					data.setJavaType(javaType);
+				}
+				else
+				{
 					data.addPrefix(prefix);
 					path = libs.getValue(data.getId().getValue());
 					if(path instanceof Item_Member)
@@ -281,11 +286,7 @@ public class IrProcessor_Java
 					{
 						data.setJavaType(javaType);
 					}
-				}
-				else
-				{
-					data.setId(prefix);
-					data.setJavaType(javaType);
+
 				}
 			}
 		}
