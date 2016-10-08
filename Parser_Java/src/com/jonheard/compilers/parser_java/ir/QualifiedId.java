@@ -82,7 +82,7 @@ public class QualifiedId extends BaseIrType
 		String[] valueItems = value.split("\\.");
 		for(String valueItem : valueItems)
 		{
-			
+			prependChild(new Id(valueItem));
 		}
 	}
 	

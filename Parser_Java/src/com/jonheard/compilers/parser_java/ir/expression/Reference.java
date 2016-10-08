@@ -56,6 +56,11 @@ public class Reference extends Expression
 		return isMethodCall() ? 1 : 2;
 	}
 	
+	public void addPrefix(String value)
+	{
+		getId().addPrefix(value);
+	}
+	
 	public Reference makeSubReference()
 	{
 		return makeSubReference(1);
