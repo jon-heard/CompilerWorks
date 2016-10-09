@@ -77,6 +77,7 @@ public class QualifiedId extends BaseIrType
 
 	public void addPrefix(String value)
 	{
+		if(value.equals("")) return;
 		String[] valueItems = value.split("\\.");
 		for(int i = valueItems.length-1; i >= 0; i--)
 		{

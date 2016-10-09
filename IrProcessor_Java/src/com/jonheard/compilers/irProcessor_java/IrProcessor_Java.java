@@ -186,6 +186,8 @@ public class IrProcessor_Java
 	private void preHandleClass(BaseIrType ir)
 	{
 		Class data = (Class)ir;
+		QualifiedId dataSuper = data.getSuper();
+		dataSuper.addPrefix(getScopedValue(dataSuper.getValue()));
 		scopes.push(new Scope(ScopeType.CLASS, getCurrentScope()));
 		for(int i = data.getFirstPrintedChildIndex(); i < data.getChildCount();
 				i++)
@@ -245,49 +247,45 @@ public class IrProcessor_Java
 	private void preHandleReference(BaseIrType ir)
 	{
 		Reference data = (Reference)ir;
-		Item path = libs.getValue(data.getId().getValue());
-		if(path instanceof Item_Err_NotFound)
+		String scopedId = getScopedValue(
+				data.getId().getFirst().getValue());
+		if(scopedId == null)
 		{
-			String scopedId = getScopedValue(
+			Logger.error(
+					"cannot find symbol: " + data.getId().getValue(),
+					source.getFilename(), data.getLine(), data.getColumn(),
+					source.getLine(data.getLine()));
+		}
+		else
+		{
+			String prefix = scopedId;
+			String javaType = getScopedJavaType(
 					data.getId().getFirst().getValue());
-			if(scopedId == null)
+			if(prefix.startsWith("#"))
 			{
-				Logger.error(
-						"cannot find symbol: " + data.getId().getValue(),
-						source.getFilename(), data.getLine(), data.getColumn(),
-						source.getLine(data.getLine()));
+				data.setId(prefix);
+				data.setJavaType(javaType);
 			}
 			else
 			{
-				String prefix = scopedId;
-				String javaType = getScopedJavaType(
-						data.getId().getFirst().getValue());
-				if(prefix.startsWith("#"))
+				data.addPrefix(prefix);
+				Item path = libs.getValue(data.getId().getValue());
+				if(path instanceof Item_Member)
 				{
-					data.setId(prefix);
-					data.setJavaType(javaType);
+					String type = ((Item_Member)path).getDescriptor();
+					int parenIndex = type.indexOf(")");
+					if(parenIndex != -1)
+					{
+						type = type.substring(parenIndex+1);
+					}
+					type = descriptorToType(type);
+					data.setJavaType(type);						
 				}
 				else
 				{
-					data.addPrefix(prefix);
-					path = libs.getValue(data.getId().getValue());
-					if(path instanceof Item_Member)
-					{
-						String type = ((Item_Member)path).getDescriptor();
-						int parenIndex = type.indexOf(")");
-						if(parenIndex != -1)
-						{
-							type = type.substring(parenIndex+1);
-						}
-						type = descriptorToType(type);
-						data.setJavaType(type);						
-					}
-					else
-					{
-						data.setJavaType(javaType);
-					}
-
+					data.setJavaType(javaType);
 				}
+
 			}
 		}
 	}
@@ -345,7 +343,7 @@ public class IrProcessor_Java
 	
 	private String getScopedJavaType(String key)
 	{
-		String result = null;
+		String result = "";
 		for(Scope scope : scopes)
 		{
 			if(scope.containsJavaType(key))
