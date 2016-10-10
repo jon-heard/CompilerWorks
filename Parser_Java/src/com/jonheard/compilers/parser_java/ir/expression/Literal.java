@@ -1,7 +1,6 @@
 package com.jonheard.compilers.parser_java.ir.expression;
 
 import com.jonheard.compilers.tokenizer_java.Token;
-import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Literal extends Expression
 {
@@ -23,9 +22,9 @@ public class Literal extends Expression
 		return "value='" + getLiteralValue() + "'";
 	}
 	
-	public TokenType getLiteralType()
+	public String getLiteralType()
 	{
-		return data.getTokenType();
+		return data.getTokenType().toString();
 	}
 	
 	public String getLiteralValue()

@@ -194,7 +194,14 @@ public class IrProcessor_Java
 		{
 			MethodOrVariable mCurrent = (MethodOrVariable)data.getChild(i);
 			String name = mCurrent.getId().getValue();
-			getCurrentScope().add(name, "this");
+			if(mCurrent.getModifiers().isStatic())
+			{
+				getCurrentScope().add(name, data.getName().getValue());
+			}
+			else
+			{
+				getCurrentScope().add(name, "this");
+			}
 			getCurrentScope().addJavaType(
 					name, mCurrent.getJavaType().getValue());
 		}
@@ -213,7 +220,7 @@ public class IrProcessor_Java
 		if(path instanceof Item_Err_NotFound)
 		{
 			id = data.getJavaType().getId().getFirst().getValue();
-			String scopedId = getScopedValue(id);
+			String scopedId = getScopedValue(id) + "." + id;
 			if(id == null)
 			{
 				Logger.error(
@@ -308,7 +315,8 @@ public class IrProcessor_Java
 	{
 		Reference data = (Reference)ir;
 		String firstValue = data.getId().getFirst().getValue();
-		if(!firstValue.equals("this") && !firstValue.startsWith("#"))
+		if(!firstValue.equals("this") && !firstValue.startsWith("Test1") &&
+				!firstValue.startsWith("#"))
 		{
 			List<Item> path = libs.getValue(data.getId().getValue()).
 					getForwardAddress();

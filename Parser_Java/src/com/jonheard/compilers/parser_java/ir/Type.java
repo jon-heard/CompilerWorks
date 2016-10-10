@@ -88,15 +88,15 @@ public class Type extends BaseIrType
 		{
 			result.append("[");
 		}
-		if(type == "void") result.append("V");
-		else if(type == "byte") result.append("B");
-		else if(type == "char") result.append("C");
-		else if(type == "double") result.append("D");
-		else if(type == "float") result.append("F");
-		else if(type == "int") result.append("I");
-		else if(type == "long") result.append("J");
-		else if(type == "short") result.append("S");
-		else if(type == "boolean") result.append("Z");
+		if(type.equals("void")) result.append("V");
+		else if(type.equals("byte")) result.append("B");
+		else if(type.equals("char")) result.append("C");
+		else if(type.equals("double")) result.append("D");
+		else if(type.equals("float")) result.append("F");
+		else if(type.equals("int")) result.append("I");
+		else if(type.equals("long")) result.append("J");
+		else if(type.equals("short")) result.append("S");
+		else if(type.equals("boolean")) result.append("Z");
 		else
 		{
 			result.append("L");
