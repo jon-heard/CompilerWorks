@@ -109,6 +109,7 @@ public class MethodCodeBuilder
 				op == Op_NoArg._aload_3 || op == Op_NoArg._astore_3 ||
 				op == Op_NoArg._istore_3 || op == Op_NoArg._iload_3)
 			padLocalSize(4);
+		
 		adjustStackCounter(op.getStackAdjust());
 	}
 	
@@ -124,6 +125,13 @@ public class MethodCodeBuilder
 	{
 		codeData.add(op.getOpcode());
 		codeData.add((byte)number);
+		adjustStackCounter(op.getStackAdjust());
+	}
+	
+	public void addOp(Op_Short op, int number)
+	{
+		codeData.add(op.getOpcode());
+		codeData.add((short)number);
 		adjustStackCounter(op.getStackAdjust());
 	}
 	
@@ -208,9 +216,46 @@ public class MethodCodeBuilder
 		adjustStackCounter(op.getStackAdjust());
 	}
 	
+	public void addOp(Op_Integer op, int value)
+	{
+		short index = constantPool.addInteger(value);
+		if(op == Op_Integer._ldc)
+		{
+			if(index < 256)
+			{
+				codeData.add(op.getOpcode());
+				codeData.add((byte)index);
+			}
+			else
+			{
+				codeData.add(op.getOpcode()+1);
+				codeData.add(index);
+			}
+		}
+		adjustStackCounter(op.getStackAdjust());
+	}
 	
+	public void addOp(Op_Float op, float value)
+	{
+		short index = constantPool.addFloat(value);
+		if(op == Op_Float._ldc)
+		{
+			if(index < 256)
+			{
+				codeData.add(op.getOpcode());
+				codeData.add((byte)index);
+			}
+			else
+			{
+				codeData.add(op.getOpcode()+1);
+				codeData.add(index);
+			}
+		}
+		adjustStackCounter(op.getStackAdjust());
+	}
 
-	
+
+
 	/*
 	 *  The following enums store all of the operations available in the jvm.
 	 *  They are used by the 'MethodBilder' class to allow the user to add code.
@@ -254,7 +299,8 @@ public class MethodCodeBuilder
 		_iload_1(0x1b, 1),
 		_iload_2(0x1c, 1),
 		_iload_3(0x1d, 1),		
-		_arraylength(0xbe, 0);
+		_arraylength(0xbe, 0),
+		_iadd(0x60, -1);
 		private byte opcode;
 		private int stackAdjust;
 		private Op_NoArg(int opcode, int stackAdjust)
@@ -357,6 +403,50 @@ public class MethodCodeBuilder
 		private byte opcode;
 		private int stackAdjust;
 		private Op_String(int opcode, int stackAdjust)
+		{
+			this.opcode = (byte)opcode;
+			this.stackAdjust = stackAdjust;
+		}
+		public byte getOpcode() { return opcode; }
+		public int getStackAdjust() { return stackAdjust; }
+	}
+	
+	public enum Op_Short implements Op
+	{
+		_sipush(0x11, 1);
+		private byte opcode;
+		private int stackAdjust;
+		private Op_Short(int opcode, int stackAdjust)
+		{
+			this.opcode = (byte)opcode;
+			this.stackAdjust = stackAdjust;
+		}
+		public byte getOpcode() { return opcode; }
+		public int getStackAdjust() { return stackAdjust; }
+	}
+	
+	public enum Op_Integer implements Op
+	{
+		_ldc(0x12, 1),
+		_istore(0x36, -1),
+		_iload(0x15, 1);
+		private byte opcode;
+		private int stackAdjust;
+		private Op_Integer(int opcode, int stackAdjust)
+		{
+			this.opcode = (byte)opcode;
+			this.stackAdjust = stackAdjust;
+		}
+		public byte getOpcode() { return opcode; }
+		public int getStackAdjust() { return stackAdjust; }
+	}
+	
+	public enum Op_Float implements Op
+	{
+		_ldc(0x12, 1);
+		private byte opcode;
+		private int stackAdjust;
+		private Op_Float(int opcode, int stackAdjust)
 		{
 			this.opcode = (byte)opcode;
 			this.stackAdjust = stackAdjust;

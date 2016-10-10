@@ -38,6 +38,10 @@ public abstract class MemberRep implements DataBuffer.Serializable
 	{
 		return constantPool.getUtf8(cpIndex_descriptor);
 	}
+	public short getModifiers()
+	{
+		return modifiers;
+	}
 
 	protected short getNameIndex()
 	{
@@ -46,9 +50,5 @@ public abstract class MemberRep implements DataBuffer.Serializable
 	protected short getDescriptorIndex()
 	{
 		return cpIndex_descriptor;
-	}
-	protected short getModifiers()
-	{
-		return modifiers;
 	}
 }
