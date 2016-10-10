@@ -1,5 +1,6 @@
 
-finish assembly
+replace "to" with "get"
+replace "is" with "get"
 
 adjust classpathDB to combine sources
 start making real tests for parser
@@ -8,6 +9,7 @@ ClassBuilder: shift to using logger
 check line breaks
 use * imports when applicable
 don't overuse member chaining
+Replace all "is" and "to" with "get"
 make sure public stuff is on top, private at bottom
 comment
 simple getters and setters can be on one line
@@ -18,6 +20,8 @@ comments
 	file head comments
 	class comments
 	all public member comments
+
+have processor convert all types and such to descriptors
 
 make db merge items on adding sources (test what happens with collision on nonstatic and static)
 make stringToParsed()

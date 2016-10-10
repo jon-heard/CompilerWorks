@@ -28,10 +28,10 @@ public class JavaC
 			"Usage: javac <source file> <options>\n" +
 			"Options:\n" +
 			"-help (-h)     Print this help panel and quit\n" +
-			"-tokenize (-t) Run up to the tokenizing step, printing results" +
-			"-parse (-p)    Run up to the parsing step, printing results" +
-			"-process (-r)  Run up to the processing step, printing results" +
-			"-generate (-g) Run up to the jvm generating step, printing results";
+			"-tokenize (-t) Run up to the tokenizing step, printing results\n" +
+			"-parse (-p)    Run up to the parsing step, printing results\n" +
+			"-process (-r)  Run up to the processing step, printing results\n" +
+			"-generate (-g) Run up to the jvm generating step, printing results\n";
 
 	public static void main(String[] args)
 	{
@@ -130,17 +130,23 @@ public class JavaC
 		
 		// Generate
 		JvmGenerator_Java generator = new JvmGenerator_Java();
-		ClassRep generated = generator.generate(source, parsed);
 		if(finalStage == Stage.generate)
 		{
+			generator.setLogToString(true);
+			ClassRep generated = generator.generate(source, parsed);
 			JvmGeneratorStringConverter converter = new
 					JvmGeneratorStringConverter();
-			result.append(converter.generatedToString(generated));
+			result.append(converter.generatedToString(generator));
 			return result.toString();
 		}
-		
-		
-		return "";
+		else
+		{
+			ClassRep generated = generator.generate(source, parsed);
+			UtilMethods.byteArrayToFile(
+					generated.getJvmBytes(),
+					sourceFile.replace(".java", ".class"));
+			return "";
+		}
 	}
 
 	private enum Stage
