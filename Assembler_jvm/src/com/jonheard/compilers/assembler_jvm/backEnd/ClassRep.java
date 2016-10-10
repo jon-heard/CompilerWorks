@@ -1,6 +1,7 @@
 package com.jonheard.compilers.assembler_jvm.backEnd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import com.jonheard.util.UtilMethods;
@@ -16,13 +17,14 @@ public class ClassRep
 	private ConstantPool constantPool = new ConstantPool();
 
 	/// A collection of the fields for this class
-	private ArrayList<MemberRep> fieldList = new ArrayList<MemberRep>();
+	private ArrayList<FieldRep> fieldList = new ArrayList<FieldRep>();
 	/// A collection of the methods for this class
-	private ArrayList<MemberRep> methodList = new ArrayList<MemberRep>();
+	private ArrayList<MethodRep> methodList = new ArrayList<MethodRep>();
 
 	/// A series of indices into the constantPool.
-	private short cpIndex_name, cpIndex_sourceFile, cpIndex_thisClass;
-	private short cpIndex_superClass, cpIndex_sourceFileAttribute;
+	private short cpIndex_name, cpIndex_superName, cpIndex_sourceFile;
+	private short cpIndex_thisClass, cpIndex_superClass;
+	private short cpIndex_sourceFileAttribute;
 
 	public ClassRep(
 			String name, String superType, Collection<String> modifiers,
@@ -30,6 +32,7 @@ public class ClassRep
 	{
 		/// Most ClassRep state is stored in the constant pool
 		cpIndex_name = constantPool.addUtf8(name);
+		cpIndex_superName = constantPool.addUtf8(superType);
 		cpIndex_sourceFile = constantPool.addUtf8(sourceFile);
 		cpIndex_thisClass = constantPool.addClass(name);
 		cpIndex_superClass = constantPool.addClass(superType);
@@ -44,6 +47,17 @@ public class ClassRep
 	{
 		/// The name is stored in the constant pool
 		return constantPool.getUtf8(cpIndex_name);
+	}
+	
+	public String getSuperName()
+	{
+		/// The name is stored in the constant pool
+		return constantPool.getUtf8(cpIndex_superName);
+	}
+	
+	public short getModifiers()
+	{
+		return modFlags;
 	}
 	
 	public ConstantPool getConstantPool()
@@ -81,6 +95,17 @@ public class ClassRep
 				name, descriptor, modifiers, constantPool);
 		methodList.add(result);
 		return result.getMethodCodeBuilder();
+	}
+	
+	public void addDefaultConstructor(String superName)
+	{
+		String[] modList = {"public"};
+		MethodCodeBuilder m = addMethod(
+			"<init>", "V", null, Arrays.asList(modList));
+		m.addOp(MethodCodeBuilder.Op_NoArg._aload_0);
+		m.addOp(MethodCodeBuilder.Op_Method._invokespecial,
+				superName, "<init>", "()V");
+		m.addOp(MethodCodeBuilder.Op_NoArg._return);
 	}
 
 	/// Get a jvm representation of this class
