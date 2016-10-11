@@ -5,7 +5,9 @@
 
 <h2>Description</h2>
 <div style='margin-left:2em;'>
-After working with my third student on compiler development, I decided to engineer a compiler myself.  This is a Java compiler written <i>in</i> Java.  The goal is to implement all aspects of the modern Java spec (up to version 7).  The compiler is currently extremely limited, but I'm making a lot of progress.  Each step has been implemented to some capacity:
+After working with my third student on compiler development, I decided to engineer a compiler myself.  This is a Java compiler written <i>in</i> Java.  The goal is to implement all aspects of the modern Java spec (up to version 7).
+<br/><br/>
+The compiler is currently extremely limited, but I'm making a lot of progress.  Each step has been implemented to some capacity and exists as its own project:
 <ul>
 <li><b>Tokenizer</b> - Breaks the source code into a list of words and symbols recognized by Java.</li>
 <li><b>Parser</b> - Builds Java 'sentences' from the tokenizer's output.  Output includes: methods, for loops, expressions.</li>
