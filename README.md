@@ -1,7 +1,7 @@
 # CompilerWorks
 
 [![CompilerWorks](video.png)](https://www.youtube.com/watch?v=QNmHyZI-Z64 "CompilerWorks")
-<i>Demonstration of each step of the compiler</i>
+<br/><i>Demonstration of each step of the compiler</i>
 
 <h2>Description</h2>
 <div style='margin-left:2em;'>
@@ -18,12 +18,8 @@ After working with my third student on compiler development, I decided to engine
 <h2>Challenges</h2>
 <div style='margin-left:2em;'>
 The biggest challenge so far has been in type checking.  Type checking required that I implement a database for the classpath (class members are lazy-loaded from class files in both directories and jar files).  Type checking also required modeling nested scope and mapping local variables to stack positions.
-
+<br/><br/>
 Another challenge was to develop a JVM bytecode assembler.  This was the first system I completed in this project.  I've since used this assembler as a tutoring aid on multiple occasions.
 </div>
-
-<hr />
-
-<div style="text-align:center;margin-bottom:2em;"><a style="color:black;text-decoration:underline;" title="Github page" href="https://github.com/jon-heard/CompilerWorks" target="_blank">Github page</a></div>
 
 </div>
