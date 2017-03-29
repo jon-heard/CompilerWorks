@@ -1,4 +1,3 @@
-
 package com.jonheard.compilers;
 
 import java.util.List;
@@ -14,147 +13,130 @@ import com.jonheard.compilers.parser_java.ir.CompilationUnit;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.Tokenizer;
 import com.jonheard.compilers.tokenizer_java.TokenizerStringConverter;
-import com.jonheard.util.SourceFileInfo;
+import com.jonheard.util.SourceFile;
 import com.jonheard.util.UtilMethods;
 
-public class JavaC
-{
-	public static final String HEADER_TEXT =  
-			"------------------------------------------------\n" +
-			" Java Compiler by Jonathan Heard v.0.04.000\n" +
-			"------------------------------------------------\n";
+// JavaC - The front end class for this compiler application
+public class JavaC {
 
-	public static final String HELP_TEXT =
-			"Usage: javac <source file> <options>\n" +
-			"Options:\n" +
-			"-help (-h)     Print this help panel and quit\n" +
-			"-tokenize (-t) Run up to the tokenizing step, printing results\n" +
-			"-parse (-p)    Run up to the parsing step, printing results\n" +
-			"-process (-r)  Run up to the processing step, printing results\n" +
-			"-generate (-g) Run up to the jvm generating step, printing results\n";
+  public static final String APP_INFO_TEXT =
+        "------------------------------------------------\n"
+      + " Java Compiler by Jonathan Heard v.0.04.000\n"
+      + "------------------------------------------------\n";
+  public static final String HELP_TEXT =
+        "Usage: javac <source file> <options>\n" + "Options:\n"
+      + "-help (-h)     Print this help panel and quit\n"
+      + "-tokenize (-t) Compile up to the tokenizing step, printing results\n"
+      + "-parse (-p)    Compile up to the parsing step, printing results\n"
+      + "-process (-r)  Compile up to the processing step, printing results\n"
+      + "-generate (-g) Compile up to the jvm generating step, printing results\n";
 
-	public static void main(String[] args)
-	{
-		JavaC app = new JavaC();
-		System.out.println(app.compile(args));
-	}
-	
-	public String compile(String[] args)
-	{
-		StringBuffer result = new StringBuffer();
-		result.append(HEADER_TEXT);
+  public static void main(String[] args) {
+    JavaC app = new JavaC();
+    String compilerOutput = app.compile(args);
+    System.out.println(compilerOutput);
+  }
 
-		boolean help = false;
-		Stage finalStage = Stage.all;
-		String sourceFile = "";
+  public String compile(String[] args) {
+    // Variables - User input
+    boolean helpTextWasRequested = false;
+    Stage stageToEndOn = Stage.WRITE_CLASS_FILE;
+    String sourceFilename = "";
 
-		for(int i = 0; i < args.length; i++)
-		{
-			switch(args[i])
-			{
-				case "-help":
-				case "-h":
-					help = true;
-					break;
-				case "-tokenize":
-				case "-t":
-					finalStage = Stage.tokenize;
-					break;
-				case "-parse":
-				case "-p":
-					finalStage = Stage.parse;
-					break;
-				case "-process":
-				case "-r":
-					finalStage = Stage.process;
-					break;
-				case "-generate":
-				case "-g":
-					finalStage = Stage.generate;
-					break;
-				default:
-					sourceFile = args[i];
-					break;
-			}
-		}
-		
-		// Show help message
-		if(help || sourceFile.equals(""))
-		{
-			result.append(HELP_TEXT);
-			return result.toString();
-		}
+    // Variables - compiler output
+    StringBuffer compilerOutputText = new StringBuffer();
+    compilerOutputText.append(APP_INFO_TEXT);
 
-		// Load the file
-		String sourceCode = UtilMethods.fileToString(sourceFile);
-		if(sourceCode == null)
-		{
-			result.append("ERROR: Invalid filename: " + sourceFile);
-			return result.toString();
-		}
-		SourceFileInfo source = new SourceFileInfo(sourceFile, sourceCode);
+    // Parse command-line parameters for user input
+    for (int i = 0; i < args.length; i++) {
+      switch (args[i]) {
+        case "-help":
+        case "-h":
+          helpTextWasRequested = true;
+          break;
+        case "-tokenize":
+        case "-t":
+          stageToEndOn = Stage.TOKENIZE;
+          break;
+        case "-parse":
+        case "-p":
+          stageToEndOn = Stage.PARSE;
+          break;
+        case "-process":
+        case "-r":
+          stageToEndOn = Stage.PROCESS;
+          break;
+        case "-generate":
+        case "-g":
+          stageToEndOn = Stage.GENERATE;
+          break;
+        default:
+          sourceFilename = args[i];
+          break;
+      }
+    }
 
-		// Tokenize
-		Tokenizer tokenizer = new Tokenizer();
-		List<Token> tokenized = tokenizer.tokenize(source);
-		if(finalStage == Stage.tokenize)
-		{
-			TokenizerStringConverter converter = new TokenizerStringConverter();
-			result.append(converter.tokenizedToString(tokenized));
-			return result.toString();
-		}
+    // Show help message
+    if (helpTextWasRequested || sourceFilename.equals("")) {
+      compilerOutputText.append(HELP_TEXT);
+      return compilerOutputText.toString();
+    }
 
-		// Parse
-		Parser_Java parser = new Parser_Java();
-		CompilationUnit parsed = parser.parse(source, tokenized);
-		if(finalStage == Stage.parse)
-		{
-			ParserStringConverter converter = new ParserStringConverter();
-			result.append(converter.parsedToString(parsed));
-			return result.toString();
-		}
-		
-		// Setup classpath database
-		JavaClasspathDatabase libs = new JavaClasspathDatabase();
-		libs.addSource_Jdk();
+    // Load the file
+    String sourceString = UtilMethods.fileToString(sourceFilename);
+    if (sourceString == null) {
+      compilerOutputText.append("ERROR: Invalid java source file name: " + sourceFilename);
+      return compilerOutputText.toString();
+    }
+    SourceFile source = new SourceFile(sourceFilename, sourceString);
 
-		// Process
-		IrProcessor_Java processor = new IrProcessor_Java();
-		processor.process(source, libs, parsed);
-		if(finalStage == Stage.process)
-		{
-			ParserStringConverter converter = new ParserStringConverter();
-			result.append(converter.parsedToString(parsed));
-			return result.toString();
-		}
-		
-		// Generate
-		JvmGenerator_Java generator = new JvmGenerator_Java();
-		if(finalStage == Stage.generate)
-		{
-			generator.setLogToString(true);
-			ClassRep generated = generator.generate(source, parsed);
-			JvmGeneratorStringConverter converter = new
-					JvmGeneratorStringConverter();
-			result.append(converter.generatedToString(generator));
-			return result.toString();
-		}
-		else
-		{
-			ClassRep generated = generator.generate(source, parsed);
-			UtilMethods.byteArrayToFile(
-					generated.getJvmBytes(),
-					sourceFile.replace(".java", ".class"));
-			return "";
-		}
-	}
+    // Tokenize
+    Tokenizer tokenizer = new Tokenizer();
+    List<Token> tokenizedSource = tokenizer.tokenize(source);
+    if (stageToEndOn == Stage.TOKENIZE) {
+      TokenizerStringConverter converter = new TokenizerStringConverter();
+      compilerOutputText.append(converter.tokensToString(tokenizedSource));
+      return compilerOutputText.toString();
+    }
 
-	private enum Stage
-	{
-		tokenize,
-		parse,
-		process,
-		generate,
-		all
-	}
+    // Parse
+    Parser_Java parser = new Parser_Java();
+    CompilationUnit parsedSource = parser.parse(source, tokenizedSource);
+    if (stageToEndOn == Stage.PARSE) {
+      ParserStringConverter converter = new ParserStringConverter();
+      compilerOutputText.append(converter.parsedToString(parsedSource));
+      return compilerOutputText.toString();
+    }
+
+    // Setup java classpath database
+    JavaClasspathDatabase libs = new JavaClasspathDatabase();
+    libs.addSource_Jdk();
+
+    // Process
+    IrProcessor_Java processor = new IrProcessor_Java();
+    processor.process(source, libs, parsedSource);
+    if (stageToEndOn == Stage.PROCESS) {
+      ParserStringConverter converter = new ParserStringConverter();
+      compilerOutputText.append(converter.parsedToString(parsedSource));
+      return compilerOutputText.toString();
+    }
+
+    // Generate
+    JvmGenerator_Java generator = new JvmGenerator_Java();
+    if (stageToEndOn == Stage.GENERATE) {
+      generator.setLogToString(true);
+      ClassRep generated = generator.generate(source, parsedSource);
+      JvmGeneratorStringConverter converter = new JvmGeneratorStringConverter();
+      compilerOutputText.append(converter.generatedToString(generator));
+      return compilerOutputText.toString();
+    } else {
+      ClassRep generated = generator.generate(source, parsedSource);
+      UtilMethods.byteArrayToFile(generated.getJvmBytes(), sourceFilename.replace(".java", ".class"));
+      return "";
+    }
+  }
+  
+  private enum Stage {
+    TOKENIZE, PARSE, PROCESS, GENERATE, WRITE_CLASS_FILE
+  }
 }

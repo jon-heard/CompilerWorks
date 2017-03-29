@@ -11,11 +11,11 @@ import com.jonheard.compilers.parser_java.ir.*;
 import com.jonheard.compilers.parser_java.ir.Class;
 import com.jonheard.compilers.parser_java.ir.expression.*;
 import com.jonheard.compilers.parser_java.ir.statement.*;
-import com.jonheard.util.SourceFileInfo;
+import com.jonheard.util.SourceFile;
 
 public class JvmGenerator_Java
 {
-	public ClassRep generate(SourceFileInfo source, CompilationUnit compUnit)
+	public ClassRep generate(SourceFile source, CompilationUnit compUnit)
 	{
 		this.source = source;
 		handleIr(compUnit);
@@ -56,7 +56,7 @@ public class JvmGenerator_Java
 	private StringBuffer methodLog = null;
 	private StringBuffer staticLog = null;
 
-	private SourceFileInfo source;
+	private SourceFile source;
 	private ClassRep classRep;
 	private MethodCodeBuilder currentMethod;
 	private MethodCodeBuilder staticBlock = null;

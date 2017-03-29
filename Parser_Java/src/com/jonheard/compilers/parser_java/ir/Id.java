@@ -12,7 +12,7 @@ public class Id extends BaseIrType
 	{
 		super(parser);
 		Token currentToken = parser.getNextToken();
-		if(parser.mustBe(TokenType.ID))
+		if(parser.mustBe(TokenType.IDENTIFIER))
 		{
 			value = currentToken.getText();
 		}
@@ -40,7 +40,7 @@ public class Id extends BaseIrType
 	
 	public static boolean isNext(Parser_Java parser)
 	{
-		return parser.see(TokenType.ID);
+		return parser.see(TokenType.IDENTIFIER);
 	}
 	
 	@Override

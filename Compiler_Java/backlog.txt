@@ -1,3 +1,6 @@
+study p exponent in hex
+update tests to reflect p
+update work to reflect p
 
 replace "to" with "get"
 replace "is" with "get"

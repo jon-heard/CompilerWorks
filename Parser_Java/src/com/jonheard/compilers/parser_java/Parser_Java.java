@@ -7,18 +7,18 @@ import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 import com.jonheard.util.Logger;
 import com.jonheard.util.RewindableQueue;
-import com.jonheard.util.SourceFileInfo;
+import com.jonheard.util.SourceFile;
 
 public class Parser_Java
 {
-	public CompilationUnit parse(SourceFileInfo source, List<Token> tokens)
+	public CompilationUnit parse(SourceFile source, List<Token> tokens)
 	{
 		this.source = source;
 		tokenQueue = new RewindableQueue<Token>(tokens);
 		return new CompilationUnit(this);
 	}
 	
-	public SourceFileInfo getSource() { return source; }
+	public SourceFile getSource() { return source; }
 	public RewindableQueue<Token> getTokenQueue() { return tokenQueue; }
 
 	public Token getNextToken()
@@ -30,7 +30,7 @@ public class Parser_Java
 	{
 		if(tokenQueue == null || type == null) return false;
 		if(tokenQueue.isEmpty()) return false;
-		return getNextToken().getTokenType() == type;
+		return getNextToken().getType() == type;
 	}
 	
 	public boolean have(TokenType type)
@@ -56,7 +56,7 @@ public class Parser_Java
 		}
 
 		Token next = getNextToken();
-		if(next.getTokenType() == type)
+		if(next.getType() == type)
 		{
 			mustBeHasErrored = false;
 			tokenQueue.poll();
@@ -67,7 +67,7 @@ public class Parser_Java
 			mustBeHasErrored = true;
 			Logger.error(
 				"'" + type.name() + "' expected", source.getFilename(),
-				next.getLine(), next.getColumn(), source.getLine(next.getLine()));
+				next.getRow(), next.getColumn(), source.getLine(next.getRow()));
 			return false;
 		}
 		else
@@ -84,7 +84,7 @@ public class Parser_Java
 		}
 	}
 
-	private SourceFileInfo source;
+	private SourceFile source;
 	private RewindableQueue<Token> tokenQueue;
 	private static boolean mustBeHasErrored = false;
 }

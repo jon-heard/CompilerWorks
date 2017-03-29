@@ -24,7 +24,7 @@ public class Literal extends Expression
 	
 	public String getLiteralType()
 	{
-		return data.getTokenType().toString();
+		return data.getType().toString();
 	}
 	
 	public String getLiteralValue()

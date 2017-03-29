@@ -19,7 +19,7 @@ public class Class extends BaseIrType
 		else
 		{
 			parser.getTokenQueue().addFirst(
-					new Token(TokenType.ID, 0, "Object"));
+					new Token(TokenType.IDENTIFIER, 0, "Object"));
 			addChild(new QualifiedId(parser));
 		}
 		parser.mustBe(TokenType.CURL_BRACE_LEFT);

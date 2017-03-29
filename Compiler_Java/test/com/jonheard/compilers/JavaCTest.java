@@ -49,7 +49,7 @@ public class JavaCTest
 		JavaC compiler = new JavaC();
 
 		// Tokenizing
-		String expectedTokens = JavaC.HEADER_TEXT +
+		String expectedTokens = JavaC.APP_INFO_TEXT +
 				"package\nid:first\ndot\nid:second\n" +
 				"semicolon\nimport\nid:java\ndot\nid:util\n" +
 				"dot\nstar\nsemicolon\nimport\nid:javax\ndot\n" +
@@ -65,7 +65,7 @@ public class JavaCTest
 		//assertEquals(expectedTokens, actualTokens);
 		
 		// Parsing
-		String expectedParsed = JavaC.HEADER_TEXT + 
+		String expectedParsed = JavaC.APP_INFO_TEXT + 
 				"<CompilationUnit line='1' importCount='2' typeCount='1'>\n" +
 				"	<Package line='1' id='first.second'/>\n" +
 				"	<Import line='2' isOnDemand='true' isStatic='false' id='java.util'/>\n" +
@@ -93,7 +93,7 @@ public class JavaCTest
 		System.out.println(actualParsed);
 
 		// Processing
-		String expectedProcessed = JavaC.HEADER_TEXT + 
+		String expectedProcessed = JavaC.APP_INFO_TEXT + 
 				"<CompilationUnit line='1' importCount='2' typeCount='1'>\n" +
 				"	<Package line='1' id='first.second'/>\n" +
 				"	<Import line='2' isOnDemand='true' isStatic='false' id='java.util'/>\n" +
@@ -119,7 +119,7 @@ public class JavaCTest
 		System.out.println(actualProcessed);
 		
 		// Processing
-		String expectedGenerated = JavaC.HEADER_TEXT + "";
+		String expectedGenerated = JavaC.APP_INFO_TEXT + "";
 		String actualGenerated = compiler.compile(
 				new String[] {TEST_DIR+"/"+TEST_FILENAME_1, "-g"});
 		System.out.println(actualGenerated);
@@ -132,7 +132,7 @@ public class JavaCTest
 	public void help()
 	{
 		JavaC compiler = new JavaC();
-		String expected = JavaC.HEADER_TEXT + JavaC.HELP_TEXT;
+		String expected = JavaC.APP_INFO_TEXT + JavaC.HELP_TEXT;
 		String actual = compiler.compile(new String[] {"-h"});
 		assertEquals(expected, actual);
 	}

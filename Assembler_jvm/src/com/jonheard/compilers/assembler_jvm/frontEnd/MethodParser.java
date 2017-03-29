@@ -35,7 +35,7 @@ public class MethodParser
 		/// Translate the args into opcodes and add to codeBuilder
 		for(int i = 0; i < logicSource.length; i++)
 		{
-			List<String> args = UtilMethods.tokenizeString(logicSource[i]);
+			List<String> args = UtilMethods.tokenizeStringByWhitespace(logicSource[i]);
 			int curArg = 0;
 			/// Label
 			if(args.get(curArg).endsWith(":"))

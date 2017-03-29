@@ -13,7 +13,7 @@ public class Expression extends BaseIrType
 	}
 	public Expression(ExpressionType type, Token first)
 	{
-		super(first.getLine(), first.getColumn());
+		super(first.getRow(), first.getColumn());
 		this.expressionType = type;
 	}
 	public Expression(ExpressionType type, Token first, Expression lhs)

@@ -12,12 +12,12 @@ import com.jonheard.compilers.parser_java.ir.expression.Expression;
 import com.jonheard.compilers.parser_java.ir.expression.Reference;
 import com.jonheard.compilers.parser_java.ir.statement.CodeBlock;
 import com.jonheard.util.Logger;
-import com.jonheard.util.SourceFileInfo;
+import com.jonheard.util.SourceFile;
 
 public class IrProcessor_Java
 {
 	public void process(
-			SourceFileInfo source, JavaClasspathDatabase libs,
+			SourceFile source, JavaClasspathDatabase libs,
 			CompilationUnit toProcess)
 	{
 		this.source = source;
@@ -27,7 +27,7 @@ public class IrProcessor_Java
 	}
 
 	private LinkedList<Scope> scopes = new LinkedList<Scope>();
-	private SourceFileInfo source;
+	private SourceFile source;
 	private JavaClasspathDatabase libs;
 	
 	private Scope getCurrentScope()

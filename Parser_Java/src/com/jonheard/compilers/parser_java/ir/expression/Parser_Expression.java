@@ -35,9 +35,9 @@ public class Parser_Expression
 					}
 				}
 				Logger.error("not a statement",
-						parser.getSource().getFilename(), next.getLine(),
+						parser.getSource().getFilename(), next.getRow(),
 						next.getColumn(),
-						parser.getSource().getLine(next.getLine()));
+						parser.getSource().getLine(next.getRow()));
 				break;				
 		}
 		parser.mustBe(TokenType.SEMICOLON);
@@ -325,7 +325,7 @@ public class Parser_Expression
 		else
 		{
 			Token literalToken = parser.getTokenQueue().poll();
-			TokenType literalTokenType = literalToken.getTokenType();
+			TokenType literalTokenType = literalToken.getType();
 			if(		literalTokenType != TokenType.INTEGER &&
 					literalTokenType != TokenType.LONG &&
 					literalTokenType != TokenType.FLOAT &&
@@ -338,9 +338,9 @@ public class Parser_Expression
 			{
 				Logger.error(
 						"illegal start of expression",
-						parser.getSource().getFilename(), literalToken.getLine(),
+						parser.getSource().getFilename(), literalToken.getRow(),
 						literalToken.getColumn(),
-						parser.getSource().getLine(literalToken.getLine()));
+						parser.getSource().getLine(literalToken.getRow()));
 			}
 			result = new Literal(next, literalToken);
 		}
