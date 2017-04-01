@@ -1,17 +1,17 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Interface extends BaseIrType
 {
-	public Interface(Parser_Java parser)
+	public Interface(Parser parser)
 	{
 		super(parser);
 		addChild(new List_Modifier(parser));
-		parser.mustBe(TokenType._INTERFACE);
+		parser.requireTokenToBeOfType(TokenType._INTERFACE);
 		addChild(new Id(parser));
-		while(!parser.have(TokenType.CURL_BRACE_RIGHT))
+		while(!parser.passTokenIfType(TokenType.CURL_BRACE_RIGHT))
 		{
 			parser.getTokenQueue().poll();
 		}
@@ -36,12 +36,12 @@ public class Interface extends BaseIrType
 		return (Id)getChild(1);
 	}
 	
-	public static boolean isNext(Parser_Java parser)
+	public static boolean isNext(Parser parser)
 	{
 		boolean result = false;
 		parser.getTokenQueue().remember();
 		new List_Modifier(parser);
-		result = parser.see(TokenType._INTERFACE);
+		result = parser.getIsTokenType(TokenType._INTERFACE);
 		parser.getTokenQueue().rewind();
 		return result;
 	}

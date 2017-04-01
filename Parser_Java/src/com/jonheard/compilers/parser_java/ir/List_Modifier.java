@@ -3,7 +3,7 @@ package com.jonheard.compilers.parser_java.ir;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 import com.jonheard.util.RewindableQueue;
@@ -14,16 +14,16 @@ public class List_Modifier extends BaseIrType
 	{
 		super(0, 0);
 	}
-	public List_Modifier(Parser_Java parser)
+	public List_Modifier(Parser parser)
 	{
 		super(parser);
 		while(true)
 		{
-			if(     parser.have(TokenType._PUBLIC   )) { hasPublic = true; }
-			else if(parser.have(TokenType._PRIVATE  )) { hasPrivate = true; }
-			else if(parser.have(TokenType._PROTECTED)) { hasProtected = true; }
-			else if(parser.have(TokenType._STATIC   )) { hasStatic = true; }
-			else if(parser.have(TokenType._FINAL    )) { hasFinal = true; }
+			if(     parser.passTokenIfType(TokenType._PUBLIC   )) { hasPublic = true; }
+			else if(parser.passTokenIfType(TokenType._PRIVATE  )) { hasPrivate = true; }
+			else if(parser.passTokenIfType(TokenType._PROTECTED)) { hasProtected = true; }
+			else if(parser.passTokenIfType(TokenType._STATIC   )) { hasStatic = true; }
+			else if(parser.passTokenIfType(TokenType._FINAL    )) { hasFinal = true; }
 			else { break; }
 		}
 	}

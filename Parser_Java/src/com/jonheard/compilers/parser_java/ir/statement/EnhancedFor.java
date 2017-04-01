@@ -1,6 +1,6 @@
 package com.jonheard.compilers.parser_java.ir.statement;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
 import com.jonheard.compilers.parser_java.ir.MethodOrVariable;
 import com.jonheard.compilers.parser_java.ir.expression.Parser_Expression;
@@ -8,30 +8,30 @@ import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class EnhancedFor extends BaseIrType
 {
-	public EnhancedFor(Parser_Java parser)
+	public EnhancedFor(Parser parser)
 	{
 		super(parser);
-		parser.mustBe(TokenType._FOR);
-		parser.mustBe(TokenType.PAREN_LEFT);
+		parser.requireTokenToBeOfType(TokenType._FOR);
+		parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
 		addChild(new MethodOrVariable(parser));
-		parser.mustBe(TokenType.COLON);
+		parser.requireTokenToBeOfType(TokenType.COLON);
 		addChild(Parser_Expression.parseExpression(parser));
-		parser.mustBe(TokenType.PAREN_RIGHT);
+		parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
 		addChild(Parser_Statement.getNextStatement(parser));
 	}
 	
-	public static boolean isNext(Parser_Java parser)
+	public static boolean isNext(Parser parser)
 	{
 		boolean result = false;
 		parser.getTokenQueue().remember();
-		if(parser.have(TokenType._FOR))
+		if(parser.passTokenIfType(TokenType._FOR))
 		{
-			parser.mustBe(TokenType.PAREN_LEFT);
+			parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
 			if(MethodOrVariable.isNext(parser))
 			{
 				new MethodOrVariable(parser);
 			}
-			if(parser.see(TokenType.COLON))
+			if(parser.getIsTokenType(TokenType.COLON))
 			{
 				result = true;
 			}

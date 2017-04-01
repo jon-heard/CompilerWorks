@@ -1,6 +1,6 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
@@ -8,11 +8,11 @@ public class Id extends BaseIrType
 {
 	private String value = "";
 	
-	public Id(Parser_Java parser)
+	public Id(Parser parser)
 	{
 		super(parser);
 		Token currentToken = parser.getNextToken();
-		if(parser.mustBe(TokenType.IDENTIFIER))
+		if(parser.requireTokenToBeOfType(TokenType.IDENTIFIER))
 		{
 			value = currentToken.getText();
 		}
@@ -38,9 +38,9 @@ public class Id extends BaseIrType
 		return value;
 	}
 	
-	public static boolean isNext(Parser_Java parser)
+	public static boolean isNext(Parser parser)
 	{
-		return parser.see(TokenType.IDENTIFIER);
+		return parser.getIsTokenType(TokenType.IDENTIFIER);
 	}
 	
 	@Override

@@ -1,11 +1,11 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Type extends BaseIrType
 {
-	public Type(Parser_Java parser)
+	public Type(Parser parser)
 	{
 		super(parser);
 		addChild(new QualifiedId(parser));
@@ -22,9 +22,9 @@ public class Type extends BaseIrType
 //		{
 //			addChild(null);
 //		}
-		while(parser.have(TokenType.SQUARE_BRACE_LEFT))
+		while(parser.passTokenIfType(TokenType.SQUARE_BRACE_LEFT))
 		{
-			parser.mustBe(TokenType.SQUARE_BRACE_RIGHT);
+			parser.requireTokenToBeOfType(TokenType.SQUARE_BRACE_RIGHT);
 			incDimensionCount();
 		}
 	}
@@ -112,7 +112,7 @@ public class Type extends BaseIrType
 		dimensionCount++;
 	}
 	
-	public static boolean isNext(Parser_Java parser)
+	public static boolean isNext(Parser parser)
 	{
 		return Id.isNext(parser);
 	}

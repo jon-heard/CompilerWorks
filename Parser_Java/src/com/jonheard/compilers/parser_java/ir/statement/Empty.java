@@ -1,19 +1,19 @@
 package com.jonheard.compilers.parser_java.ir.statement;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Empty extends BaseIrType
 {
-	public Empty(Parser_Java parser)
+	public Empty(Parser parser)
 	{
 		super(parser);
-		parser.mustBe(TokenType.SEMICOLON);
+		parser.requireTokenToBeOfType(TokenType.SEMICOLON);
 	}
 	
-	public static boolean isNext(Parser_Java parser)
+	public static boolean isNext(Parser parser)
 	{
-		return parser.see(TokenType.SEMICOLON);
+		return parser.getIsTokenType(TokenType.SEMICOLON);
 	}
 }

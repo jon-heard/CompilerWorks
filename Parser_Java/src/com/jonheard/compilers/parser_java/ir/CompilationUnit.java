@@ -1,12 +1,12 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.util.Logger;
 
 public class CompilationUnit extends BaseIrType
 {
-	public CompilationUnit(Parser_Java parser)
+	public CompilationUnit(Parser parser)
 	{
 		super(parser);
 

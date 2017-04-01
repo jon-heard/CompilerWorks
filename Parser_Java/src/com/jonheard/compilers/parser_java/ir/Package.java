@@ -1,16 +1,16 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Package extends BaseIrType
 {
-	Package(Parser_Java parser)
+	Package(Parser parser)
 	{
 		super(parser);
-		parser.mustBe(TokenType._PACKAGE);
+		parser.requireTokenToBeOfType(TokenType._PACKAGE);
 		addChild(new QualifiedId(parser));
-		parser.mustBe(TokenType.SEMICOLON);
+		parser.requireTokenToBeOfType(TokenType.SEMICOLON);
 	}
 
 	@Override
@@ -27,9 +27,9 @@ public class Package extends BaseIrType
 		return (QualifiedId)getChild(0);
 	}
 	
-	public static boolean isNext(Parser_Java parser)
+	public static boolean isNext(Parser parser)
 	{
-		return parser.see(TokenType._PACKAGE);
+		return parser.getIsTokenType(TokenType._PACKAGE);
 	}
 
 }

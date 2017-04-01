@@ -2,22 +2,22 @@ package com.jonheard.compilers.parser_java.ir;
 
 import java.util.LinkedList;
 import java.util.List;
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class QualifiedId extends BaseIrType
 {
-	public QualifiedId(Parser_Java parser)
+	public QualifiedId(Parser parser)
 	{
 		super(parser);
 		addChild(new Id(parser));
 		parser.getTokenQueue().remember();
-		while(parser.have(TokenType.DOT))
+		while(parser.passTokenIfType(TokenType.DOT))
 		{
 			if(Id.isNext(parser))
 			{
 				parser.getTokenQueue().rewind();
-				parser.mustBe(TokenType.DOT);
+				parser.requireTokenToBeOfType(TokenType.DOT);
 				addChild(new Id(parser));
 				parser.getTokenQueue().remember();
 			}
@@ -100,7 +100,7 @@ public class QualifiedId extends BaseIrType
 		return new QualifiedId(getLine(), getColumn(), transfers);
 	}
 
-	public static boolean isNext(Parser_Java parser)
+	public static boolean isNext(Parser parser)
 	{
 		return Id.isNext(parser);
 	}

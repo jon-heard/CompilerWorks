@@ -42,10 +42,12 @@ public class Tokenizer {
       TokenType nextTokenType = null;
       // The text for this token.  Most tokens have null text.
       String nextTokenText = null;
-      // The amount to advance for the next token.  Defaulted to the length of the current token.
+      // The amount to advance for the next token.  Defaults to the length of the new token
       int advance = -1;
       // The current column this token starts on.
       int currentColumn = currentIndex - columnStart;
+      // Keep previous error count to check for new errors
+      int previousErrorCount = Logger.getErrorCount();
       // Run through all token options looking for a fit.
       switch (source.getChar(currentIndex)) {
         case ' ':
@@ -129,23 +131,17 @@ public class Tokenizer {
           }
           break;
         case '\'':
-          nextTokenType = TokenType.CHAR;
           nextTokenText = getTokenTextFromChar(source, currentIndex);
           advance = nextTokenText.length() + 2;
+          if (Logger.getErrorCount() == previousErrorCount) {
+            nextTokenType = TokenType.CHAR;
+          }
           break;
         case '\"':
-          nextTokenType = TokenType.STRING;
           nextTokenText = getTokenTextFromString(source, currentIndex);
-          // If bad string, continue at the end of the line
-          if(nextTokenText == null) {
-            nextTokenType = null;
-            advance = currentIndex;
-            while (source.getChar(advance) != '\n' && source.getChar(advance) != 0) {
-              ++advance;
-            }
-            advance -= currentIndex;
-          } else {
-            advance = nextTokenText.length() + 2;
+          advance = nextTokenText.length() + 2;
+          if (Logger.getErrorCount() == previousErrorCount) {
+            nextTokenType = TokenType.STRING;
           }
           break;
         case '.':
@@ -164,13 +160,15 @@ public class Tokenizer {
         case '8':
         case '9':
           Object[] numberInfo = getTokenInfoFromNumber(source, currentIndex);
-          nextTokenType = (TokenType)numberInfo[0];
           nextTokenText = (String)numberInfo[1];
           advance = nextTokenText.length();
-          nextTokenText = parseNumber(nextTokenType, nextTokenText);
+          if (Logger.getErrorCount() == previousErrorCount) {
+            nextTokenType = (TokenType)numberInfo[0];
+            nextTokenText = parseNumber(nextTokenType, nextTokenText);
+          }
           break;
         default:
-          if (isAlpha(source, currentIndex)) {
+          if (getIsAlphaChar(source.getChar(currentIndex))) {
             nextTokenType = getTokenTypeFromKeyword(source, currentIndex);
             if (nextTokenType == null) {
               nextTokenType = TokenType.IDENTIFIER;
@@ -186,7 +184,7 @@ public class Tokenizer {
         result.add(toAdd);
         if (advance == -1) { advance = toAdd.getLength(); }
       } else {
-        if (advance == -1) { advance = 1; }
+        if (advance == -1) { advance = nextTokenText!=null ? nextTokenText.length() : 1; }
       }
       currentIndex += advance;
     }
@@ -205,67 +203,51 @@ public class Tokenizer {
   protected List<Set<Character>> numericCharSets;
 
 
+  protected boolean getIsAlphaChar(char val) {
+    return val == '_' || (val >= 'a' && val <= 'z') || (val >= 'A' && val <= 'Z'); 
+  }
+
+  protected boolean getIsAlphaNumericChar(char val) {
+    return getIsAlphaChar(val) || (val >= '0' && val <= '9'); 
+  }
+
   // Parse and return an escape character from the given source code starting at the given index
-  protected String getEscapeCharacter(SourceFile source, int index) {
-    if (source.getChar(index) != '\\') { return ""; }
-    int resultLength = -1;
-    switch(source.getChar(index+1)) {
+  protected int getEscapeCharacterLength(SourceFile source, int startIndex) {
+    if (source.getChar(startIndex) != '\\') { return 1; }
+    int index = startIndex + 1;
+    int octalLength = -1;
+    switch(source.getChar(index)) {
     // basic escape character
       case 'b':   case 'n':   case 't':   case 'r':
       case 'f':   case '\'':  case '\"':  case '\\':
-        resultLength = 1;
+        ++index;
         break;
     // Octal escape character
       case '0':
       case '1':
       case '2':
       case '3':
-        resultLength = 3;
+        octalLength = 3;
       case '4':
       case '5':
       case '6':
       case '7':
-        if (resultLength == -1) { resultLength = 2; }
-        for (int i = 1; i < resultLength; ++i) {
-          int current = source.getChar(index+1 + i);
+        if (octalLength == -1) { octalLength = 2; }
+        for (int i = 0; i < octalLength; ++i) {
+          ++index;
+          int current = source.getChar(index);
           if (current < '0' || current > '7')
           {
-            resultLength = i;
             break;
           }
         }
         break;
     // Invalid escape character
       default:
-        Logger.error("illegal escape character", source, index);
-        return null;
+        Logger.error("illegal escape character", source, startIndex);
     } // end switch
-    return source.getChars(index, index+resultLength);
+    return index-startIndex;
   }
-
-  protected boolean isAlpha(SourceFile source, int index) {
-    char current = source.getChar(index);
-    return (current >= 'A' && current <= 'Z') || (current >= 'a' && current <= 'z')
-        || (current == '_');
-  }
-
-  protected boolean isNumeric(SourceFile source, int index, int radix) {
-    char current = source.getChar(index);
-    if (radix == 2) { return current == '0' || current == '1'; }
-    if (radix == 8) {
-      return current >= '0' && current <= '7';
-    } else if (radix == 16) {
-      return (current >= '0' && current <= '9') || (current >= 'A' && current <= 'F')
-          || (current >= 'a' && current <= 'f');
-    } else {
-      return current >= '0' && current <= '9';
-    }
-  }
-
-  protected boolean isAlphaNumeric(SourceFile source, int index) {
-    return isAlpha(source, index) || isNumeric(source, index, 10);
-  }
-
 
   // == =
   // Returns - appropriate token type 
@@ -472,26 +454,23 @@ public class Tokenizer {
   // Returns - Character's contents (as a string)
   protected String getTokenTextFromChar(SourceFile source, int startIndex) {
     int index = startIndex+1;
-    String result = null;
     char current = source.getChar(index);
   // Escape character
     if (current == '\\') {
-      result = getEscapeCharacter(source, index);
-      if (result == null) {
-        result = ""+source.getChar(index+1);
-      } else {
-        index += result.length();
-      }
+      ++index;
+      index += getEscapeCharacterLength(source, index);
   // Non-escape character
     } else {
-      result = ""+source.getChar(index);
+      ++index;
     }
   // Check for closing apostrophe
     if (source.getChar(index+1) != '\'') {
+      ++index;
+    } else {
       Logger.error("unclosed character literal", source, startIndex);
     }
     
-    return result;
+    return source.getSubstring(startIndex, index);
   }
 
   // "..."
@@ -503,25 +482,18 @@ public class Tokenizer {
     // New line or end of file
       if (current == '\n' || current == 0) {
         Logger.error("unclosed string literal", source, startIndex);
-        return null;
+        break;
       }
     // escape characters
       if (current == '\\') {
-        String escape = getEscapeCharacter(source, index);
-        if (escape == null) {
-          ++index;
-          current = source.getChar(index);
-        } else {
-          index += escape.length();
-          current = source.getChar(index);
-        }
+        index += getEscapeCharacterLength(source, index);
     // Non-escape character
       } else {
         ++index;
-        current = source.getChar(index);
       }
+      current = source.getChar(index);
     }
-    return source.getChars(startIndex+1, index);
+    return source.getSubstring(startIndex+1, index);
   }
 
   protected TokenType getTokenTypeFromDot(SourceFile source, int index) {
@@ -539,8 +511,8 @@ public class Tokenizer {
 
   protected String getTokenTextFromIdentifier(SourceFile source, int index) {
     int endIndex = index+1;
-    while (isAlphaNumeric(source, endIndex)) { ++endIndex; }
-    return source.getChars(index, endIndex);
+    while (getIsAlphaNumericChar(source.getChar(endIndex))) { ++endIndex; }
+    return source.getSubstring(index, endIndex);
   }
 
   private enum IntOrFloat { INT, FLOAT, UNKNOWN };
@@ -585,16 +557,32 @@ public class Tokenizer {
         } else {
           break;
         }
-      } else if (current == 'e' || current == 'E' || current == 'p' || current == 'P' &&
-            isIntOrFloat != IntOrFloat.INT) {
-        if (expIndex == -1) {
+      } else if (current == 'e' || current == 'E' && isIntOrFloat != IntOrFloat.INT) {
+        if (baseIndex == 3) { // hex has 'p' for exponent symbol
+          Logger.error("malformed floating point literal", source, startIndex);
+          break;
+        } else if (expIndex == -1) {
           isIntOrFloat = IntOrFloat.FLOAT;
           expIndex = index;
+          char char2 = source.getChar(index+1);
+          if (char2 == '+' || char2 == '-') { ++index; }
         } else {
           break;
         }
-      }
-      else if (mayBeBase8 && !numericCharSets.get(1).contains(current)) {
+      } else if (current == 'p' || current == 'P' && isIntOrFloat != IntOrFloat.INT) {
+        if (baseIndex != 3) { // non-hex has 'e' for exponent symbol
+          Logger.error("malformed floating point literal", source, startIndex);
+          break;
+        } if (expIndex == -1) {
+          isIntOrFloat = IntOrFloat.FLOAT;
+          expIndex = index;
+          char char2 = source.getChar(index+1);
+          if (char2 == '+' || char2 == '-') { ++index; }
+          baseIndex = 2; // the exponent of a hex float is still in decimal
+        } else {
+          break;
+        }
+      } else if (mayBeBase8 && !numericCharSets.get(1).contains(current)) {
         intBase8ErrorIndex = index;
       }
       ++index;
@@ -640,7 +628,7 @@ public class Tokenizer {
       index = intBase8ErrorIndex-1;
     }
 
-    result[1] = source.getChars(startIndex, index);
+    result[1] = source.getSubstring(startIndex, index);
     return result;
   }
   
@@ -661,112 +649,6 @@ public class Tokenizer {
     return number;
   }
 
-/*
-  private TokenType handleZero(SourceFile source, int index) {
-    char next = sourceString.charAt(index + 1);
-    if (next == 'b' || next == 'B') {
-      index += 2;
-      if (index >= sourceString.length() || !isNumeric(sourceString, index, 2)) {
-        Logger.error("binary numbers must contain at least one binary digit", source.getFilename(),
-            Token.getCurrentLine(), getColumn(), source.getLine(Token.getCurrentLine() - 1));
-        return null;
-      }
-      return handleNumber(2);
-    } else if (next == 'x' || next == 'X') {
-      index += 2;
-      if (index >= sourceString.length() || !isNumeric(sourceString, index, 16)) {
-        Logger.error("binary numbers must contain at least one hex digit", source.getFilename(),
-            Token.getCurrentLine(), getColumn(), source.getLine(Token.getCurrentLine() - 1));
-        return null;
-      }
-      return handleNumber(16);
-    } else if (isNumeric(sourceString, index + 1, 8) || next == '.') {
-      index++;
-      return handleNumber(8);
-    } else if (next == 'd' || next == 'D') {
-      index++;
-      return new Token(TokenType.DOUBLE, getColumn(), "0");
-    } else if (next == 'f' || next == 'F') {
-      index++;
-      return new Token(TokenType.FLOAT, getColumn(), "0");
-    } else if (next == 'l' || next == 'L') {
-      index++;
-      return new Token(TokenType.LONG, getColumn(), "0");
-    } else {
-      return new Token(TokenType.INTEGER, getColumn(), "0");
-    }
-  }
-
-  private TokenType handleNumber(int base) {
-    StringBuffer result = new StringBuffer();
-    boolean hasDot = false, hasE = false;
-    char current = sourceString.charAt(index);
-    while (isNumeric(sourceString, index, base) || current == '_'
-        || current == '.' | current == 'e' || current == 'E') {
-      if (current == '_') {
-        if (!isNumeric(sourceString, index - 1, base)
-            && (index + 1 >= sourceString.length()
-                || !isNumeric(sourceString, index + 1, base))) {
-          Logger.error("illegal underscore", source.getFilename(), Token.getCurrentLine(),
-              getColumn(), source.getLine(Token.getCurrentLine() - 1));
-          index++;
-          break;
-        }
-        continue;
-      }
-      if (current == '.') {
-        if (hasDot || hasE) {
-          index--;
-          return new Token(TokenType.FLOAT, getColumn(), result.toString());
-        }
-        hasDot = true;
-      }
-      if (current == 'e' || current == 'E') {
-        if (hasE) {
-          index--;
-          return new Token(TokenType.FLOAT, getColumn(), result.toString());
-        }
-        hasE = true;
-      }
-      result.append(current);
-      index++;
-      if (index >= sourceString.length()) {
-        current = '\0';
-        break;
-      }
-      current = sourceString.charAt(index);
-    }
-    if (hasDot || hasE) {
-      if (current == 'f' || current == 'F') {
-        index++;
-        float value = Float.parseFloat(result.toString());
-        return new Token(TokenType.FLOAT, getColumn(), Float.toString(value));
-      } else if (current == 'd' || current == 'D') {
-        index++;
-      }
-      double value = Double.parseDouble(result.toString());
-      return new Token(TokenType.DOUBLE, getColumn(), Double.toString(value));
-    } else {
-      if (current == 'l' || current == 'L') {
-        index++;
-        long value = Long.parseLong(result.toString(), base);
-        return new Token(TokenType.LONG, getColumn(), Long.toString(value));
-      }
-      if (current == 'f' || current == 'F') {
-        index++;
-        float value = Float.parseFloat(result.toString());
-        return new Token(TokenType.FLOAT, getColumn(), Float.toString(value));
-      }
-      if (current == 'd' || current == 'D') {
-        index++;
-        double value = Double.parseDouble(result.toString());
-        return new Token(TokenType.DOUBLE, getColumn(), Double.toString(value));
-      }
-      int value = Integer.parseInt(result.toString(), base);
-      return new Token(TokenType.INTEGER, getColumn(), Integer.toString(value));
-    }
-  }
-*/
 
   protected Trie<TokenType> initJavaKeywords() {
     Trie<TokenType> result = new Trie<TokenType>();

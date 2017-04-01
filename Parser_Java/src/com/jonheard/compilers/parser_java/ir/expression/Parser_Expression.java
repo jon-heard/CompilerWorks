@@ -1,6 +1,6 @@
 package com.jonheard.compilers.parser_java.ir.expression;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
 import com.jonheard.compilers.parser_java.ir.List_Expression;
 import com.jonheard.compilers.parser_java.ir.QualifiedId;
@@ -10,7 +10,7 @@ import com.jonheard.util.Logger;
 
 public class Parser_Expression
 {
-	public static BaseIrType parseExpressionStatment(Parser_Java parser)
+	public static BaseIrType parseExpressionStatment(Parser parser)
 	{
 		Token next = parser.getNextToken();
 		Expression result = parseExpression(parser);
@@ -40,40 +40,40 @@ public class Parser_Expression
 						parser.getSource().getLine(next.getRow()));
 				break;				
 		}
-		parser.mustBe(TokenType.SEMICOLON);
+		parser.requireTokenToBeOfType(TokenType.SEMICOLON);
 		return result;
 	}
 	
-	public static Expression parseExpression(Parser_Java parser)
+	public static Expression parseExpression(Parser parser)
 	{
 		return tryAssignment(parser);
 	}
 
-	private static Expression tryAssignment(Parser_Java parser)
+	private static Expression tryAssignment(Parser parser)
 	{
 		Token next = parser.getNextToken();
 		Expression lhs = tryConditional(parser);
-		if(parser.have(TokenType.EQUAL))
+		if(parser.passTokenIfType(TokenType.EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGMENT, next,
 					lhs, tryAssignment(parser));
-		if(parser.have(TokenType.PLUS_EQUAL))
+		if(parser.passTokenIfType(TokenType.PLUS_EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGMENT__ADD, next,
 					lhs, tryAssignment(parser));
-		if(parser.have(TokenType.DASH_EQUAL))
+		if(parser.passTokenIfType(TokenType.DASH_EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGMENT__SUB, next,
 					lhs, tryAssignment(parser));
-		if(parser.have(TokenType.STAR_EQUAL))
+		if(parser.passTokenIfType(TokenType.STAR_EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGMENT__MUL, next,
 					lhs, tryAssignment(parser));
-		if(parser.have(TokenType.SLASH_EQUAL))
+		if(parser.passTokenIfType(TokenType.SLASH_EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGNMENT__DIV, next,
 					lhs, tryAssignment(parser));
-		if(parser.have(TokenType.PERCENT_EQUAL))
+		if(parser.passTokenIfType(TokenType.PERCENT_EQUAL))
 			return new Expression(
 					ExpressionType.ASSIGNMENT__MOD, next,
 					lhs, tryAssignment(parser));
@@ -81,14 +81,14 @@ public class Parser_Expression
 			return lhs;
 	}
 	
-	private static Expression tryConditional(Parser_Java parser)
+	private static Expression tryConditional(Parser parser)
 	{
 		Token next = parser.getNextToken();
 		Expression lhs = tryLogical(parser);
-		if(parser.have(TokenType.QUESTION))
+		if(parser.passTokenIfType(TokenType.QUESTION))
 		{
 			Expression consequent = parseExpression(parser);
-			parser.mustBe(TokenType.COLON);
+			parser.requireTokenToBeOfType(TokenType.COLON);
 			Expression alternative = parseExpression(parser);
 			lhs = new Expression(
 					ExpressionType.CONDITIONAL, next,
@@ -97,18 +97,18 @@ public class Parser_Expression
 		return lhs;
 	}
 
-	private static Expression tryLogical(Parser_Java parser)
+	private static Expression tryLogical(Parser parser)
 	{
 		Token next = parser.getNextToken();
 		Expression lhs = tryEquality(parser);
 		boolean more = true;
 		while(more)
 		{
-			if(parser.have(TokenType.AND))
+			if(parser.passTokenIfType(TokenType.AND))
 				lhs = new Expression(
 						ExpressionType.LOGICAL_AND, next,
 						lhs, tryEquality(parser));
-			else if(parser.have(TokenType.PIPE))
+			else if(parser.passTokenIfType(TokenType.PIPE))
 				lhs = new Expression(
 						ExpressionType.LOGICAL_OR, next,
 						lhs, tryEquality(parser));
@@ -118,14 +118,14 @@ public class Parser_Expression
 		return lhs;
 	}
 
-	private static Expression tryEquality(Parser_Java parser)
+	private static Expression tryEquality(Parser parser)
 	{
 		Token next = parser.getNextToken();
 		Expression lhs = tryRelational(parser);
 		boolean more = true;
 		while(more)
 		{
-			if(parser.have(TokenType.EQUAL_EQUAL))
+			if(parser.passTokenIfType(TokenType.EQUAL_EQUAL))
 				lhs = new Expression(
 						ExpressionType.EQUALITY, next,
 						lhs, tryRelational(parser));
@@ -135,41 +135,41 @@ public class Parser_Expression
 		return lhs;
 	}
 	
-	private static Expression tryRelational(Parser_Java parser)
+	private static Expression tryRelational(Parser parser)
 	{
 		Token next = parser.getNextToken();
 		Expression lhs = tryAdditive(parser);
-		if(parser.have(TokenType.RIGHT))
+		if(parser.passTokenIfType(TokenType.RIGHT))
 			lhs = new Expression(
 					ExpressionType.GREATER, next,
 					lhs, tryAdditive(parser));
-		if(parser.have(TokenType.LEFT))
+		if(parser.passTokenIfType(TokenType.LEFT))
 			lhs = new Expression(
 					ExpressionType.LESS, next,
 					lhs, tryAdditive(parser));
-		if(parser.have(TokenType.RIGHT_EQUAL))
+		if(parser.passTokenIfType(TokenType.RIGHT_EQUAL))
 			lhs = new Expression(
 					ExpressionType.GREATER_OR_EQUAL, next,
 					lhs, tryAdditive(parser));
-		if(parser.have(TokenType.LEFT_EQUAL))
+		if(parser.passTokenIfType(TokenType.LEFT_EQUAL))
 			lhs = new Expression(
 					ExpressionType.LESS_OR_EQUAL, next,
 					lhs, tryAdditive(parser));
 		return lhs;
 	}
 	
-	private static Expression tryAdditive(Parser_Java parser)
+	private static Expression tryAdditive(Parser parser)
 	{
 		Token next = parser.getNextToken();
 		Expression lhs = tryMultiplicative(parser);
 		boolean more = true;
 		while(more)
 		{
-			if(parser.have(TokenType.PLUS))
+			if(parser.passTokenIfType(TokenType.PLUS))
 				lhs = new Expression(
 						ExpressionType.ADD, next,
 						lhs, tryMultiplicative(parser));
-			else if(parser.have(TokenType.DASH))
+			else if(parser.passTokenIfType(TokenType.DASH))
 				lhs = new Expression(
 						ExpressionType.SUB, next,
 						lhs, tryMultiplicative(parser));
@@ -179,22 +179,22 @@ public class Parser_Expression
 		return lhs;
 	}
 
-	private static Expression tryMultiplicative(Parser_Java parser)
+	private static Expression tryMultiplicative(Parser parser)
 	{
 		Token next = parser.getNextToken();
 		Expression lhs = tryUnary(parser);
 		boolean more = true;
 		while(more)
 		{
-			if(parser.have(TokenType.STAR))
+			if(parser.passTokenIfType(TokenType.STAR))
 				lhs = new Expression(
 						ExpressionType.MUL, next,
 						lhs, tryUnary(parser));
-			else if(parser.have(TokenType.SLASH))
+			else if(parser.passTokenIfType(TokenType.SLASH))
 				lhs = new Expression(
 						ExpressionType.DIV, next,
 						lhs, tryUnary(parser));
-			else if(parser.have(TokenType.PERCENT))
+			else if(parser.passTokenIfType(TokenType.PERCENT))
 				lhs = new Expression(
 						ExpressionType.MOD, next,
 						lhs, tryUnary(parser));
@@ -204,22 +204,22 @@ public class Parser_Expression
 		return lhs;
 	}
 	
-	private static Expression tryUnary(Parser_Java parser)
+	private static Expression tryUnary(Parser parser)
 	{
 		Token next = parser.getNextToken();
-		if(parser.have(TokenType.PLUS_PLUS))
+		if(parser.passTokenIfType(TokenType.PLUS_PLUS))
 			return new Expression(
 					ExpressionType.PRE_INCREMENT, next,
 					tryUnary(parser));
-		else if(parser.have(TokenType.DASH_DASH))
+		else if(parser.passTokenIfType(TokenType.DASH_DASH))
 			return new Expression(
 					ExpressionType.PRE_DECREMENT, next,
 					tryUnary(parser));
-		else if(parser.have(TokenType.PLUS))
+		else if(parser.passTokenIfType(TokenType.PLUS))
 			return new Expression(
 					ExpressionType.POSITIVE, next,
 					tryUnary(parser));
-		else if(parser.have(TokenType.DASH))
+		else if(parser.passTokenIfType(TokenType.DASH))
 			return new Expression(
 					ExpressionType.NEGATIVE, next,
 					tryUnary(parser));
@@ -227,34 +227,34 @@ public class Parser_Expression
 			return trySimpleUnary(parser);
 	}
 	
-	private static Expression trySimpleUnary(Parser_Java parser)
+	private static Expression trySimpleUnary(Parser parser)
 	{
 		Token next = parser.getNextToken();
-		if(parser.have(TokenType.EXCLAIM))
+		if(parser.passTokenIfType(TokenType.EXCLAIM))
 			return new Expression(
 					ExpressionType.LOGICAL_NOT, next,
 					tryUnary(parser));
 		else if(seeCast(parser))
 		{
-			parser.mustBe(TokenType.PAREN_LEFT);
+			parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
 			QualifiedId type = new QualifiedId(parser);
-			parser.mustBe(TokenType.PAREN_RIGHT);
+			parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
 			return new Cast(next, type, parseExpression(parser));
 		}
 		else
 			return tryPostFix(parser);
 	}
 	
-	private static Expression tryPostFix(Parser_Java parser)
+	private static Expression tryPostFix(Parser parser)
 	{
 		Token next = parser.getNextToken();
 		Expression lhs = tryPrimary(parser);
 		boolean more = true;
 		while(more)
 		{
-			if(parser.have(TokenType.PLUS_PLUS))
+			if(parser.passTokenIfType(TokenType.PLUS_PLUS))
 				lhs = new Expression(ExpressionType.POST_INCREMENT, next, lhs);
-			if(parser.have(TokenType.DASH_DASH))
+			if(parser.passTokenIfType(TokenType.DASH_DASH))
 				lhs = new Expression(ExpressionType.POST_DECREMENT, next, lhs);
 			//TODO: add dot and lbrack stuff (line 1506) 
 			else
@@ -263,24 +263,24 @@ public class Parser_Expression
 		return lhs;
 	}
 	
-	private static Expression tryPrimary(Parser_Java parser)
+	private static Expression tryPrimary(Parser parser)
 	{
 		Token next = parser.getNextToken();
 		Expression result = null;
 		// Parenthesized expression
-		if(parser.have(TokenType.PAREN_LEFT))
+		if(parser.passTokenIfType(TokenType.PAREN_LEFT))
 		{
 			result = parseExpression(parser);
-			parser.mustBe(TokenType.PAREN_RIGHT);
+			parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
 		}
 		// this
-		else if(parser.have(TokenType._THIS))
+		else if(parser.passTokenIfType(TokenType._THIS))
 		{
-			if(parser.have(TokenType.PAREN_LEFT))
+			if(parser.passTokenIfType(TokenType.PAREN_LEFT))
 			{
 				result = new ThisConstructor(
 						next, new List_Expression(parser));
-				parser.mustBe(TokenType.PAREN_RIGHT);
+				parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
 			}
 			else
 			{
@@ -288,22 +288,22 @@ public class Parser_Expression
 			}
 		}
 		// super
-		else if(parser.have(TokenType._SUPER))
+		else if(parser.passTokenIfType(TokenType._SUPER))
 		{
-			if(parser.have(TokenType.DOT))
+			if(parser.passTokenIfType(TokenType.DOT))
 			{
 				//TODO: Fill in logic for "Super." expression
 			}
 			else
 			{
-				parser.mustBe(TokenType.PAREN_LEFT);
+				parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
 				result = new SuperConstructor(
 						next, new List_Expression(parser));
-				parser.mustBe(TokenType.PAREN_RIGHT);
+				parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
 			}
 		}
 		// new
-		else if(parser.have(TokenType._NEW))
+		else if(parser.passTokenIfType(TokenType._NEW))
 		{
 			//TODO: Fill in logic for "New" expression
 		}
@@ -311,10 +311,10 @@ public class Parser_Expression
 		else if(QualifiedId.isNext(parser))
 		{
 			QualifiedId id = new QualifiedId(parser);
-			if(parser.have(TokenType.PAREN_LEFT))
+			if(parser.passTokenIfType(TokenType.PAREN_LEFT))
 			{
 				result = new Reference(next, id, new List_Expression(parser));
-				parser.mustBe(TokenType.PAREN_RIGHT);
+				parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
 			}
 			else
 			{
@@ -348,7 +348,7 @@ public class Parser_Expression
 	}
 
 	
-	private static boolean seeCast(Parser_Java parser)
+	private static boolean seeCast(Parser parser)
 	{
 		//TODO: fill with cast checking
 		return false;

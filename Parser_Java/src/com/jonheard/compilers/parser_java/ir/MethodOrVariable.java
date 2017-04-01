@@ -1,6 +1,6 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.expression.Expression;
 import com.jonheard.compilers.parser_java.ir.expression.Parser_Expression;
 import com.jonheard.compilers.parser_java.ir.statement.CodeBlock;
@@ -8,11 +8,11 @@ import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class MethodOrVariable extends BaseIrType
 {
-	public MethodOrVariable(Parser_Java parser)
+	public MethodOrVariable(Parser parser)
 	{
 		this(parser, false, false, false, false);
 	}
-	public MethodOrVariable(Parser_Java parser,
+	public MethodOrVariable(Parser parser,
 			boolean forceVariable, boolean forceNoModifiers,
 			boolean forceNoInitializer, boolean forceNoSemicolon)
 	{
@@ -27,27 +27,27 @@ public class MethodOrVariable extends BaseIrType
 		}
 		addChild(new Type(parser));
 		addChild(new Id(parser));
-		if(!forceVariable && parser.have(TokenType.PAREN_LEFT))
+		if(!forceVariable && parser.passTokenIfType(TokenType.PAREN_LEFT))
 		{
 			_isMethod = true;
 			addChild(new List_Variable(parser));
-			parser.mustBe(TokenType.PAREN_RIGHT);
+			parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
 			addChild(new CodeBlock(parser));
 		}
 		else
 		{
-			while(parser.have(TokenType.SQUARE_BRACE_LEFT))
+			while(parser.passTokenIfType(TokenType.SQUARE_BRACE_LEFT))
 			{
-				parser.mustBe(TokenType.SQUARE_BRACE_RIGHT);
+				parser.requireTokenToBeOfType(TokenType.SQUARE_BRACE_RIGHT);
 				getJavaType().incDimensionCount();
 			}
-			if(!forceNoInitializer && parser.have(TokenType.EQUAL))
+			if(!forceNoInitializer && parser.passTokenIfType(TokenType.EQUAL))
 			{
 				addChild(Parser_Expression.parseExpression(parser));
 			}
 			if(!forceNoSemicolon)
 			{
-				parser.mustBe(TokenType.SEMICOLON);
+				parser.requireTokenToBeOfType(TokenType.SEMICOLON);
 			}
 		}
 	}
@@ -126,7 +126,7 @@ public class MethodOrVariable extends BaseIrType
 		return result.toString();
 	}
 	
-	public static boolean isNext(Parser_Java parser)
+	public static boolean isNext(Parser parser)
 	{
 		boolean result = false;
 		parser.getTokenQueue().remember();

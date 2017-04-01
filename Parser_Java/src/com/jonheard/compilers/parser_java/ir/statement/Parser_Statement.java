@@ -1,12 +1,12 @@
 package com.jonheard.compilers.parser_java.ir.statement;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
 import com.jonheard.compilers.parser_java.ir.expression.Parser_Expression;
 
 public class Parser_Statement
 {
-	public static BaseIrType getNextStatement(Parser_Java parser)
+	public static BaseIrType getNextStatement(Parser parser)
 	{
 		BaseIrType result = null;
 		if(CodeBlock.isNext(parser)) { result = new CodeBlock(parser); } 

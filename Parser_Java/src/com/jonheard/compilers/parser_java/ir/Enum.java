@@ -1,17 +1,17 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Enum extends BaseIrType
 {
-	public Enum(Parser_Java parser)
+	public Enum(Parser parser)
 	{
 		super(parser);
 		addChild(new List_Modifier(parser));
-		parser.mustBe(TokenType._ENUM);
+		parser.requireTokenToBeOfType(TokenType._ENUM);
 		addChild(new Id(parser));
-		while(!parser.have(TokenType.CURL_BRACE_RIGHT))
+		while(!parser.passTokenIfType(TokenType.CURL_BRACE_RIGHT))
 		{
 			parser.getTokenQueue().poll();
 		}
@@ -36,12 +36,12 @@ public class Enum extends BaseIrType
 		return (Id)getChild(1);
 	}
 	
-	public static boolean isNext(Parser_Java parser)
+	public static boolean isNext(Parser parser)
 	{
 		boolean result = false;
 		parser.getTokenQueue().remember();
 		new List_Modifier(parser);
-		result = parser.see(TokenType._ENUM);
+		result = parser.getIsTokenType(TokenType._ENUM);
 		parser.getTokenQueue().rewind();
 		return result;
 	}

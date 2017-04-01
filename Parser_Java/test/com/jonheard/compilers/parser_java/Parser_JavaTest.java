@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.Class;
 import com.jonheard.compilers.parser_java.ir.CompilationUnit;
 import com.jonheard.compilers.parser_java.ir.Import;
@@ -23,7 +23,7 @@ public class Parser_JavaTest
 	public void basic()
 	{
 		List<Token> tokenList = makeGenericTokenList();
-		Parser_Java parser = new Parser_Java();
+		Parser parser = new Parser();
 		CompilationUnit cUnit = parser.parse(
 				new SourceFile("test1.java", "first\nsecond\nthird\n"),
 				tokenList);

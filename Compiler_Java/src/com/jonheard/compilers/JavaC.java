@@ -8,11 +8,10 @@ import com.jonheard.compilers.assembler_jvm.backEnd.ClassRep;
 import com.jonheard.compilers.irProcessor_java.IrProcessor_Java;
 import com.jonheard.compilers.javaClasspathDatabase.JavaClasspathDatabase;
 import com.jonheard.compilers.parser_java.ParserStringConverter;
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.CompilationUnit;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.Tokenizer;
-import com.jonheard.compilers.tokenizer_java.TokenizerStringConverter;
 import com.jonheard.util.SourceFile;
 import com.jonheard.util.UtilMethods;
 
@@ -94,13 +93,12 @@ public class JavaC {
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokenizedSource = tokenizer.tokenize(source);
     if (stageToEndOn == Stage.TOKENIZE) {
-      TokenizerStringConverter converter = new TokenizerStringConverter();
-      compilerOutputText.append(converter.tokensToString(tokenizedSource));
+      compilerOutputText.append(tokenizer.untokenize(tokenizedSource));
       return compilerOutputText.toString();
     }
 
     // Parse
-    Parser_Java parser = new Parser_Java();
+    Parser parser = new Parser();
     CompilationUnit parsedSource = parser.parse(source, tokenizedSource);
     if (stageToEndOn == Stage.PARSE) {
       ParserStringConverter converter = new ParserStringConverter();
@@ -125,7 +123,7 @@ public class JavaC {
     JvmGenerator_Java generator = new JvmGenerator_Java();
     if (stageToEndOn == Stage.GENERATE) {
       generator.setLogToString(true);
-      ClassRep generated = generator.generate(source, parsedSource);
+      //ClassRep generated = generator.generate(source, parsedSource);
       JvmGeneratorStringConverter converter = new JvmGeneratorStringConverter();
       compilerOutputText.append(converter.generatedToString(generator));
       return compilerOutputText.toString();

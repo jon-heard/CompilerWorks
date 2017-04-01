@@ -1,6 +1,6 @@
 package com.jonheard.compilers.parser_java.ir;
 
-import com.jonheard.compilers.parser_java.Parser_Java;
+import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Import extends BaseIrType
@@ -8,21 +8,21 @@ public class Import extends BaseIrType
 	private boolean flag_isStatic = false;
 	private boolean flag_isOnDemand = false;
 
-	public Import(Parser_Java parser)
+	public Import(Parser parser)
 	{
 		super(parser);
-		parser.mustBe(TokenType._IMPORT);
-		if(parser.have(TokenType._STATIC))
+		parser.requireTokenToBeOfType(TokenType._IMPORT);
+		if(parser.passTokenIfType(TokenType._STATIC))
 		{
 			flag_isStatic = true;
 		}
 		addChild(new QualifiedId(parser));
-		if(parser.have(TokenType.DOT))
+		if(parser.passTokenIfType(TokenType.DOT))
 		{
-			parser.mustBe(TokenType.STAR);
+			parser.requireTokenToBeOfType(TokenType.STAR);
 			flag_isOnDemand = true;
 		}
-		parser.mustBe(TokenType.SEMICOLON);
+		parser.requireTokenToBeOfType(TokenType.SEMICOLON);
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class Import extends BaseIrType
 		return flag_isOnDemand;
 	}
 	
-	public static boolean isNext(Parser_Java parser)
+	public static boolean isNext(Parser parser)
 	{
-		return parser.see(TokenType._IMPORT);
+		return parser.getIsTokenType(TokenType._IMPORT);
 	}
 }
