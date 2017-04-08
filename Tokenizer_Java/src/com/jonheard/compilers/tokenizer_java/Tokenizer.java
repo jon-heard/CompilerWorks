@@ -430,7 +430,7 @@ public class Tokenizer {
     char char2 = source.getChar(index + 1);
     index += 2;
 
-    // Single line comment
+    // Single row comment
     if (char2 == '/') {
       char current = source.getChar(index);
       while (current != '\n') {
@@ -442,7 +442,7 @@ public class Tokenizer {
       }
       ++index;
 
-    // Multi-line comment
+    // Multi-row comment
     } else if (char2 == '*') {
       char current1 = source.getChar(index);
       char current2 = source.getChar(index+1);
@@ -490,7 +490,7 @@ public class Tokenizer {
     int index = startIndex+1;
     char current = source.getChar(index);
     while(current != '\"') {
-    // New line or end of file
+    // New row or end of file
       if (current == '\n' || current == 0) {
         Logger.error("unclosed string literal", source, startIndex);
         break;

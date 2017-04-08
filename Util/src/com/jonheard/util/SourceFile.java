@@ -81,7 +81,7 @@ public class SourceFile {
   private String sourceCode;
   private int length;
   
-  // initLines - Create a list of ranges that segment the given string into lines
+  // Create a list of ranges that segment the given string into rows
   private Range[] initRowRangesForString(String sourceCode) {
     List<Range> result = new ArrayList<>();
     int start = 0;
