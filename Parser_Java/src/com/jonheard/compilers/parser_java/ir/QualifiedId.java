@@ -92,7 +92,7 @@ public class QualifiedId extends BaseIrType {
     return "value='" + getValue() + "'";
   }
   @Override
-  public int getFirstPrintedChildIndex() { return 10000000; }
+  public int getFirstPrintedChildIndex() { return 100; }
 
   public String getValue() {
     StringBuilder result = new StringBuilder();

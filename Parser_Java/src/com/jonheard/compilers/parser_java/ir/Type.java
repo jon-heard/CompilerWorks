@@ -1,6 +1,9 @@
 
 package com.jonheard.compilers.parser_java.ir;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
@@ -8,71 +11,20 @@ public class Type extends BaseIrType {
   public Type(Parser parser) {
     super(parser);
     addChild(new QualifiedId(parser));
-    // if(parser.have(TokenType.LEFT))
-    // {
-    // do
-    // {
-    // addChild(new Type(parser));
-    // }
-    // while(parser.have(TokenType.COMMA));
-    // parser.mustBe(TokenType.RIGHT);
-    // }
-    // else
-    // {
-    // addChild(null);
-    // }
+    if (parser.passTokenIfType(TokenType.LEFT_TRI)) {
+      do {
+        addChild(new Type(parser));
+      } while(parser.passTokenIfType(TokenType.COMMA));
+      parser.requireTokenToBeOfType(TokenType.RIGHT_TRI);
+    }
     while (parser.passTokenIfType(TokenType.LEFT_SQUARE)) {
       parser.requireTokenToBeOfType(TokenType.RIGHT_SQUARE);
       incDimensionCount();
     }
   }
 
-  @Override
-  public String getHeaderString() {
-    StringBuilder result = new StringBuilder();
-    result.append("value='" + getValue() + "'");
-    if (getChildCount() > 1) {
-      result.append(" genericTypes='");
-
-      result.append("'");
-    }
-    return result.toString();
-  }
-
-  @Override
-  public int getFirstPrintedChildIndex() {
-    return 1;
-  }
-
-  public String getValue() {
-    StringBuilder result = new StringBuilder();
-    result.append(getId().getValue());
-    for (int i = 0; i < getDimensionCount(); i++) {
-      result.append("[]");
-    }
-    return result.toString();
-  }
-
-  public QualifiedId getId() {
-    return (QualifiedId)getChild(0);
-  }
-
-  // public List<Type> getGenericTypes()
-  // {
-  // List<Type> result = new ArrayList<Type>();
-  // for(int i = 1; i < getChildCount(); i++)
-  // {
-  // BaseIrType child = getChild(i);
-  // if(child instanceof Type)
-  // {
-  // result.add((Type)child);
-  // }
-  // }
-  // return result;
-  // }
-
-  public int getDimensionCount() {
-    return dimensionCount;
+  public void incDimensionCount() {
+    dimensionCount++;
   }
 
   public String toJvmDescriptor() {
@@ -110,16 +62,56 @@ public class Type extends BaseIrType {
     return result.toString();
   }
 
-  public void incDimensionCount() {
-    dimensionCount++;
-  }
-
   public static boolean getIsNext(Parser parser) {
     // bad input check
     if (parser == null) { throw new IllegalArgumentException("Arg1(parser): null"); }
 
     return Id.getIsNext(parser);
   }
+
+  @Override
+  public String getHeaderString() {
+    return
+        "id='" + getId() + "' " +
+        "genericCount='" + (getChildCount()-1) + "' " +
+        "arrayDimensions='" + getDimensionCount() + "'";
+  }
+  @Override
+  public int getFirstPrintedChildIndex() { return 1; }
+
+  public String getValue() {
+    StringBuilder result = new StringBuilder();
+    result.append(getId());
+    int childCount = getChildCount();
+    if (childCount > 1) {
+      result.append("<");
+      for (int i = 1; i < childCount; ++i) {
+        Type current = (Type)getChild(i);
+        result.append(current.getValue());
+        if (i < childCount-1) {
+          result.append(", ");
+        }
+      }
+      result.append(">");
+    }
+    for (int i = 0; i < dimensionCount; ++i) {
+      result.append("[]");
+    }
+    return result.toString();
+  }
+  public Collection<Type> getGenericTypes()
+  {
+    ArrayList<Type> result = new ArrayList<>();
+    int childCount = getChildCount();
+    for (int i = 1; i < childCount; ++i) {
+      result.add((Type)getChild(i));
+    }
+    return result;
+  }
+  public QualifiedId getId() {
+    return (QualifiedId)getChild(0);
+  }
+  public int getDimensionCount() { return dimensionCount; }
 
   private int dimensionCount = 0;
 }
