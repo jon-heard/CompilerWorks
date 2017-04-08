@@ -6,6 +6,8 @@ error: no underscore at end or start of number
 Parser: finish "for"
 Parser: add class generics
 Parser: add method generics
+Parser: Finish ExpressionParser TODOs
+Parser: Make sure all possible expressions are represented
 
 adjust classpathDB to combine sources
   test what happens with collision on nonstatic and static

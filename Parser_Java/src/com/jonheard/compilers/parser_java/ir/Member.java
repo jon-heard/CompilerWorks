@@ -3,7 +3,7 @@ package com.jonheard.compilers.parser_java.ir;
 
 import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.expression.Expression;
-import com.jonheard.compilers.parser_java.ir.expression.Parser_Expression;
+import com.jonheard.compilers.parser_java.ir.expression.ExpressionParser;
 import com.jonheard.compilers.parser_java.ir.statement.CodeBlock;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
@@ -30,7 +30,7 @@ public class Member extends BaseIrType {
         type.incDimensionCount();
       }
       if (!forceNoInitializer && parser.passTokenIfType(TokenType.EQUAL)) {
-        addChild(Parser_Expression.parseExpression(parser));
+        addChild(ExpressionParser.parseExpression(parser));
       }
       if (!forceNoSemicolon) {
         parser.requireTokenToBeOfType(TokenType.SEMICOLON);

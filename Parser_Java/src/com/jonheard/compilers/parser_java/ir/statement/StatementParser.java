@@ -3,7 +3,7 @@ package com.jonheard.compilers.parser_java.ir.statement;
 
 import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
-import com.jonheard.compilers.parser_java.ir.expression.Parser_Expression;
+import com.jonheard.compilers.parser_java.ir.expression.ExpressionParser;
 
 public class StatementParser {
   public static BaseIrType getNext(Parser parser) {
@@ -34,7 +34,7 @@ public class StatementParser {
     } else if (Semicolon.getIsNext(parser)) {
       result = new Semicolon(parser);
     } else {
-      result = Parser_Expression.parseExpressionStatment(parser);
+      result = ExpressionParser.parseExpressionStatment(parser);
     }
     return result;
   }
