@@ -31,7 +31,7 @@ public class Parser {
   }
 
   // Get the next token to parse
-  public Token getNextToken() {
+  public Token peekNextToken() {
     return tokenQueue.peek();
   }
 
@@ -42,7 +42,7 @@ public class Parser {
 
     if (tokenQueue == null || type == null) return false;
     if (tokenQueue.isEmpty()) return false;
-    return getNextToken().getType() == type;
+    return peekNextToken().getType() == type;
   }
 
   // If the next token matches the given type, pass by it and return true.  Else false.
@@ -71,7 +71,7 @@ public class Parser {
       return false;
     }
 
-    Token next = getNextToken();
+    Token next = peekNextToken();
     if (next.getType() == type) {
       mustBeHasErrored = false;
       tokenQueue.poll();

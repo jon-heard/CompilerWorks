@@ -12,7 +12,7 @@ public class Parser_Expression
 {
 	public static BaseIrType parseExpressionStatment(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		Expression result = parseExpression(parser);
 		switch(result.getExpressionType())
 		{
@@ -51,7 +51,7 @@ public class Parser_Expression
 
 	private static Expression tryAssignment(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		Expression lhs = tryConditional(parser);
 		if(parser.passTokenIfType(TokenType.EQUAL))
 			return new Expression(
@@ -83,7 +83,7 @@ public class Parser_Expression
 	
 	private static Expression tryConditional(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		Expression lhs = tryLogical(parser);
 		if(parser.passTokenIfType(TokenType.QUESTION))
 		{
@@ -99,7 +99,7 @@ public class Parser_Expression
 
 	private static Expression tryLogical(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		Expression lhs = tryEquality(parser);
 		boolean more = true;
 		while(more)
@@ -120,7 +120,7 @@ public class Parser_Expression
 
 	private static Expression tryEquality(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		Expression lhs = tryRelational(parser);
 		boolean more = true;
 		while(more)
@@ -137,7 +137,7 @@ public class Parser_Expression
 	
 	private static Expression tryRelational(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		Expression lhs = tryAdditive(parser);
 		if(parser.passTokenIfType(TokenType.RIGHT))
 			lhs = new Expression(
@@ -160,7 +160,7 @@ public class Parser_Expression
 	
 	private static Expression tryAdditive(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		Expression lhs = tryMultiplicative(parser);
 		boolean more = true;
 		while(more)
@@ -181,7 +181,7 @@ public class Parser_Expression
 
 	private static Expression tryMultiplicative(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		Expression lhs = tryUnary(parser);
 		boolean more = true;
 		while(more)
@@ -206,7 +206,7 @@ public class Parser_Expression
 	
 	private static Expression tryUnary(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		if(parser.passTokenIfType(TokenType.PLUS_PLUS))
 			return new Expression(
 					ExpressionType.PRE_INCREMENT, next,
@@ -229,7 +229,7 @@ public class Parser_Expression
 	
 	private static Expression trySimpleUnary(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		if(parser.passTokenIfType(TokenType.EXCLAIM))
 			return new Expression(
 					ExpressionType.LOGICAL_NOT, next,
@@ -247,7 +247,7 @@ public class Parser_Expression
 	
 	private static Expression tryPostFix(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		Expression lhs = tryPrimary(parser);
 		boolean more = true;
 		while(more)
@@ -265,7 +265,7 @@ public class Parser_Expression
 	
 	private static Expression tryPrimary(Parser parser)
 	{
-		Token next = parser.getNextToken();
+		Token next = parser.peekNextToken();
 		Expression result = null;
 		// Parenthesized expression
 		if(parser.passTokenIfType(TokenType.PAREN_LEFT))

@@ -19,8 +19,8 @@ public class BaseIrType {
     // bad input check
     if (parser == null) { throw new IllegalArgumentException("Arg1(parser): null"); }
 
-    row = parser.getNextToken().getRow();
-    column = parser.getNextToken().getColumn();
+    row = parser.peekNextToken().getRow();
+    column = parser.peekNextToken().getColumn();
   }
 
   public BaseIrType getChild(int index) {

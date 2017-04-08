@@ -11,7 +11,7 @@ public class Id extends BaseIrType
 	public Id(Parser parser)
 	{
 		super(parser);
-		Token currentToken = parser.getNextToken();
+		Token currentToken = parser.peekNextToken();
 		if(parser.requireTokenToBeOfType(TokenType.IDENTIFIER))
 		{
 			value = currentToken.getText();
