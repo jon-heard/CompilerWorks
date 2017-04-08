@@ -4,12 +4,9 @@ import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
-public class Class extends BaseIrType {
+public class Class extends TypeDeclaration {
   public Class(Parser parser) {
-    super(parser);
-    addChild(new List_Modifier(parser));
-    parser.requireTokenToBeOfType(TokenType._CLASS);
-    addChild(new Id(parser));
+    super(parser, TokenType._CLASS);
     if (parser.passTokenIfType(TokenType._EXTENDS)) {
       addChild(new QualifiedId(parser));
     } else {
@@ -18,32 +15,19 @@ public class Class extends BaseIrType {
     }
     parser.requireTokenToBeOfType(TokenType.CURL_BRACE_LEFT);
     while (!parser.passTokenIfType(TokenType.CURL_BRACE_RIGHT)) {
-      addChild(new MethodOrVariable(parser));
+      addChild(new Member(parser));
     }
   }
 
   @Override
   public String getHeaderString() {
-    return "id='" + getName().getValue() + "' " + "super='" + getSuper().getValue() + "' "
-        + "modifiers='" + getModifiers().getValue() + "'";
+    return
+        super.getHeaderString() + " " +
+        "super='" + getSuper().getValue() + "'";
   }
-
   @Override
-  public int getFirstPrintedChildIndex() {
-    return 3;
-  }
-
-  public List_Modifier getModifiers() {
-    return (List_Modifier) getChild(0);
-  }
-
-  public Id getName() {
-    return (Id) getChild(1);
-  }
-
-  public QualifiedId getSuper() {
-    return (QualifiedId) getChild(2);
-  }
+  public int getFirstPrintedChildIndex() { return 3; }
+  public QualifiedId getSuper() { return (QualifiedId) getChild(2); }
 
   public static boolean isNext(Parser parser) {
     boolean result = false;

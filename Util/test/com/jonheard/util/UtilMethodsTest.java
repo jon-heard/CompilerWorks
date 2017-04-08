@@ -72,16 +72,14 @@ public class UtilMethodsTest {
     File f2 = new File(TEST_DIR + "/" + TEST_FILENAME_2);
 
     /// Run tests
-    boolean success1 = UtilMethods.stringToFile(null, f1.getPath());
-    boolean success2 = UtilMethods.stringToFile(expected, "c:/windows/system32/tmp.txt");
-    boolean success3 = UtilMethods.stringToFile("", f1.getPath());
-    boolean success4 = UtilMethods.stringToFile(expected, f2.getPath());
+    boolean result1 = UtilMethods.stringToFile(expected, "c:/windows/system32/tmp.txt");
+    boolean result2 = UtilMethods.stringToFile("", f1.getPath());
+    boolean result3 = UtilMethods.stringToFile(expected, f2.getPath());
 
     /// Check success results
-    assertFalse(success1);
-    assertFalse(success2);
-    assertTrue(success3);
-    assertTrue(success4);
+    assertFalse(result1);
+    assertTrue(result2);
+    assertTrue(result3);
 
     /// Check file results
     try {
@@ -144,17 +142,15 @@ public class UtilMethodsTest {
     File f2 = new File(TEST_DIR + "/" + TEST_FILENAME_2);
 
     /// Run tests
-    boolean success1 = UtilMethods.byteArrayToFile(null, f1.getPath());
-    boolean success2 = UtilMethods.byteArrayToFile(expected.getBytes(),
+    boolean result1 = UtilMethods.byteArrayToFile(expected.getBytes(),
         "c:/windows/system32/tmp.txt");
-    boolean success3 = UtilMethods.byteArrayToFile(new byte[0], f1.getPath());
-    boolean success4 = UtilMethods.byteArrayToFile(expectedBytes, f2.getPath());
+    boolean result2 = UtilMethods.byteArrayToFile(new byte[0], f1.getPath());
+    boolean result3 = UtilMethods.byteArrayToFile(expectedBytes, f2.getPath());
 
     /// Check success results
-    assertFalse(success1);
-    assertFalse(success2);
-    assertTrue(success3);
-    assertTrue(success4);
+    assertFalse(result1);
+    assertTrue(result2);
+    assertTrue(result3);
 
     /// Check file output
     try {
@@ -191,7 +187,6 @@ public class UtilMethodsTest {
     List<String> expected4 = Arrays.asList("first", "second \t\n \t\nthird", "fourth");
     String in8 = "first \"second \t\n \t\nthird\" fourth";
 
-    assertEquals(expected1, UtilMethods.tokenizeStringByWhitespace(null));
     assertEquals(expected1, UtilMethods.tokenizeStringByWhitespace(""));
     assertEquals(expected2, UtilMethods.tokenizeStringByWhitespace(in1));
     assertEquals(expected2, UtilMethods.tokenizeStringByWhitespace(in2));
@@ -237,15 +232,7 @@ public class UtilMethodsTest {
   @Test
   public void buildMethodDescriptorTest() {
     String expected = "()V";
-    String actual = UtilMethods.buildMethodDescriptor(null, null);
-    assertEquals(expected, actual);
-
-    expected = "()V";
-    actual = UtilMethods.buildMethodDescriptor("V", null);
-    assertEquals(expected, actual);
-
-    expected = "()V";
-    actual = UtilMethods.buildMethodDescriptor("V", Arrays.asList());
+    String actual = UtilMethods.buildMethodDescriptor("V", Arrays.asList());
     assertEquals(expected, actual);
 
     expected = "()Z";
@@ -269,11 +256,7 @@ public class UtilMethodsTest {
   @Test
   public void getStackSizefMethodDescriptorTest() {
     int expected = UtilMethods.INVALID_STACK_SIZE;
-    int actual = UtilMethods.getStackSizeOfMethodDescriptor(null);
-    assertEquals(expected, actual);
-
-    expected = UtilMethods.INVALID_STACK_SIZE;
-    actual = UtilMethods.getStackSizeOfMethodDescriptor("");
+    int actual = UtilMethods.getStackSizeOfMethodDescriptor("");
     assertEquals(expected, actual);
 
     expected = UtilMethods.INVALID_STACK_SIZE;
@@ -332,11 +315,7 @@ public class UtilMethodsTest {
   @Test
   public void getStackSizefFieldDescriptorTest() {
     int expected = UtilMethods.INVALID_STACK_SIZE;
-    int actual = UtilMethods.getStackSizeOfFieldDescriptor(null);
-    assertEquals(expected, actual);
-
-    expected = UtilMethods.INVALID_STACK_SIZE;
-    actual = UtilMethods.getStackSizeOfFieldDescriptor("");
+    int actual = UtilMethods.getStackSizeOfFieldDescriptor("");
     assertEquals(expected, actual);
 
     expected = 0;
@@ -378,12 +357,8 @@ public class UtilMethodsTest {
 
   @Test
   public void generateFlagsFromModifierListTest() {
-    short expected = UtilMethods.INVALID_MODIFIER_LIST;
-    short actual = UtilMethods.generateFlagsFromModifierList(null);
-    assertEquals(expected, actual);
-
-    expected = 0;
-    actual = UtilMethods.generateFlagsFromModifierList(Arrays.asList());
+    int expected = 0;
+    int actual = UtilMethods.generateFlagsFromModifierList(Arrays.asList());
     assertEquals(expected, actual);
 
     expected = 0x0001;

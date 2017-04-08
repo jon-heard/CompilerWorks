@@ -6,13 +6,13 @@ import com.jonheard.compilers.parser_java.ir.expression.Parser_Expression;
 import com.jonheard.compilers.parser_java.ir.statement.CodeBlock;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
-public class MethodOrVariable extends BaseIrType
+public class Member extends BaseIrType
 {
-	public MethodOrVariable(Parser parser)
+	public Member(Parser parser)
 	{
 		this(parser, false, false, false, false);
 	}
-	public MethodOrVariable(Parser parser,
+	public Member(Parser parser,
 			boolean forceVariable, boolean forceNoModifiers,
 			boolean forceNoInitializer, boolean forceNoSemicolon)
 	{
@@ -117,7 +117,7 @@ public class MethodOrVariable extends BaseIrType
 			result.append('(');
 			for(int i = 0; i < params.getChildCount(); i++)
 			{
-				Type pType = ((MethodOrVariable)params.getChild(i)).getJavaType();
+				Type pType = ((Member)params.getChild(i)).getJavaType();
 				result.append(pType.toJvmDescriptor());
 			}
 			result.append(')');

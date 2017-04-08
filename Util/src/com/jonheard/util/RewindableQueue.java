@@ -11,6 +11,9 @@ public class RewindableQueue<T> extends LinkedList<T> {
   public RewindableQueue() {}
 
   public RewindableQueue(List<T> source) {
+    // bad input check
+    if (source == null) { throw new IllegalArgumentException("Arg1(source): null"); }
+
     for (T item : source) {
       add(item);
     }

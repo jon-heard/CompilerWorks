@@ -3,16 +3,27 @@ package com.jonheard.compilers.tokenizer_java;
 // Token - Represents a single token of java source code
 public class Token {
   // Constructors
-  public Token(TokenType type, int row, int col) {
+  public Token(TokenType type, int row, int column) {
+    // bad input check
+    if (type == null) { throw new IllegalArgumentException("Arg1(type): null"); }
+    if (row < 0) { throw new IllegalArgumentException("Arg2(row): < 0"); }
+    if (column < 0) { throw new IllegalArgumentException("Arg3(column): < 0"); }
+
     this.type = type;
     this.row = row;
-    this.column = col;
+    this.column = column;
     this.text = null;
   }
-  public Token(TokenType type, int row, int col, String text) {
+  public Token(TokenType type, int row, int column, String text) {
+    // bad input check
+    if (type == null) { throw new IllegalArgumentException("Arg1(type): null"); }
+    if (row < 0) { throw new IllegalArgumentException("Arg2(row): < 0"); }
+    if (column < 0) { throw new IllegalArgumentException("Arg3(column): < 0"); }
+    if (text == null) { throw new NullPointerException("Arg4(text): null"); }
+
     this.type = type;
     this.row = row;
-    this.column = col;
+    this.column = column;
     this.text = text;
   }
   
@@ -29,7 +40,7 @@ public class Token {
     if (text == null) {
       return type.toString();
     } else {
-      return type.toString() + ":" + text;
+      return type.toString() + "(" + text + ")";
     }
   }
 

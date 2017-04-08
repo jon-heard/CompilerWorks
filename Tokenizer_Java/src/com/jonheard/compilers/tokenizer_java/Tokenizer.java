@@ -21,6 +21,10 @@ public class Tokenizer {
   }
   // Turn a list of tokens into a string
   public String untokenize(List<Token> source) {
+    // bad input check
+    if (source == null) { throw new IllegalArgumentException("arg1(source): null"); }
+    if (source.size() < 1) { throw new IllegalArgumentException("arg1(source): empty"); }
+
     StringBuffer result = new StringBuffer();
     for (Token token : source) {
       result.append(token.toString());
@@ -30,6 +34,9 @@ public class Tokenizer {
   }
 
   public List<Token> tokenize(SourceFile source) {
+    // bad input check
+    if (source == null) { throw new IllegalArgumentException("arg1(source): null"); }
+
     List<Token> result = new ArrayList<>();
 
     int currentIndex = 0;
@@ -126,7 +133,7 @@ public class Tokenizer {
         case '/':
           nextTokenType = getTokenTypeFromSlash(source, currentIndex);
           if (nextTokenType == null) {
-            currentIndex = skipComment(source, currentIndex);
+            currentIndex = getCommentLength(source, currentIndex);
             continue;
           }
           break;
@@ -180,7 +187,12 @@ public class Tokenizer {
           break;
       }
       if (nextTokenType != null) {
-        Token toAdd = new Token(nextTokenType, currentRow, currentColumn, nextTokenText);
+        Token toAdd;
+        if (nextTokenText == null) {
+          toAdd = new Token(nextTokenType, currentRow, currentColumn);
+        } else {
+          toAdd = new Token(nextTokenType, currentRow, currentColumn, nextTokenText);
+        }
         result.add(toAdd);
         if (advance == -1) { advance = toAdd.getLength(); }
       } else {
@@ -216,7 +228,7 @@ public class Tokenizer {
     if (source.getChar(startIndex) != '\\') { return 1; }
     int index = startIndex + 1;
     int octalLength = -1;
-    switch(source.getChar(index)) {
+    switch (source.getChar(index)) {
     // basic escape character
       case 'b':   case 'n':   case 't':   case 'r':
       case 'f':   case '\'':  case '\"':  case '\\':
@@ -414,7 +426,7 @@ public class Tokenizer {
 
   // Comments
   // Returns - the end index of the comment
-  protected int skipComment(SourceFile source, int index) {
+  protected int getCommentLength(SourceFile source, int index) {
     char char2 = source.getChar(index + 1);
     index += 2;
 
@@ -453,24 +465,23 @@ public class Tokenizer {
   // '...'
   // Returns - Character's contents (as a string)
   protected String getTokenTextFromChar(SourceFile source, int startIndex) {
-    int index = startIndex+1;
+    int index = startIndex + 1;
     char current = source.getChar(index);
+  // end of file
+    if (current == 0) {
   // Escape character
-    if (current == '\\') {
-      ++index;
+    } else if (current == '\\') {
       index += getEscapeCharacterLength(source, index);
   // Non-escape character
     } else {
       ++index;
     }
   // Check for closing apostrophe
-    if (source.getChar(index+1) != '\'') {
-      ++index;
-    } else {
+    if (source.getChar(index) != '\'') {
       Logger.error("unclosed character literal", source, startIndex);
     }
     
-    return source.getSubstring(startIndex, index);
+    return source.getSubstring(startIndex + 1, index);
   }
 
   // "..."

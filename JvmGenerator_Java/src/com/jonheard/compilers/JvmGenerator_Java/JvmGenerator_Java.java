@@ -71,7 +71,7 @@ public class JvmGenerator_Java
 		{
 			handleClass(ir);
 		}
-		else if(ir instanceof MethodOrVariable)
+		else if(ir instanceof Member)
 		{
 			handleMethodOrVariable(ir);
 		}
@@ -135,7 +135,7 @@ public class JvmGenerator_Java
 	
 	private void handleMethodOrVariable(BaseIrType ir)
 	{
-		MethodOrVariable data = (MethodOrVariable)ir;
+		Member data = (Member)ir;
 		if(currentMethod == null)
 		{
 			if(data.isMethod())

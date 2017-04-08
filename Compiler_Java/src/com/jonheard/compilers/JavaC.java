@@ -7,7 +7,7 @@ import com.jonheard.compilers.JvmGenerator_Java.JvmGenerator_Java;
 import com.jonheard.compilers.assembler_jvm.backEnd.ClassRep;
 import com.jonheard.compilers.irProcessor_java.IrProcessor_Java;
 import com.jonheard.compilers.javaClasspathDatabase.JavaClasspathDatabase;
-import com.jonheard.compilers.parser_java.ParserStringConverter;
+//import com.jonheard.compilers.parser_java.ParserStringConverter;
 import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.CompilationUnit;
 import com.jonheard.compilers.tokenizer_java.Token;
@@ -101,9 +101,9 @@ public class JavaC {
     Parser parser = new Parser();
     CompilationUnit parsedSource = parser.parse(source, tokenizedSource);
     if (stageToEndOn == Stage.PARSE) {
-      ParserStringConverter converter = new ParserStringConverter();
-      compilerOutputText.append(converter.parsedToString(parsedSource));
-      return compilerOutputText.toString();
+//      ParserStringConverter converter = new ParserStringConverter();
+//      compilerOutputText.append(converter.parsedToString(parsedSource));
+//      return compilerOutputText.toString();
     }
 
     // Setup java classpath database
@@ -114,9 +114,9 @@ public class JavaC {
     IrProcessor_Java processor = new IrProcessor_Java();
     processor.process(source, libs, parsedSource);
     if (stageToEndOn == Stage.PROCESS) {
-      ParserStringConverter converter = new ParserStringConverter();
-      compilerOutputText.append(converter.parsedToString(parsedSource));
-      return compilerOutputText.toString();
+//      ParserStringConverter converter = new ParserStringConverter();
+//      compilerOutputText.append(converter.parsedToString(parsedSource));
+//      return compilerOutputText.toString();
     }
 
     // Generate

@@ -18,7 +18,7 @@ public class TokenTest {
 
     assertEquals("abstract", t1.toString());
     assertEquals("and_equal", t2.toString());
-    assertEquals("integer:5732", t3.toString());
+    assertEquals("integer(5732)", t3.toString());
 
     assertTrue(t1.equals(new Token(TokenType._ABSTRACT, 0, 0)));
     assertTrue(t2.equals(new Token(TokenType.AND_EQUAL, 0, 0)));

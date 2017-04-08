@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
@@ -17,6 +16,9 @@ public class UtilMethods {
   // Loads the given file (filename) and returns the file's contents as a string
   // Returns - The file's contents as a string, or NULL if the file loading failed
   public static String fileToString(String filename) {
+    // bad input check
+    if (filename == null) { throw new IllegalArgumentException("Arg1(filename): null"); }
+
     String result = null;
     try {
       Scanner s = new Scanner(new File(filename));
@@ -29,13 +31,19 @@ public class UtilMethods {
 
   // Takes the given string (data) and writes its contents to the given file (filename)
   public static boolean stringToFile(String data, String filename) {
-    if (data == null) return false;
+    // bad input check
+    if (data == null) { throw new IllegalArgumentException("Arg1(data): null"); }
+    if (filename == null) { throw new IllegalArgumentException("Arg2(filename): null"); }
+
     return byteArrayToFile(data.getBytes(), filename);
   }
 
   // Loads the given file (filename) and returns the file's contents as a byte array
   // Returns - The file's contents as a string, or NULL if the file loading failed
   public static byte[] fileToByteArray(String filename) {
+    // bad input check
+    if (filename == null) { throw new IllegalArgumentException("Arg1(filename): null"); }
+
     byte[] result = null;
     try {
       result = Files.readAllBytes(Paths.get(filename));
@@ -45,6 +53,10 @@ public class UtilMethods {
 
   // Takes the given byte array (data) and writes its contents to the given file (filename)
   public static boolean byteArrayToFile(byte[] data, String filename) {
+    // bad input check
+    if (data == null) { throw new IllegalArgumentException("Arg1(data): null"); }
+    if (filename == null) { throw new IllegalArgumentException("Arg2(filename): null"); }
+
     FileOutputStream out;
     try {
       File file = new File(filename);
@@ -60,7 +72,9 @@ public class UtilMethods {
 
   // Convert a string to tokens: split by whitespace, except when in quotes
   public static List<String> tokenizeStringByWhitespace(String toTokenize) {
-    if (toTokenize == null) return Arrays.asList();
+    // bad input check
+    if (toTokenize == null) { throw new IllegalArgumentException("Arg1(toTokenize): null"); }
+
     toTokenize = toTokenize.trim();
     // http://stackoverflow.com/questions/7804335/split-string-on-spaces-in-java-except-if-between-quotes-i-e-treat-hello-wor
     ArrayList<String> result = new ArrayList<String>();
@@ -72,9 +86,13 @@ public class UtilMethods {
   }
 
   // Determine if the given Enum class contains a value matching the given string
-  public static <T extends Enum<T>> boolean enumHasValue(Class<T> enumClass, String needle) {
+  public static <T extends Enum<T>> boolean enumHasValue(Class<T> enumClass, String value) {
+    // bad input check
+    if (enumClass == null) { throw new IllegalArgumentException("Arg1(enumClass): null"); }
+    if (value == null) { throw new IllegalArgumentException("Arg2(value): null"); }
+
     for (Enum<T> enumVal : enumClass.getEnumConstants()) {
-      if (enumVal.name().equals(needle)) { return true; }
+      if (enumVal.name().equals(value)) { return true; }
     }
     return false;
   }
@@ -82,6 +100,9 @@ public class UtilMethods {
   // Takes a String with contents in constant naming convention and returns a String with the same
   // contents, but in camel case
   public static String constNameToCamelName(String source, boolean startUpper) {
+    // bad input check
+    if (source == null) { throw new IllegalArgumentException("Arg1(source): null"); }
+
     StringBuffer result = new StringBuffer();
     int size = source.length();
     for (int i = 0; i < size; i++) {
@@ -103,6 +124,10 @@ public class UtilMethods {
 
   // Create a method descriptor from a return type & collection of arg types
   public static String buildMethodDescriptor(String type, Collection<String> args) {
+    // bad input check
+    if (type == null) { throw new IllegalArgumentException("Arg1(type): null"); }
+    if (args == null) { throw new IllegalArgumentException("Arg2(args): null"); }
+
     StringBuilder result = new StringBuilder("(");
     if (args != null) {
       for (String i : args) {
@@ -118,10 +143,12 @@ public class UtilMethods {
 
   // Gets the number of arguments defined in a method descriptor
   public static int getStackSizeOfMethodDescriptor(String descriptor) {
+    // bad input check
+    if (descriptor == null) { throw new IllegalArgumentException("Arg1(descriptor): null"); }
+
     int result = 0;
 
     /// Check formatting
-    if (descriptor == null) return INVALID_STACK_SIZE;
     if (descriptor.length() == 0) return INVALID_STACK_SIZE;
     if (descriptor.charAt(0) != '(') return INVALID_STACK_SIZE;
     if (!descriptor.contains(")")) return INVALID_STACK_SIZE;
@@ -155,7 +182,9 @@ public class UtilMethods {
   }
 
   public static int getStackSizeOfFieldDescriptor(String descriptor) {
-    if (descriptor == null) return INVALID_STACK_SIZE;
+    // bad input check
+    if (descriptor == null) { throw new IllegalArgumentException("Arg1(descriptor): null"); }
+
     switch (descriptor) {
       case "":
         return INVALID_STACK_SIZE;
@@ -175,7 +204,9 @@ public class UtilMethods {
   // Turn a list of modifier strings into bitflags stored as a short (as
   // defined in the jvm spec)
   public static short generateFlagsFromModifierList(Collection<String> modifierList) {
-    if (modifierList == null) return INVALID_MODIFIER_LIST;
+    // bad input check
+    if (modifierList == null) { throw new IllegalArgumentException("Arg1(modifierList): null"); }
+
     short result = 0;
     if (modifierList.contains("public")) result |= 0x0001;
     if (modifierList.contains("private")) result |= 0x0002;

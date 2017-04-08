@@ -13,18 +13,22 @@ import com.jonheard.util.SourceFile;
 public class Parser {
   // Get a printable representation of a parsed compilation unit
   public String unparse(CompilationUnit source) {
+    // bad input check
+    if (source == null) { throw new IllegalArgumentException("arg1(source): null"); }
+
     return source.toString();
   }
   
   // Parse a list of tokens into a compilation unit
   public CompilationUnit parse(SourceFile source, List<Token> tokens) {
+    // bad input check
+    if (source == null) { throw new IllegalArgumentException("arg1(source): null"); }
+    if (tokens == null) { throw new IllegalArgumentException("arg2(tokens): null"); }
+
     this.source = source;
     this.tokenQueue = new RewindableQueue<Token>(tokens);
     return new CompilationUnit(this);
   }
-
-  public SourceFile getSource() { return source; }
-  public RewindableQueue<Token> getTokenQueue() { return tokenQueue; }
 
   // Get the next token to parse
   public Token getNextToken() {
@@ -33,6 +37,9 @@ public class Parser {
 
   // Predicate returns true if the next token matches the given type.  Else false.
   public boolean getIsTokenType(TokenType type) {
+    // bad input check
+    if (type == null) { throw new IllegalArgumentException("arg1(type): null"); }
+
     if (tokenQueue == null || type == null) return false;
     if (tokenQueue.isEmpty()) return false;
     return getNextToken().getType() == type;
@@ -40,6 +47,9 @@ public class Parser {
 
   // If the next token matches the given type, pass by it and return true.  Else false.
   public boolean passTokenIfType(TokenType type) {
+    // bad input check
+    if (type == null) { throw new IllegalArgumentException("arg1(type): null"); }
+
     if (getIsTokenType(type)) {
       tokenQueue.poll();
       return true;
@@ -50,15 +60,17 @@ public class Parser {
   // Return if next token matches the given type.  If not, go into error mode.  Try and salvage
   // parse state to continue the parsing (for errors)
   public boolean requireTokenToBeOfType(TokenType type) {
+    // bad input check
+    if (type == null) { throw new IllegalArgumentException("arg1(type): null"); }
+
     // No more left to parse, so quit
     if (tokenQueue.isEmpty()) {
-      int lastLineIndex = source.getLineCount() - 1;
-      Logger.error("reached end of file while parsing", source, lastLineIndex);
+      int lastRowIndex = source.getRowCount() - 1;
+      Logger.error("reached end of file while parsing", source, lastRowIndex);
       System.exit(0);
       return false;
     }
 
-    // 
     Token next = getNextToken();
     if (next.getType() == type) {
       mustBeHasErrored = false;
@@ -79,6 +91,9 @@ public class Parser {
       return true;
     }
   }
+
+  public SourceFile getSource() { return source; }
+  public RewindableQueue<Token> getTokenQueue() { return tokenQueue; }
 
   private SourceFile source;
   private RewindableQueue<Token> tokenQueue;

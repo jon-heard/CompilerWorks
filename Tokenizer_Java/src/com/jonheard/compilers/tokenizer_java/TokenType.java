@@ -106,6 +106,8 @@ public enum TokenType
 
   private final int length;
   private TokenType(int length) {
+    // bad input check
+    if (length < -1) { throw new IllegalArgumentException("Arg1(length): < -1"); }
     if (length == -1) {
       this.length = this.name().length()-1;
     } else {

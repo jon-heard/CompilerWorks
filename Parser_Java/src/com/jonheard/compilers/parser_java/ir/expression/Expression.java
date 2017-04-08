@@ -6,9 +6,9 @@ import com.jonheard.util.UtilMethods;
 
 public class Expression extends BaseIrType
 {
-	public Expression(ExpressionType type, int line, int column)
+	public Expression(ExpressionType type, int row, int column)
 	{
-		super(line, column);
+		super(row, column);
 		this.expressionType = type;
 	}
 	public Expression(ExpressionType type, Token first)

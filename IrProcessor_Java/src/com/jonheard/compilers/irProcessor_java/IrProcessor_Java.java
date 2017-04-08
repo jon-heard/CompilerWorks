@@ -57,7 +57,7 @@ public class IrProcessor_Java
 		{
 			preHandleCodeBlock(ir);
 		}
-		else if(ir instanceof MethodOrVariable)
+		else if(ir instanceof Member)
 		{
 			preHandleMethodOrVariable(ir);
 		}
@@ -74,8 +74,8 @@ public class IrProcessor_Java
 		
 		if(	ir instanceof CompilationUnit ||
 			ir instanceof Class ||
-			(ir instanceof MethodOrVariable &&
-					((MethodOrVariable)ir).isMethod()) ||
+			(ir instanceof Member &&
+					((Member)ir).isMethod()) ||
 			ir instanceof CodeBlock)
 		{
 			scopes.pop();
@@ -102,8 +102,8 @@ public class IrProcessor_Java
 		{
 			Logger.error(
 					"namespace 'java.lang' not found", source.getFilename(),
-					data.getLine(), data.getColumn(),
-					source.getLine(data.getLine()));
+					data.getRow(), data.getColumn(),
+					source.getRowText(data.getRow()));
 		}
 		for(Item item : path)
 		{
@@ -179,8 +179,8 @@ public class IrProcessor_Java
 		}
 		Logger.error(
 				"cannot find symbol: " + data.getId().getValue(),
-				source.getFilename(), data.getLine(), data.getColumn(),
-				source.getLine(data.getLine()));
+				source.getFilename(), data.getRow(), data.getColumn(),
+				source.getRowText(data.getRow()));
 	}
 
 	private void preHandleClass(BaseIrType ir)
@@ -192,7 +192,7 @@ public class IrProcessor_Java
 		for(int i = data.getFirstPrintedChildIndex(); i < data.getChildCount();
 				i++)
 		{
-			MethodOrVariable mCurrent = (MethodOrVariable)data.getChild(i);
+			Member mCurrent = (Member)data.getChild(i);
 			String name = mCurrent.getId().getValue();
 			if(mCurrent.getModifiers().isStatic())
 			{
@@ -214,7 +214,7 @@ public class IrProcessor_Java
 	
 	private void preHandleMethodOrVariable(BaseIrType ir)
 	{
-		MethodOrVariable data = (MethodOrVariable)ir;
+		Member data = (Member)ir;
 		String id = data.getJavaType().getId().getValue();
 		Item path = libs.getValue(id);
 		if(path instanceof Item_Err_NotFound)
@@ -225,8 +225,8 @@ public class IrProcessor_Java
 			{
 				Logger.error(
 						"cannot find symbol: " + data.getId().getValue(),
-						source.getFilename(), data.getLine(), data.getColumn(),
-						source.getLine(data.getLine()));
+						source.getFilename(), data.getRow(), data.getColumn(),
+						source.getRowText(data.getRow()));
 			}
 			else
 			{
@@ -260,8 +260,8 @@ public class IrProcessor_Java
 		{
 			Logger.error(
 					"cannot find symbol: " + data.getId().getValue(),
-					source.getFilename(), data.getLine(), data.getColumn(),
-					source.getLine(data.getLine()));
+					source.getFilename(), data.getRow(), data.getColumn(),
+					source.getRowText(data.getRow()));
 		}
 		else
 		{

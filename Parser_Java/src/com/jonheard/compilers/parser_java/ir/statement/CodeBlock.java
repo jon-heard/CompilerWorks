@@ -2,7 +2,7 @@ package com.jonheard.compilers.parser_java.ir.statement;
 
 import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.parser_java.ir.BaseIrType;
-import com.jonheard.compilers.parser_java.ir.MethodOrVariable;
+import com.jonheard.compilers.parser_java.ir.Member;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class CodeBlock extends BaseIrType
@@ -13,9 +13,9 @@ public class CodeBlock extends BaseIrType
 		parser.requireTokenToBeOfType(TokenType.CURL_BRACE_LEFT);
 		while(!parser.passTokenIfType(TokenType.CURL_BRACE_RIGHT))
 		{
-			if(MethodOrVariable.isNext(parser))
+			if(Member.isNext(parser))
 			{
-				addChild(new MethodOrVariable(parser, true,true,false,false));
+				addChild(new Member(parser, true,true,false,false));
 			}
 			else
 			{

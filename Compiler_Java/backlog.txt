@@ -1,7 +1,3 @@
-  had both getTokenTextFromChar() and getTokenTextFromString() always return a string (of proper length)
-  add octal escape characters to char and string tests
-  test for error in malformed float
-  make error testing less specific (only test error counts)
 
 replace "to" with "get"
 replace "is" with "get"

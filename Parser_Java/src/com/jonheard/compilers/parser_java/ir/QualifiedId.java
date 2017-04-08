@@ -24,9 +24,9 @@ public class QualifiedId extends BaseIrType
 		}
 		parser.getTokenQueue().rewind();
 	}
-	private QualifiedId(int line, int column, List<Id> children)
+	private QualifiedId(int row, int column, List<Id> children)
 	{
-		super(line, column);
+		super(row, column);
 		for(Id child : children)
 		{
 			addChild(child);
@@ -97,7 +97,7 @@ public class QualifiedId extends BaseIrType
 		{
 			removeChild(secondStartIndex);
 		}
-		return new QualifiedId(getLine(), getColumn(), transfers);
+		return new QualifiedId(getRow(), getColumn(), transfers);
 	}
 
 	public static boolean isNext(Parser parser)

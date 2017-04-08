@@ -6,9 +6,9 @@ import com.jonheard.compilers.tokenizer_java.Token;
 
 public class Reference extends Expression
 {
-	public Reference(int line, int column, QualifiedId id)
+	public Reference(int row, int column, QualifiedId id)
 	{
-		super(ExpressionType.REFERENCE, line, column);
+		super(ExpressionType.REFERENCE, row, column);
 		addChild(id);
 		addChild(new List_Expression());
 		_isMethodCall = false;
@@ -71,7 +71,7 @@ public class Reference extends Expression
 		QualifiedId id = getId();
 		QualifiedId subId = id.split(secondStartIndex);
 		if(subId == null) return null;
-		Reference subReference = new Reference(getLine(), getColumn(), subId);
+		Reference subReference = new Reference(getRow(), getColumn(), subId);
 		subReference.replaceChild(1, getChild(1));
 		replaceChild(1, new List_Expression());
 		subReference._isMethodCall = _isMethodCall;

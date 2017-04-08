@@ -37,7 +37,7 @@ public class Parser_Expression
 				Logger.error("not a statement",
 						parser.getSource().getFilename(), next.getRow(),
 						next.getColumn(),
-						parser.getSource().getLine(next.getRow()));
+						parser.getSource().getRowText(next.getRow()));
 				break;				
 		}
 		parser.requireTokenToBeOfType(TokenType.SEMICOLON);
@@ -340,7 +340,7 @@ public class Parser_Expression
 						"illegal start of expression",
 						parser.getSource().getFilename(), literalToken.getRow(),
 						literalToken.getColumn(),
-						parser.getSource().getLine(literalToken.getRow()));
+						parser.getSource().getRowText(literalToken.getRow()));
 			}
 			result = new Literal(next, literalToken);
 		}

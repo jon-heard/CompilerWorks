@@ -16,10 +16,10 @@ public class SourceFileTest {
     assertEquals(new Point(2, 1), s.getCharPosition(8));
     assertEquals("t.txt", s.getFilename());
     assertEquals("first\nsecond\nthird", s.getSourceCode());
-    assertEquals(3, s.getLineCount());
-    assertEquals("first", s.getLine(0));
-    assertEquals("second", s.getLine(1));
-    assertEquals("third", s.getLine(2));
+    assertEquals(3, s.getRowCount());
+    assertEquals("first", s.getRowText(0));
+    assertEquals("second", s.getRowText(1));
+    assertEquals("third", s.getRowText(2));
     assertEquals(18, s.getLength());
     assertEquals(8, s.getIndex(1, 2));
   }

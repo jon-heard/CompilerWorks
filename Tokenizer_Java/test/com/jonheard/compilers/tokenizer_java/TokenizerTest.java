@@ -29,7 +29,7 @@ public class TokenizerTest {
   }
 
   @Test
-  public void linesAndCols() {
+  public void RowsAndCols() {
     String source = "public class private \nprotected public\r\n class";
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
@@ -104,22 +104,26 @@ public class TokenizerTest {
 
   @Test
   public void charAndString() {
-    String source = "'a' '~' '\n' \"hello\" \"\" \"\\n\"";
+    String source = "'a' '~' '\\n' '\353' \"hello\" \"\" \"a\\nb\" \"a\\353b\"";
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
-    assertEquals(6, tokens.size());
+    assertEquals(8, tokens.size());
     assertEquals(TokenType.CHAR, tokens.get(0).getType());
     assertEquals("a", tokens.get(0).getText());
     assertEquals(TokenType.CHAR, tokens.get(1).getType());
     assertEquals("~", tokens.get(1).getText());
     assertEquals(TokenType.CHAR, tokens.get(2).getType());
-    assertEquals("\n", tokens.get(2).getText());
-    assertEquals(TokenType.STRING, tokens.get(3).getType());
-    assertEquals("hello", tokens.get(3).getText());
+    assertEquals("\\n", tokens.get(2).getText());
+    assertEquals(TokenType.CHAR, tokens.get(3).getType());
+    assertEquals("\353", tokens.get(3).getText());
     assertEquals(TokenType.STRING, tokens.get(4).getType());
-    assertEquals("", tokens.get(4).getText());
+    assertEquals("hello", tokens.get(4).getText());
     assertEquals(TokenType.STRING, tokens.get(5).getType());
-    assertEquals("\\n", tokens.get(5).getText());
+    assertEquals("", tokens.get(5).getText());
+    assertEquals(TokenType.STRING, tokens.get(6).getType());
+    assertEquals("a\\nb", tokens.get(6).getText());
+    assertEquals(TokenType.STRING, tokens.get(7).getType());
+    assertEquals("a\\353b", tokens.get(7).getText());
   }
 
   @Test

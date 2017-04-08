@@ -10,7 +10,7 @@ public class List_Variable extends BaseIrType
 		super(parser);
 		do
 		{
-			addChild(new MethodOrVariable(parser, true, true, true, true));
+			addChild(new Member(parser, true, true, true, true));
 		}
 		while(parser.passTokenIfType(TokenType.COMMA));
 	}

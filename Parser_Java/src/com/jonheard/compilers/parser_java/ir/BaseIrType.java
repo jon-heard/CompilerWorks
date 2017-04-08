@@ -4,54 +4,45 @@ import java.util.ArrayList;
 import java.util.List;
 import com.jonheard.compilers.parser_java.Parser;
 
-// All intermediate representations extend this class.
+// BaseIrType - All intermediate representations extend this class.
 public class BaseIrType {
-  // Constructors (second is for convenience)
-  public BaseIrType(int line, int column) {
-    this.line = line;
+  // Constructors
+  public BaseIrType(int row, int column) {
+    // bad input check
+    if (row < 0) { throw new IllegalArgumentException("Arg1(row): < 0"); }
+    if (column < 0) { throw new IllegalArgumentException("Arg2(col): < 0"); }
+
+    this.row = row;
     this.column = column;
   }
-
   public BaseIrType(Parser parser) {
-    line = parser.getNextToken().getRow();
+    // bad input check
+    if (parser == null) { throw new IllegalArgumentException("Arg1(parser): null"); }
+
+    row = parser.getNextToken().getRow();
     column = parser.getNextToken().getColumn();
   }
 
   public BaseIrType getChild(int index) {
-    if (index < 0 || index >= children.size()) { throw new ArrayIndexOutOfBoundsException(index); }
+    // bad input check
+    if (index < 0) { throw new IllegalArgumentException("Arg1(index): < 0"); }
+    if (index >= children.size()) {
+      throw new IllegalArgumentException("Arg1(index): > childCount");
+    }
+
     return children.get(index);
   }
 
-  public void replaceChild(int childIndex, BaseIrType newValue) {
-    if (newValue == children.get(childIndex)) return;
-    children.remove(childIndex);
-    children.add(childIndex, newValue);
-  }
+  public void replaceChild(int index, BaseIrType value) {
+    // bad input check
+    if (index < 0) { throw new IllegalArgumentException("Arg1(index): < 0"); }
+    if (index >= children.size()) {
+      throw new IllegalArgumentException("Arg1(index): > childCount");
+    }
 
-  public int getLine() {
-    return line;
-  }
-
-  public int getColumn() {
-    return column;
-  }
-
-  public int getChildCount() {
-    return children.size();
-  }
-
-  public int getFirstPrintedChildIndex() {
-    return 0;
-  }
-
-  public String getHeaderString() {
-    return "";
-  }
-
-  public String getIrTypeName() {
-    String result = this.getClass().getName();
-    result = result.substring(result.lastIndexOf('.') + 1);
-    return result;
+    if (value == children.get(index)) return;
+    children.remove(index);
+    children.add(index, value);
   }
 
   @Override
@@ -60,11 +51,14 @@ public class BaseIrType {
   }
 
   public String toString(int tabCount) {
-    StringBuffer result = new StringBuffer();
+    // bad input check
+    if (tabCount < 0) { throw new IllegalArgumentException("Arg1(tabCount): < 0"); }
+
+    StringBuilder result = new StringBuilder();
     String tabs = new String(new char[tabCount]).replace('\0', '	');
     String headerString = getHeaderString();
-    if (!headerString.equals("")) headerString = " " + headerString;
-    headerString = " line='" + getLine() + "'" + headerString;
+    if (!headerString.equals("")) { headerString = " " + headerString; }
+    headerString = " line='" + getRow() + "'" + headerString;
     if (children.size() <= getFirstPrintedChildIndex()) {
       result.append(tabs + "<" + getIrTypeName() + headerString + "/>\n");
     } else {
@@ -78,18 +72,60 @@ public class BaseIrType {
     return result.toString();
   }
 
-  protected void prependChild(BaseIrType child) {
-    children.add(0, child);
+  public int getRow() { return row; }
+  public int getColumn() { return column; }
+  public int getChildCount() { return children.size(); }
+  public int getFirstPrintedChildIndex() { return 0; }
+  public String getHeaderString() { return ""; }
+  public String getIrTypeName() {
+    String result = this.getClass().getName();
+    result = result.substring(result.lastIndexOf('.') + 1);
+    return result;
   }
 
-  protected void addChild(BaseIrType child) {
-    children.add(child);
+  protected void prependChild(BaseIrType value) {
+    // bad input check
+    if (value == null) { throw new IllegalArgumentException("Arg1(value): null"); }
+
+    children.add(0, value);
+  }
+
+  protected void addChild(BaseIrType value) {
+    // bad input check
+    if (value == null) { throw new IllegalArgumentException("Arg1(value): null"); }
+
+    children.add(value);
   }
 
   protected void removeChild(int index) {
+    // bad input check
+    if (index < 0) { throw new IllegalArgumentException("Arg1(index): < 0"); }
+    if (index >= children.size()) {
+      throw new IllegalArgumentException("Arg1(index): > childCount");
+    }
+
     children.remove(index);
   }
 
-  private int line, column;
+  @SuppressWarnings("unchecked")
+  protected <T> List<T> getChildren(int startIndex, int endIndex) {
+    // bad input check
+    if (startIndex < 0) { throw new IllegalArgumentException("Arg1(startIndex): < 0"); }
+    if (startIndex >= children.size()) {
+      throw new IllegalArgumentException("Arg1(startIndex): > childCount");
+    }
+    if (endIndex < 0) { throw new IllegalArgumentException("Arg2(endIndex): < 0"); }
+    if (endIndex >= children.size()) {
+      throw new IllegalArgumentException("Arg2(endIndex): > childCount");
+    }
+
+    List<T> result = new ArrayList<T>();
+    for (int i = startIndex; i < endIndex; ++i) {
+      result.add((T)children.get(i));
+    }
+    return result;
+  }
+
+  private int row, column;
   private List<BaseIrType> children = new ArrayList<BaseIrType>();
 }
