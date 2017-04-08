@@ -645,13 +645,28 @@ public class Tokenizer {
   
   protected String parseNumber(TokenType type, String number) {
     char lastChar = number.charAt(number.length()-1);
+    // Remove any type label
     if (lastChar > '9') {
       number = number.substring(0, number.length()-1);
     }
-    if (type == TokenType.INTEGER) {
-      number = "" + (Integer.decode(number));
-    } else if (type == TokenType.LONG) {
-      number = "" + (Long.decode(number));
+    if (type == TokenType.INTEGER && number.length() > 2) {
+      String prefix = number.substring(0, 2);
+      if (prefix.equals("0b") || prefix.equals("0B")) {
+        number = "" + (Integer.parseInt(number.substring(2), 2));
+      } else if (prefix.equals("0x") || prefix.equals("0X")) {
+        number = "" + (Integer.parseInt(number.substring(2), 16));
+      } else if (number.charAt(0) == '0') {
+        number = "" + (Integer.parseInt(number.substring(1), 8));
+      }
+    } else if (type == TokenType.LONG && number.length() > 2) {
+      String prefix = number.substring(0, 2);
+      if (prefix.equals("0b") || prefix.equals("0B")) {
+        number = "" + (Long.parseLong(number.substring(2), 2));
+      } else if (prefix.equals("0x") || prefix.equals("0X")) {
+        number = "" + (Long.parseLong(number.substring(2), 16));
+      } else if (number.charAt(0) == '0') {
+        number = "" + (Long.parseLong(number.substring(1), 8));
+      }
     } else if (type == TokenType.FLOAT) {
       number = "" + (Float.parseFloat(number));
     } else if (type == TokenType.DOUBLE) {

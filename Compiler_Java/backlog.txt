@@ -1,5 +1,4 @@
 
-Tokenizer test: binary
 error: binary & hex need at least one digit
 error: no underscore at end or start of number
 

@@ -128,10 +128,10 @@ public class TokenizerTest {
 
   @Test
   public void integer() {
-    String source = "56 56l 056 056L 0x56 0x56l 0 0L";
+    String source = "56 56l 056 056L 0x56 0X56l 0 0L 0b1100 0B1010l";
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
-    assertEquals(8, tokens.size());
+    assertEquals(10, tokens.size());
     assertEquals(TokenType.INTEGER, tokens.get(0).getType());
     assertEquals("56", tokens.get(0).getText());
     assertEquals(TokenType.LONG, tokens.get(1).getType());
@@ -148,6 +148,10 @@ public class TokenizerTest {
     assertEquals("0", tokens.get(6).getText());
     assertEquals(TokenType.LONG, tokens.get(7).getType());
     assertEquals("0", tokens.get(7).getText());
+    assertEquals(TokenType.INTEGER, tokens.get(8).getType());
+    assertEquals("12", tokens.get(8).getText());
+    assertEquals(TokenType.LONG, tokens.get(9).getType());
+    assertEquals("10", tokens.get(9).getText());
   }
 
   @Test
