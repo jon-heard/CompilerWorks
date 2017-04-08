@@ -19,6 +19,15 @@ public class Class extends TypeDeclaration {
     }
   }
 
+  public static boolean getIsNext(Parser parser) {
+    boolean result = false;
+    parser.getTokenQueue().remember();
+    new List_Modifier(parser);
+    result = parser.getIsTokenType(TokenType._CLASS);
+    parser.getTokenQueue().rewind();
+    return result;
+  }
+
   @Override
   public String getHeaderString() {
     return
@@ -27,14 +36,6 @@ public class Class extends TypeDeclaration {
   }
   @Override
   public int getFirstPrintedChildIndex() { return 3; }
-  public QualifiedId getSuper() { return (QualifiedId) getChild(2); }
 
-  public static boolean isNext(Parser parser) {
-    boolean result = false;
-    parser.getTokenQueue().remember();
-    new List_Modifier(parser);
-    result = parser.getIsTokenType(TokenType._CLASS);
-    parser.getTokenQueue().rewind();
-    return result;
-  }
+  public QualifiedId getSuper() { return (QualifiedId) getChild(2); }
 }

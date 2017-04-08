@@ -27,7 +27,7 @@ public class EnhancedFor extends BaseIrType
 		if(parser.passTokenIfType(TokenType._FOR))
 		{
 			parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
-			if(Member.isNext(parser))
+			if(Member.getIsNext(parser))
 			{
 				new Member(parser);
 			}

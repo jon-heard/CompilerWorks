@@ -10,21 +10,20 @@ import com.jonheard.util.Logger;
 public class CompilationUnit extends BaseIrType {
   public CompilationUnit(Parser parser) {
     super(parser);
-
-    if (Package.isNext(parser)) {
+    if (Package.getIsNext(parser)) {
       addChild(new Package(parser));
       hasDefaultPackage = false;
     }
-    while (Import.isNext(parser)) {
+    while (Import.getIsNext(parser)) {
       addChild(new Import(parser));
       importCount++;
     }
     while (!parser.getTokenQueue().isEmpty()) {
-      if (Class.isNext(parser)) {
+      if (Class.getIsNext(parser)) {
         addChild(new Class(parser));
-      } else if (Interface.isNext(parser)) {
+      } else if (Interface.getIsNext(parser)) {
         addChild(new Interface(parser));
-      } else if (Enum.isNext(parser)) {
+      } else if (Enum.getIsNext(parser)) {
         addChild(new Enum(parser));
       } else {
         Token next = parser.getTokenQueue().poll();
@@ -46,11 +45,8 @@ public class CompilationUnit extends BaseIrType {
         "importCount='" + getImportCount() + "' " +
         "declarationCount='" + getDeclarationCount() + "'";
   }
-
   @Override
-  public int getFirstPrintedChildIndex() {
-    return 0;
-  }
+  public int getFirstPrintedChildIndex() { return 0; }
 
   public Package getPackage() {
     if (hasDefaultPackage) {
@@ -59,26 +55,17 @@ public class CompilationUnit extends BaseIrType {
       return (Package) getChild(0);
     }
   }
-
   public List<Import> getImports() {
     int index = 0;
     if (hasDefaultPackage) { ++index; }
     return getChildren(index, index + importCount);
   }
-
   public List<TypeDeclaration> getDeclarations() {
     int index = 0;
     if (hasDefaultPackage) { ++index; }
     index += importCount;
     return getChildren(index, index + declarationCount);
   }
-
-  public List<Import> getTypes() {
-    int index = 0;
-    if (hasDefaultPackage) { ++index; }
-    return getChildren(index, index + importCount);
-  }
-
   public int getImportCount() { return importCount; }
   public int getDeclarationCount() { return declarationCount; }
 

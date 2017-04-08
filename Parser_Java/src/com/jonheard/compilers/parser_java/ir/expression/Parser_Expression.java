@@ -308,7 +308,7 @@ public class Parser_Expression
 			//TODO: Fill in logic for "New" expression
 		}
 		// id
-		else if(QualifiedId.isNext(parser))
+		else if(QualifiedId.getIsNext(parser))
 		{
 			QualifiedId id = new QualifiedId(parser);
 			if(parser.passTokenIfType(TokenType.PAREN_LEFT))

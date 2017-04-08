@@ -75,7 +75,7 @@ public class IrProcessor_Java
 		if(	ir instanceof CompilationUnit ||
 			ir instanceof Class ||
 			(ir instanceof Member &&
-					((Member)ir).isMethod()) ||
+					((Member)ir).getIsMethod()) ||
 			ir instanceof CodeBlock)
 		{
 			scopes.pop();
@@ -129,9 +129,9 @@ public class IrProcessor_Java
 	{
 		Import data = (Import)ir;
 		Item path = libs.getValue(data.getId().getValue());
-		if(data.isStatic())
+		if(data.getIsStatic())
 		{
-			if(data.isOnDemand())
+			if(data.getIsOnDemand())
 			{
 				if(path instanceof Item_Class)
 				{
@@ -155,7 +155,7 @@ public class IrProcessor_Java
 		}
 		else
 		{
-			if(data.isOnDemand())
+			if(data.getIsOnDemand())
 			{
 				if(path instanceof Item_Package)
 				{
@@ -245,7 +245,7 @@ public class IrProcessor_Java
 			data.setId(new Id(newIdValue));
 		}
 		
-		if(data.isMethod())
+		if(data.getIsMethod())
 		{
 			scopes.push(new Scope(ScopeType.METHOD, getCurrentScope()));
 		}

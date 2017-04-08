@@ -11,18 +11,7 @@ public class TypeDeclaration extends BaseIrType {
     addChild(new Id(parser));
   }
 
-  @Override
-  public String getHeaderString() {
-    return
-        "id='" + getName().getValue() + "' " +
-        "modifiers='" + getModifiers().getValue() + "'";
-  }
-  @Override
-  public int getFirstPrintedChildIndex() { return 2; }
-  public Id getName() { return (Id) getChild(1); }
-  public List_Modifier getModifiers() { return (List_Modifier) getChild(0); }
-
-  public static boolean isNext(Parser parser) {
+  public static boolean getIsNext(Parser parser) {
     boolean result = false;
     parser.getTokenQueue().remember();
     new List_Modifier(parser);
@@ -33,4 +22,16 @@ public class TypeDeclaration extends BaseIrType {
     parser.getTokenQueue().rewind();
     return result;
   }
+
+  @Override
+  public String getHeaderString() {
+    return
+        "id='" + getName().getValue() + "' " +
+        "modifiers='" + getModifiers().getValue() + "'";
+  }
+  @Override
+  public int getFirstPrintedChildIndex() { return 2; }
+
+  public Id getName() { return (Id) getChild(1); }
+  public List_Modifier getModifiers() { return (List_Modifier) getChild(0); }
 }

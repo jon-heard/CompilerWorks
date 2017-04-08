@@ -13,7 +13,7 @@ public class CodeBlock extends BaseIrType
 		parser.requireTokenToBeOfType(TokenType.CURL_BRACE_LEFT);
 		while(!parser.passTokenIfType(TokenType.CURL_BRACE_RIGHT))
 		{
-			if(Member.isNext(parser))
+			if(Member.getIsNext(parser))
 			{
 				addChild(new Member(parser, true,true,false,false));
 			}

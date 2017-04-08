@@ -138,7 +138,7 @@ public class JvmGenerator_Java
 		Member data = (Member)ir;
 		if(currentMethod == null)
 		{
-			if(data.isMethod())
+			if(data.getIsMethod())
 			{
 				currentMethod = classRep.addMethod(
 						data.getId().getValue(),
