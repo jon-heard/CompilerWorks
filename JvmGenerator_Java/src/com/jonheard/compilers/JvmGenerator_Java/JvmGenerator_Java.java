@@ -162,11 +162,11 @@ public class JvmGenerator_Java
 			{
 				classRep.addField(
 						data.getId().getValue(),
-						data.getJavaType().toJvmDescriptor(),
+						data.getType().toJvmDescriptor(),
 						data.getModifiers().toStringCollection());
 				logField(
 						data.getId().getValue(),
-						data.getJavaType().toJvmDescriptor(),
+						data.getType().toJvmDescriptor(),
 						data.getModifiers().toStringCollection());
 				StringBuilder buf = methodLog;
 				methodLog = staticLog;
@@ -180,11 +180,11 @@ public class JvmGenerator_Java
 						currentMethod.addOp(
 								Op_Field._putstatic, classRep.getName(),
 								data.getId().getValue(),
-								data.getJavaType().toJvmDescriptor());
+								data.getType().toJvmDescriptor());
 						logOp(
 								"putstatic",
 								classRep.getName(), data.getId().getValue(),
-								data.getJavaType().toJvmDescriptor());
+								data.getType().toJvmDescriptor());
 					}
 					else
 					{

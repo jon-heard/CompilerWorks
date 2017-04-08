@@ -24,9 +24,10 @@ public class Member extends BaseIrType {
       parser.requireTokenToBeOfType(TokenType.RIGHT_PAREN);
       addChild(new CodeBlock(parser));
     } else {
+      Type type = getType();
       while (parser.passTokenIfType(TokenType.LEFT_SQUARE)) {
         parser.requireTokenToBeOfType(TokenType.RIGHT_SQUARE);
-        getJavaType().incDimensionCount();
+        type.incDimensionCount();
       }
       if (!forceNoInitializer && parser.passTokenIfType(TokenType.EQUAL)) {
         addChild(Parser_Expression.parseExpression(parser));
@@ -43,12 +44,12 @@ public class Member extends BaseIrType {
       List_Variable params = getParameterList();
       result.append('(');
       for (int i = 0; i < params.getChildCount(); i++) {
-        Type pType = ((Member)params.getChild(i)).getJavaType();
+        Type pType = ((Member)params.getChild(i)).getType();
         result.append(pType.toJvmDescriptor());
       }
       result.append(')');
     }
-    result.append(getJavaType().toJvmDescriptor());
+    result.append(getType().toJvmDescriptor());
     return result.toString();
   }
 
@@ -73,7 +74,7 @@ public class Member extends BaseIrType {
   public String getHeaderString() {
     return
         "id='" + getId().getValue() + "' " +
-        "type='" + getJavaType().getValue() + "' " +
+        "type='" + getType().getValue() + "' " +
         "modifiers='" + getModifiers().getValue() + "' " +
         "isMethod='" + getIsMethod() + "'";
   }
@@ -107,7 +108,7 @@ public class Member extends BaseIrType {
     return (CodeBlock)getChild(4);
   }
   public List_Modifier getModifiers() { return (List_Modifier)getChild(0); }
-  public Type getJavaType() { return (Type)getChild(1); }
+  public Type getType() { return (Type)getChild(1); }
   public Id getId() { return (Id)getChild(2); }
   public boolean getIsMethod() { return isMethod; }
 

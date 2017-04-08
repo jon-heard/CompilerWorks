@@ -203,7 +203,7 @@ public class IrProcessor_Java
 				getCurrentScope().add(name, "this");
 			}
 			getCurrentScope().addJavaType(
-					name, mCurrent.getJavaType().getValue());
+					name, mCurrent.getType().getValue());
 		}
 	}
 
@@ -215,11 +215,11 @@ public class IrProcessor_Java
 	private void preHandleMethodOrVariable(BaseIrType ir)
 	{
 		Member data = (Member)ir;
-		String id = data.getJavaType().getId().getValue();
+		String id = data.getType().getId().getValue();
 		Item path = libs.getValue(id);
 		if(path instanceof Item_Err_NotFound)
 		{
-			id = data.getJavaType().getId().getFirst().getValue();
+			id = data.getType().getId().getFirst().getValue();
 			String scopedId = getScopedValue(id) + "." + id;
 			if(id == null)
 			{
@@ -230,7 +230,7 @@ public class IrProcessor_Java
 			}
 			else
 			{
-				data.getJavaType().getId().setValue(scopedId);
+				data.getType().getId().setValue(scopedId);
 			}
 		}
 		
@@ -239,7 +239,7 @@ public class IrProcessor_Java
 		{
 			getCurrentScope().add(data.getId().getValue());
 			getCurrentScope().addJavaType(
-					data.getId().getValue(), data.getJavaType().getValue());
+					data.getId().getValue(), data.getType().getValue());
 			String newIdValue =
 					getCurrentScope().get(data.getId().getValue());
 			data.setId(new Id(newIdValue));
