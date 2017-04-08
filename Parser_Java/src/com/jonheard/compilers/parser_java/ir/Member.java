@@ -53,10 +53,13 @@ public class Member extends BaseIrType {
   }
 
   public static boolean getIsNext(Parser parser) {
+    // bad input check
+    if (parser == null) { throw new IllegalArgumentException("Arg1(parser): null"); }
+
     boolean result = false;
     parser.getTokenQueue().remember();
     new List_Modifier(parser);
-    if (Type.isNext(parser)) {
+    if (Type.getIsNext(parser)) {
       new Type(parser);
       if (Id.getIsNext(parser)) {
         result = true;
@@ -77,7 +80,12 @@ public class Member extends BaseIrType {
   @Override
   public int getFirstPrintedChildIndex() { return 3; }
 
-  public void setId(Id value) { replaceChild(2, value); }
+  public void setId(Id value) {
+    // bad input check
+    if (value == null) { throw new IllegalArgumentException("Arg1(value): null"); }
+
+    replaceChild(2, value);
+  }
 
   public Expression getInitializer() {
     if (getIsMethod()) {

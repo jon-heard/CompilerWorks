@@ -23,6 +23,9 @@ public class QualifiedId extends BaseIrType {
   }
   private QualifiedId(int row, int column, List<Id> children) {
     super(row, column);
+    // bad input check
+    if (children == null) { throw new IllegalArgumentException("Arg3(children): null"); }
+
     for (Id child : children) {
       addChild(child);
     }
@@ -31,6 +34,9 @@ public class QualifiedId extends BaseIrType {
   // Replaces the Id's of this QualifiedId with new ones based on the
   // given String representation of a QualifiedId
   public void setValue(String value) {
+    // bad input check
+    if (value == null) { throw new IllegalArgumentException("Arg1(value): null"); }
+
     while (getChildCount() > 0) {
       removeChild(0);
     }
@@ -43,6 +49,9 @@ public class QualifiedId extends BaseIrType {
   // Adds Id's to the beginning of this QualifiedId, based on the
   // given String representation of a QualfieidId
   public void addPrefix(String value) {
+    // bad input check
+    if (value == null) { throw new IllegalArgumentException("Arg1(value): null"); }
+
     if (value.equals(""))
       return;
     String[] valueItems = value.split("\\.");
@@ -55,6 +64,9 @@ public class QualifiedId extends BaseIrType {
   // Is truncated just before the given index, and returns a new
   // QualifiedId representing the rest of the ids.
   public QualifiedId split(int index) {
+    // bad input check
+    if (index < 0) { throw new IllegalArgumentException("Arg1(index): < 0"); }
+
     int childCount = getChildCount();
     if (index >= childCount)
       return null;
@@ -69,6 +81,9 @@ public class QualifiedId extends BaseIrType {
   }
 
   public static boolean getIsNext(Parser parser) {
+    // bad input check
+    if (parser == null) { throw new IllegalArgumentException("Arg1(parser): null"); }
+
     return Id.getIsNext(parser);
   }
 

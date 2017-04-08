@@ -15,6 +15,9 @@ public class Enum extends TypeDeclaration {
   }
 
   public static boolean getIsNext(Parser parser) {
+    // bad input check
+    if (parser == null) { throw new IllegalArgumentException("Arg1(parser): null"); }
+
     boolean result = false;
     parser.getTokenQueue().remember();
     new List_Modifier(parser);

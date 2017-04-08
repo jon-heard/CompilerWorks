@@ -47,10 +47,6 @@ public class List_Modifier extends BaseIrType {
     }
   }
 
-  public static boolean getIsNext(RewindableQueue<Token> tokenQueue) {
-    return true;
-  }
-
   @Override
   public String getHeaderString() {
     return "value='" + getValue() + "'";

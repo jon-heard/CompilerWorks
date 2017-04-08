@@ -194,7 +194,7 @@ public class IrProcessor_Java
 		{
 			Member mCurrent = (Member)data.getChild(i);
 			String name = mCurrent.getId().getValue();
-			if(mCurrent.getModifiers().isStatic())
+			if(mCurrent.getModifiers().getIsStatic())
 			{
 				getCurrentScope().add(name, data.getName().getValue());
 			}

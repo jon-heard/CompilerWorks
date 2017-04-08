@@ -16,6 +16,9 @@ public class Id extends BaseIrType {
     }
   }
   public Id(String value) {
+    // bad input check
+    if (value == null) { throw new IllegalArgumentException("Arg1(value): null"); }
+
     super(0, 0);
     this.value = value;
   }
@@ -29,6 +32,9 @@ public class Id extends BaseIrType {
   }
 
   public static boolean getIsNext(Parser parser) {
+    // bad input check
+    if (parser == null) { throw new IllegalArgumentException("Arg1(parser): null"); }
+
     return parser.getIsTokenType(TokenType.IDENTIFIER);
   }
 

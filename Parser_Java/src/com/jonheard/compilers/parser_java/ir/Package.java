@@ -13,6 +13,9 @@ public class Package extends BaseIrType {
   }
 
   public static boolean getIsNext(Parser parser) {
+    // bad input check
+    if (parser == null) { throw new IllegalArgumentException("Arg1(parser): null"); }
+
     return parser.getIsTokenType(TokenType._PACKAGE);
   }
 

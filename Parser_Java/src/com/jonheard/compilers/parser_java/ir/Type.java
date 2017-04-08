@@ -114,7 +114,10 @@ public class Type extends BaseIrType {
     dimensionCount++;
   }
 
-  public static boolean isNext(Parser parser) {
+  public static boolean getIsNext(Parser parser) {
+    // bad input check
+    if (parser == null) { throw new IllegalArgumentException("Arg1(parser): null"); }
+
     return Id.getIsNext(parser);
   }
 

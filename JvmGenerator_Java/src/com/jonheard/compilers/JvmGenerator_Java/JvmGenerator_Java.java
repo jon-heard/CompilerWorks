@@ -175,7 +175,7 @@ public class JvmGenerator_Java
 				{
 					currentMethod = staticBlock;
 					handleIr(initializer);
-					if(data.getModifiers().isStatic())
+					if(data.getModifiers().getIsStatic())
 					{
 						currentMethod.addOp(
 								Op_Field._putstatic, classRep.getName(),
