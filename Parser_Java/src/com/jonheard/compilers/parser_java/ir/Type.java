@@ -29,7 +29,7 @@ public class Type extends BaseIrType {
 
   @Override
   public String getHeaderString() {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     result.append("value='" + getValue() + "'");
     if (getChildCount() > 1) {
       result.append(" genericTypes='");
@@ -45,7 +45,7 @@ public class Type extends BaseIrType {
   }
 
   public String getValue() {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     result.append(getId().getValue());
     for (int i = 0; i < getDimensionCount(); i++) {
       result.append("[]");
@@ -78,7 +78,7 @@ public class Type extends BaseIrType {
   public String toJvmDescriptor() {
     String type = getId().getValue();
     int dimensionCount = getDimensionCount();
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
 
     for (int i = 0; i < dimensionCount; i++) {
       result.append("[");

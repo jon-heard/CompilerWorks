@@ -201,7 +201,7 @@ public class DataBuffer
 			throw new InvalidDataIndexException(index);
 		}
 		short length = getShort(index);
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for(int i = 0; i < length; i++)
 		{
 			buffer.append((char)(byte)data.get(index+2+i));
@@ -215,7 +215,7 @@ public class DataBuffer
 		{
 			throw new InvalidDataIndexException(index);
 		}
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for(int i = 0; i < length; i++)
 		{
 			buffer.append((char)(byte)data.get(index+i));

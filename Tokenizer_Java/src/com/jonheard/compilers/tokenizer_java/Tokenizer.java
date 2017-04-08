@@ -25,7 +25,7 @@ public class Tokenizer {
     if (source == null) { throw new IllegalArgumentException("arg1(source): null"); }
     if (source.size() < 1) { throw new IllegalArgumentException("arg1(source): empty"); }
 
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     for (Token token : source) {
       result.append(token.toString());
       result.append('\n');

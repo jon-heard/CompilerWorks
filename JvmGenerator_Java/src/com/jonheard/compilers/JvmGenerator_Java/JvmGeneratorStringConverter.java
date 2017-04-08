@@ -9,7 +9,7 @@ public class JvmGeneratorStringConverter
 	public String generatedToString(JvmGenerator_Java source)
 	{
 		return source.toString();
-//		StringBuffer result = new StringBuffer();
+//		StringBuilder result = new StringBuilder();
 //		result.append("<class " +
 //				"name='" + source.getName() + "' " +
 //				"super='" + source.getSuperName() + "' " +

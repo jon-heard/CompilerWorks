@@ -40,11 +40,11 @@ public class JvmGenerator_Java
 		if(value && mainLog != null) return;
 		if(value)
 		{
-			mainLog = new StringBuffer();
-			staticLog = new StringBuffer();
+			mainLog = new StringBuilder();
+			staticLog = new StringBuilder();
 			methodLog = staticLog;
 			logMethod("static", "()V", Arrays.asList(new String[] {"static"}));
-			methodLog = new StringBuffer();
+			methodLog = new StringBuilder();
 		}
 		else
 		{
@@ -52,9 +52,9 @@ public class JvmGenerator_Java
 		}
 	}
 	
-	private StringBuffer mainLog = null;
-	private StringBuffer methodLog = null;
-	private StringBuffer staticLog = null;
+	private StringBuilder mainLog = null;
+	private StringBuilder methodLog = null;
+	private StringBuilder staticLog = null;
 
 	private SourceFile source;
 	private ClassRep classRep;
@@ -127,7 +127,7 @@ public class JvmGenerator_Java
 			handleIr(ir.getChild(i));
 		}
 		staticBlock.addOp(Op_NoArg._return);
-		StringBuffer buf = methodLog;
+		StringBuilder buf = methodLog;
 		methodLog = staticLog;
 		logOp("return");
 		methodLog = buf;
@@ -153,7 +153,7 @@ public class JvmGenerator_Java
 				logOp("return");
 				currentMethod = null;
 
-				StringBuffer buf = mainLog;
+				StringBuilder buf = mainLog;
 				mainLog = methodLog;
 				log("	</method>");
 				mainLog = buf;
@@ -168,7 +168,7 @@ public class JvmGenerator_Java
 						data.getId().getValue(),
 						data.getJavaType().toJvmDescriptor(),
 						data.getModifiers().toStringCollection());
-				StringBuffer buf = methodLog;
+				StringBuilder buf = methodLog;
 				methodLog = staticLog;
 				Expression initializer = data.getInitializer();
 				if(initializer != null)
@@ -396,7 +396,7 @@ public class JvmGenerator_Java
 			String name, String descriptor, Collection<String> modifiers)
 	{
 		if(mainLog == null) return;
-		StringBuffer buf = mainLog;
+		StringBuilder buf = mainLog;
 		mainLog = methodLog;
 		log(
 				"	<method name='" + name + "' descriptor='" + descriptor +
@@ -406,7 +406,7 @@ public class JvmGenerator_Java
 	private void logOp(String name, Object... arguments)
 	{
 		if(mainLog == null) return;
-		StringBuffer toLog = new StringBuffer();
+		StringBuilder toLog = new StringBuilder();
 		toLog.append("		<op name='");
 		toLog.append(name);
 		if(arguments.length > 0)
@@ -422,7 +422,7 @@ public class JvmGenerator_Java
 			}
 		}
 		toLog.append("'/>");
-		StringBuffer buf = mainLog;
+		StringBuilder buf = mainLog;
 		mainLog = methodLog;
 		log(toLog.toString());
 		mainLog = buf;

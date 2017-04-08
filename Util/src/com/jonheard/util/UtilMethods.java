@@ -103,7 +103,7 @@ public class UtilMethods {
     // bad input check
     if (source == null) { throw new IllegalArgumentException("Arg1(source): null"); }
 
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     int size = source.length();
     for (int i = 0; i < size; i++) {
       if (source.charAt(i) == '_' && i + 1 < size) {

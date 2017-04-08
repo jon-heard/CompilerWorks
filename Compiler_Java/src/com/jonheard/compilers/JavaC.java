@@ -43,7 +43,7 @@ public class JavaC {
     String sourceFilename = "";
 
     // Variables - compiler output
-    StringBuffer compilerOutputText = new StringBuffer();
+    StringBuilder compilerOutputText = new StringBuilder();
     compilerOutputText.append(APP_INFO_TEXT);
 
     // Parse command-line parameters for user input
