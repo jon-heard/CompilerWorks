@@ -11,7 +11,7 @@ public class Enum extends TypeDeclaration {
     do {
       addChild(new Id(parser));
     } while( parser.passTokenIfType(TokenType.COMMA));
-    parser.requireTokenToBeOfType(TokenType.CURL_BRACE_RIGHT);
+    parser.requireTokenToBeOfType(TokenType.RIGHT_CURL);
   }
 
   public static boolean getIsNext(Parser parser) {

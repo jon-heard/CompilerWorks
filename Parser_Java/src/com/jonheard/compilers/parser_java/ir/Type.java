@@ -21,8 +21,8 @@ public class Type extends BaseIrType {
     // {
     // addChild(null);
     // }
-    while (parser.passTokenIfType(TokenType.SQUARE_BRACE_LEFT)) {
-      parser.requireTokenToBeOfType(TokenType.SQUARE_BRACE_RIGHT);
+    while (parser.passTokenIfType(TokenType.LEFT_SQUARE)) {
+      parser.requireTokenToBeOfType(TokenType.RIGHT_SQUARE);
       incDimensionCount();
     }
   }

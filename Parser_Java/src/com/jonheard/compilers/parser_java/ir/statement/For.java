@@ -10,8 +10,8 @@ public class For extends BaseIrType
 	{
 		super(parser);
 		parser.requireTokenToBeOfType(TokenType._FOR);
-		parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
-		while(!parser.passTokenIfType(TokenType.PAREN_RIGHT))
+		parser.requireTokenToBeOfType(TokenType.LEFT_PAREN);
+		while(!parser.passTokenIfType(TokenType.RIGHT_PAREN))
 		{
 			parser.getTokenQueue().poll();
 		}

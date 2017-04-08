@@ -18,14 +18,14 @@ public class Member extends BaseIrType {
     addChild(forceNoModifiers ? new List_Modifier() : new List_Modifier(parser));
     addChild(new Type(parser));
     addChild(new Id(parser));
-    if (!forceVariable && parser.passTokenIfType(TokenType.PAREN_LEFT)) {
+    if (!forceVariable && parser.passTokenIfType(TokenType.LEFT_PAREN)) {
       isMethod = true;
       addChild(new List_Variable(parser));
-      parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
+      parser.requireTokenToBeOfType(TokenType.RIGHT_PAREN);
       addChild(new CodeBlock(parser));
     } else {
-      while (parser.passTokenIfType(TokenType.SQUARE_BRACE_LEFT)) {
-        parser.requireTokenToBeOfType(TokenType.SQUARE_BRACE_RIGHT);
+      while (parser.passTokenIfType(TokenType.LEFT_SQUARE)) {
+        parser.requireTokenToBeOfType(TokenType.RIGHT_SQUARE);
         getJavaType().incDimensionCount();
       }
       if (!forceNoInitializer && parser.passTokenIfType(TokenType.EQUAL)) {

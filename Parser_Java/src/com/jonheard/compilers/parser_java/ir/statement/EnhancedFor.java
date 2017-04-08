@@ -12,11 +12,11 @@ public class EnhancedFor extends BaseIrType
 	{
 		super(parser);
 		parser.requireTokenToBeOfType(TokenType._FOR);
-		parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
+		parser.requireTokenToBeOfType(TokenType.LEFT_PAREN);
 		addChild(new Member(parser));
 		parser.requireTokenToBeOfType(TokenType.COLON);
 		addChild(Parser_Expression.parseExpression(parser));
-		parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
+		parser.requireTokenToBeOfType(TokenType.RIGHT_PAREN);
 		addChild(Parser_Statement.getNextStatement(parser));
 	}
 	
@@ -26,7 +26,7 @@ public class EnhancedFor extends BaseIrType
 		parser.getTokenQueue().remember();
 		if(parser.passTokenIfType(TokenType._FOR))
 		{
-			parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
+			parser.requireTokenToBeOfType(TokenType.LEFT_PAREN);
 			if(Member.getIsNext(parser))
 			{
 				new Member(parser);

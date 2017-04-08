@@ -5,9 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import com.jonheard.compilers.parser_java.Parser;
-import com.jonheard.compilers.tokenizer_java.Token;
 import com.jonheard.compilers.tokenizer_java.TokenType;
-import com.jonheard.util.RewindableQueue;
 
 public class List_Modifier extends BaseIrType {
   public List_Modifier() {

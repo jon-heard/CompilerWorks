@@ -139,19 +139,19 @@ public class Parser_Expression
 	{
 		Token next = parser.peekNextToken();
 		Expression lhs = tryAdditive(parser);
-		if(parser.passTokenIfType(TokenType.RIGHT))
+		if(parser.passTokenIfType(TokenType.RIGHT_TRI))
 			lhs = new Expression(
 					ExpressionType.GREATER, next,
 					lhs, tryAdditive(parser));
-		if(parser.passTokenIfType(TokenType.LEFT))
+		if(parser.passTokenIfType(TokenType.LEFT_TRI))
 			lhs = new Expression(
 					ExpressionType.LESS, next,
 					lhs, tryAdditive(parser));
-		if(parser.passTokenIfType(TokenType.RIGHT_EQUAL))
+		if(parser.passTokenIfType(TokenType.RIGHT_TRI_EQUAL))
 			lhs = new Expression(
 					ExpressionType.GREATER_OR_EQUAL, next,
 					lhs, tryAdditive(parser));
-		if(parser.passTokenIfType(TokenType.LEFT_EQUAL))
+		if(parser.passTokenIfType(TokenType.LEFT_TRI_EQUAL))
 			lhs = new Expression(
 					ExpressionType.LESS_OR_EQUAL, next,
 					lhs, tryAdditive(parser));
@@ -236,9 +236,9 @@ public class Parser_Expression
 					tryUnary(parser));
 		else if(seeCast(parser))
 		{
-			parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
+			parser.requireTokenToBeOfType(TokenType.LEFT_PAREN);
 			QualifiedId type = new QualifiedId(parser);
-			parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
+			parser.requireTokenToBeOfType(TokenType.RIGHT_PAREN);
 			return new Cast(next, type, parseExpression(parser));
 		}
 		else
@@ -268,19 +268,19 @@ public class Parser_Expression
 		Token next = parser.peekNextToken();
 		Expression result = null;
 		// Parenthesized expression
-		if(parser.passTokenIfType(TokenType.PAREN_LEFT))
+		if(parser.passTokenIfType(TokenType.LEFT_PAREN))
 		{
 			result = parseExpression(parser);
-			parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
+			parser.requireTokenToBeOfType(TokenType.RIGHT_PAREN);
 		}
 		// this
 		else if(parser.passTokenIfType(TokenType._THIS))
 		{
-			if(parser.passTokenIfType(TokenType.PAREN_LEFT))
+			if(parser.passTokenIfType(TokenType.LEFT_PAREN))
 			{
 				result = new ThisConstructor(
 						next, new List_Expression(parser));
-				parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
+				parser.requireTokenToBeOfType(TokenType.RIGHT_PAREN);
 			}
 			else
 			{
@@ -296,10 +296,10 @@ public class Parser_Expression
 			}
 			else
 			{
-				parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
+				parser.requireTokenToBeOfType(TokenType.LEFT_PAREN);
 				result = new SuperConstructor(
 						next, new List_Expression(parser));
-				parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
+				parser.requireTokenToBeOfType(TokenType.RIGHT_PAREN);
 			}
 		}
 		// new
@@ -311,10 +311,10 @@ public class Parser_Expression
 		else if(QualifiedId.getIsNext(parser))
 		{
 			QualifiedId id = new QualifiedId(parser);
-			if(parser.passTokenIfType(TokenType.PAREN_LEFT))
+			if(parser.passTokenIfType(TokenType.LEFT_PAREN))
 			{
 				result = new Reference(next, id, new List_Expression(parser));
-				parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
+				parser.requireTokenToBeOfType(TokenType.RIGHT_PAREN);
 			}
 			else
 			{

@@ -13,9 +13,9 @@ public class Do extends BaseIrType
 		parser.requireTokenToBeOfType(TokenType._DO);
 		BaseIrType body = Parser_Statement.getNextStatement(parser);
 		parser.requireTokenToBeOfType(TokenType._WHILE);
-		parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
+		parser.requireTokenToBeOfType(TokenType.LEFT_PAREN);
 		addChild(Parser_Expression.parseExpression(parser));
-		parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
+		parser.requireTokenToBeOfType(TokenType.RIGHT_PAREN);
 		parser.requireTokenToBeOfType(TokenType.SEMICOLON);
 		addChild(body);
 	}

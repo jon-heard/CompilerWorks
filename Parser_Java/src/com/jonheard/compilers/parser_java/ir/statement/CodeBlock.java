@@ -10,8 +10,8 @@ public class CodeBlock extends BaseIrType
 	public CodeBlock(Parser parser)
 	{
 		super(parser);
-		parser.requireTokenToBeOfType(TokenType.CURL_BRACE_LEFT);
-		while(!parser.passTokenIfType(TokenType.CURL_BRACE_RIGHT))
+		parser.requireTokenToBeOfType(TokenType.LEFT_CURL);
+		while(!parser.passTokenIfType(TokenType.RIGHT_CURL))
 		{
 			if(Member.getIsNext(parser))
 			{
@@ -26,6 +26,6 @@ public class CodeBlock extends BaseIrType
 	
 	public static boolean isNext(Parser parser)
 	{
-		return parser.getIsTokenType(TokenType.CURL_BRACE_LEFT);
+		return parser.getIsTokenType(TokenType.LEFT_CURL);
 	}
 }

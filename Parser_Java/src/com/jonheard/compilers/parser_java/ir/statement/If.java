@@ -11,9 +11,9 @@ public class If extends BaseIrType
 	{
 		super(parser);
 		parser.requireTokenToBeOfType(TokenType._IF);
-		parser.requireTokenToBeOfType(TokenType.PAREN_LEFT);
+		parser.requireTokenToBeOfType(TokenType.LEFT_PAREN);
 		addChild(Parser_Expression.parseExpression(parser));
-		parser.requireTokenToBeOfType(TokenType.PAREN_RIGHT);
+		parser.requireTokenToBeOfType(TokenType.RIGHT_PAREN);
 		addChild(Parser_Statement.getNextStatement(parser));
 	}
 

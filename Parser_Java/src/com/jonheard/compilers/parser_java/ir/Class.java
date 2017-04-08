@@ -13,8 +13,8 @@ public class Class extends TypeDeclaration {
       parser.getTokenQueue().addFirst(new Token(TokenType.IDENTIFIER, 0, 0, "Object"));
       addChild(new QualifiedId(parser));
     }
-    parser.requireTokenToBeOfType(TokenType.CURL_BRACE_LEFT);
-    while (!parser.passTokenIfType(TokenType.CURL_BRACE_RIGHT)) {
+    parser.requireTokenToBeOfType(TokenType.LEFT_CURL);
+    while (!parser.passTokenIfType(TokenType.RIGHT_CURL)) {
       addChild(new Member(parser));
     }
   }

@@ -16,10 +16,8 @@ public class Id extends BaseIrType {
     }
   }
   public Id(String value) {
-    // bad input check
-    if (value == null) { throw new IllegalArgumentException("Arg1(value): null"); }
-
     super(0, 0);
+    if (value == null) { throw new IllegalArgumentException("Arg1(value): null"); }
     this.value = value;
   }
 

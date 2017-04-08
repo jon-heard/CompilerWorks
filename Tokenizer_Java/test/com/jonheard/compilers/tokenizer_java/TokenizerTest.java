@@ -218,10 +218,10 @@ public class TokenizerTest {
     assertEquals(TokenType.LEFT_LEFT, tokens.get(9).getType());
     assertEquals(TokenType.RIGHT_RIGHT, tokens.get(10).getType());
     assertEquals(TokenType.RIGHT_RIGHT_RIGHT, tokens.get(11).getType());
-    assertEquals(TokenType.LEFT, tokens.get(12).getType());
-    assertEquals(TokenType.RIGHT, tokens.get(13).getType());
-    assertEquals(TokenType.LEFT_EQUAL, tokens.get(14).getType());
-    assertEquals(TokenType.RIGHT_EQUAL, tokens.get(15).getType());
+    assertEquals(TokenType.LEFT_TRI, tokens.get(12).getType());
+    assertEquals(TokenType.RIGHT_TRI, tokens.get(13).getType());
+    assertEquals(TokenType.LEFT_TRI_EQUAL, tokens.get(14).getType());
+    assertEquals(TokenType.RIGHT_TRI_EQUAL, tokens.get(15).getType());
     assertEquals(TokenType.EQUAL_EQUAL, tokens.get(16).getType());
     assertEquals(TokenType.EXCLAIM_EQUAL, tokens.get(17).getType());
     assertEquals(TokenType.AND, tokens.get(18).getType());
@@ -246,12 +246,12 @@ public class TokenizerTest {
     assertEquals(TokenType.DOT, tokens.get(37).getType());
     assertEquals(TokenType.SEMICOLON, tokens.get(38).getType());
     assertEquals(TokenType.COMMA, tokens.get(39).getType());
-    assertEquals(TokenType.CURL_BRACE_LEFT, tokens.get(40).getType());
-    assertEquals(TokenType.CURL_BRACE_RIGHT, tokens.get(41).getType());
-    assertEquals(TokenType.SQUARE_BRACE_LEFT, tokens.get(42).getType());
-    assertEquals(TokenType.SQUARE_BRACE_RIGHT, tokens.get(43).getType());
-    assertEquals(TokenType.PAREN_LEFT, tokens.get(44).getType());
-    assertEquals(TokenType.PAREN_RIGHT, tokens.get(45).getType());
+    assertEquals(TokenType.LEFT_CURL, tokens.get(40).getType());
+    assertEquals(TokenType.RIGHT_CURL, tokens.get(41).getType());
+    assertEquals(TokenType.LEFT_SQUARE, tokens.get(42).getType());
+    assertEquals(TokenType.RIGHT_SQUARE, tokens.get(43).getType());
+    assertEquals(TokenType.LEFT_PAREN, tokens.get(44).getType());
+    assertEquals(TokenType.RIGHT_PAREN, tokens.get(45).getType());
   }
 
   @Test

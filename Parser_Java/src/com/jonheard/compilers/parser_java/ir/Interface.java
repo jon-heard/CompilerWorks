@@ -7,7 +7,7 @@ import com.jonheard.compilers.tokenizer_java.TokenType;
 public class Interface extends TypeDeclaration {
   public Interface(Parser parser) {
     super(parser, TokenType._INTERFACE);
-    while (!parser.passTokenIfType(TokenType.CURL_BRACE_RIGHT)) {
+    while (!parser.passTokenIfType(TokenType.RIGHT_CURL)) {
       parser.getTokenQueue().poll();
     }
   }

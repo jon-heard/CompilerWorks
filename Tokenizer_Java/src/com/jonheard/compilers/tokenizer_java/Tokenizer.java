@@ -80,22 +80,22 @@ public class Tokenizer {
           nextTokenType = TokenType.COMMA;
           break;
         case '(':
-          nextTokenType = TokenType.PAREN_LEFT;
+          nextTokenType = TokenType.LEFT_PAREN;
           break;
         case ')':
-          nextTokenType = TokenType.PAREN_RIGHT;
+          nextTokenType = TokenType.RIGHT_PAREN;
           break;
         case '{':
-          nextTokenType = TokenType.CURL_BRACE_LEFT;
+          nextTokenType = TokenType.LEFT_CURL;
           break;
         case '}':
-          nextTokenType = TokenType.CURL_BRACE_RIGHT;
+          nextTokenType = TokenType.RIGHT_CURL;
           break;
         case '[':
-          nextTokenType = TokenType.SQUARE_BRACE_LEFT;
+          nextTokenType = TokenType.LEFT_SQUARE;
           break;
         case ']':
-          nextTokenType = TokenType.SQUARE_BRACE_RIGHT;
+          nextTokenType = TokenType.RIGHT_SQUARE;
           break;
         case '=':
           nextTokenType = getTokenTypeFromEqual(source, currentIndex);
@@ -386,7 +386,7 @@ public class Tokenizer {
   protected TokenType getTokenTypeFromLeft(SourceFile source, int index) {
     char char2 = source.getChar(index + 1);
     if (char2 == '=') {
-      return TokenType.LEFT_EQUAL;
+      return TokenType.LEFT_TRI_EQUAL;
     } else if (char2 == '<') {
       char char3 = source.getChar(index + 2);
       if (char3 == '=') {
@@ -395,7 +395,7 @@ public class Tokenizer {
         return TokenType.LEFT_LEFT;
       }
     } else {
-      return TokenType.LEFT;
+      return TokenType.LEFT_TRI;
     }
   }
 
@@ -404,7 +404,7 @@ public class Tokenizer {
   protected TokenType getTokenTypeFromRight(SourceFile source, int index) {
     char char2 = source.getChar(index + 1);
     if (char2 == '=') {
-      return TokenType.RIGHT_EQUAL;
+      return TokenType.RIGHT_TRI_EQUAL;
     } else if (char2 == '>') {
       char char3 = source.getChar(index + 2);
       if (char3 == '=') {
@@ -420,7 +420,7 @@ public class Tokenizer {
         return TokenType.RIGHT_RIGHT;
       }
     } else {
-      return TokenType.RIGHT;
+      return TokenType.RIGHT_TRI;
     }
   }
 

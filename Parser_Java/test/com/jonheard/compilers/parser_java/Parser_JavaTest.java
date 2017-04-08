@@ -72,7 +72,7 @@ public class Parser_JavaTest
 		result.add(new Token(TokenType._STATIC, 0, 0));
 		result.add(new Token(TokenType._CLASS, 0, 0));
 		result.add(new Token(TokenType.IDENTIFIER, 0, 0, "Test1"));
-		result.add(new Token(TokenType.CURL_BRACE_LEFT, 0, 0));
+		result.add(new Token(TokenType.LEFT_CURL, 0, 0));
 		
 		result.add(new Token(TokenType._PUBLIC, 0, 0));
 		result.add(new Token(TokenType._STATIC, 0, 0));
@@ -83,26 +83,26 @@ public class Parser_JavaTest
 		result.add(new Token(TokenType._STATIC, 0, 0));
 		result.add(new Token(TokenType.IDENTIFIER, 0, 0, "void"));
 		result.add(new Token(TokenType.IDENTIFIER, 0, 0, "main"));
-		result.add(new Token(TokenType.PAREN_LEFT, 0, 0));
+		result.add(new Token(TokenType.LEFT_PAREN, 0, 0));
 		result.add(new Token(TokenType.IDENTIFIER, 0, 0, "String"));
 		result.add(new Token(TokenType.IDENTIFIER, 0, 0, "args"));
-		result.add(new Token(TokenType.SQUARE_BRACE_LEFT, 0, 0));
-		result.add(new Token(TokenType.SQUARE_BRACE_RIGHT, 0, 0));
-		result.add(new Token(TokenType.PAREN_RIGHT, 0, 0));
-		result.add(new Token(TokenType.CURL_BRACE_LEFT, 0, 0));
+		result.add(new Token(TokenType.LEFT_SQUARE, 0, 0));
+		result.add(new Token(TokenType.RIGHT_SQUARE, 0, 0));
+		result.add(new Token(TokenType.RIGHT_PAREN, 0, 0));
+		result.add(new Token(TokenType.LEFT_CURL, 0, 0));
 
 		result.add(new Token(TokenType.IDENTIFIER, 0, 0, "System"));
 		result.add(new Token(TokenType.DOT, 0, 0));
 		result.add(new Token(TokenType.IDENTIFIER, 0, 0, "out"));
 		result.add(new Token(TokenType.DOT, 0, 0));
 		result.add(new Token(TokenType.IDENTIFIER, 0, 0, "println"));
-		result.add(new Token(TokenType.PAREN_LEFT, 0, 0));
+		result.add(new Token(TokenType.LEFT_PAREN, 0, 0));
 		result.add(new Token(TokenType.STRING, 0, 0, "Hello world"));
-		result.add(new Token(TokenType.PAREN_RIGHT, 0, 0));
+		result.add(new Token(TokenType.RIGHT_PAREN, 0, 0));
 
-		result.add(new Token(TokenType.CURL_BRACE_RIGHT, 0, 0));
+		result.add(new Token(TokenType.RIGHT_CURL, 0, 0));
 
-		result.add(new Token(TokenType.CURL_BRACE_RIGHT, 0, 0));
+		result.add(new Token(TokenType.RIGHT_CURL, 0, 0));
 
 		return result;
 	}
