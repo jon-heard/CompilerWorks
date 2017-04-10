@@ -593,7 +593,7 @@ public class Tokenizer {
         } else {
           break;
         }
-      } else if (mayBeBase8 && !numericCharSets.get(1).contains(current)) {
+      } else if (mayBeBase8 && !numericCharSets.get(1).contains(current) && current != '_') {
         intBase8ErrorIndex = index;
       }
       ++index;
@@ -644,6 +644,7 @@ public class Tokenizer {
   }
   
   protected String parseNumber(TokenType type, String number) {
+    number = number.replace("_", "");
     char lastChar = number.charAt(number.length()-1);
     // Remove any type label
     if (lastChar > '9') {

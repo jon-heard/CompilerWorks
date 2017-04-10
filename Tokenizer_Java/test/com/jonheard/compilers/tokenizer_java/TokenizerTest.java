@@ -128,30 +128,49 @@ public class TokenizerTest {
 
   @Test
   public void integer() {
-    String source = "56 56l 056 056L 0x56 0X56l 0 0L 0b1100 0B1010l";
+    String source = "56 56l " + "0 0L " + "056 056L " + "0x56 0X56l " +
+        "0b1100 0B1010l " + "5_63 56_3L" + "0_5__6 05___6l " +
+        "0x6___5__6 0x6__5____6L" + "0b1__10___0 0B10_10L";
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
-    assertEquals(10, tokens.size());
-    assertEquals(TokenType.INTEGER, tokens.get(0).getType());
-    assertEquals("56", tokens.get(0).getText());
-    assertEquals(TokenType.LONG, tokens.get(1).getType());
-    assertEquals("56", tokens.get(1).getText());
-    assertEquals(TokenType.INTEGER, tokens.get(2).getType());
-    assertEquals("46", tokens.get(2).getText());
-    assertEquals(TokenType.LONG, tokens.get(3).getType());
-    assertEquals("46", tokens.get(3).getText());
-    assertEquals(TokenType.INTEGER, tokens.get(4).getType());
-    assertEquals("86", tokens.get(4).getText());
-    assertEquals(TokenType.LONG, tokens.get(5).getType());
-    assertEquals("86", tokens.get(5).getText());
-    assertEquals(TokenType.INTEGER, tokens.get(6).getType());
-    assertEquals("0", tokens.get(6).getText());
-    assertEquals(TokenType.LONG, tokens.get(7).getType());
-    assertEquals("0", tokens.get(7).getText());
-    assertEquals(TokenType.INTEGER, tokens.get(8).getType());
-    assertEquals("12", tokens.get(8).getText());
-    assertEquals(TokenType.LONG, tokens.get(9).getType());
-    assertEquals("10", tokens.get(9).getText());
+    assertEquals(18, tokens.size());
+    int index = -1;
+    assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
+    assertEquals("56", tokens.get(index).getText());
+    assertEquals(TokenType.LONG, tokens.get(++index).getType());
+    assertEquals("56", tokens.get(index).getText());
+    assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
+    assertEquals("0", tokens.get(index).getText());
+    assertEquals(TokenType.LONG, tokens.get(++index).getType());
+    assertEquals("0", tokens.get(index).getText());
+    assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
+    assertEquals("46", tokens.get(index).getText());
+    assertEquals(TokenType.LONG, tokens.get(++index).getType());
+    assertEquals("46", tokens.get(index).getText());
+    assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
+    assertEquals("86", tokens.get(index).getText());
+    assertEquals(TokenType.LONG, tokens.get(++index).getType());
+    assertEquals("86", tokens.get(index).getText());
+    assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
+    assertEquals("12", tokens.get(index).getText());
+    assertEquals(TokenType.LONG, tokens.get(++index).getType());
+    assertEquals("10", tokens.get(index).getText());
+    assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
+    assertEquals("563", tokens.get(index).getText());
+    assertEquals(TokenType.LONG, tokens.get(++index).getType());
+    assertEquals("563", tokens.get(index).getText());
+    assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
+    assertEquals("46", tokens.get(index).getText());
+    assertEquals(TokenType.LONG, tokens.get(++index).getType());
+    assertEquals("46", tokens.get(index).getText());
+    assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
+    assertEquals("1622", tokens.get(index).getText());
+    assertEquals(TokenType.LONG, tokens.get(++index).getType());
+    assertEquals("1622", tokens.get(index).getText());
+    assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
+    assertEquals("12", tokens.get(index).getText());
+    assertEquals(TokenType.LONG, tokens.get(++index).getType());
+    assertEquals("10", tokens.get(index).getText());
   }
 
   @Test
