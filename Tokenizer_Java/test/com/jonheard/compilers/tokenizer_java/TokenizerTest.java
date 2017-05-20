@@ -449,11 +449,12 @@ public class TokenizerTest {
     Logger.clearLogs();
     Logger.resetCounts();
 
+    int count = 0;
     Tokenizer tokenizer = new Tokenizer();
     tokenizer.tokenize(new SourceFile("", "1.5p3"));
-    assertEquals(1, Logger.getErrorCount());
+    assertEquals(++count, Logger.getErrorCount());
     tokenizer.tokenize(new SourceFile("", "0x1.5e3"));
-    assertEquals(2, Logger.getErrorCount());
+    assertEquals(++count, Logger.getErrorCount());
 
     Logger.clearLogs();
     Logger.resetCounts();
@@ -464,9 +465,10 @@ public class TokenizerTest {
     Logger.clearLogs();
     Logger.resetCounts();
 
+    int count = 0;
     Tokenizer tokenizer = new Tokenizer();
     tokenizer.tokenize(new SourceFile("Test1.java", "#"));
-    assertEquals(1, Logger.getErrorCount());
+    assertEquals(++count, Logger.getErrorCount());
 
     Logger.clearLogs();
     Logger.resetCounts();
@@ -477,59 +479,82 @@ public class TokenizerTest {
     Logger.clearLogs();
     Logger.resetCounts();
 
+    int count = 0;
     Tokenizer tokenizer = new Tokenizer();
     tokenizer.tokenize(new SourceFile("Test1.java", "a'"));
-    assertEquals(1, Logger.getErrorCount());
+    assertEquals(++count, Logger.getErrorCount());
     tokenizer.tokenize(new SourceFile("Test1.java", "'a"));
-    assertEquals(2, Logger.getErrorCount());
+    assertEquals(++count, Logger.getErrorCount());
     tokenizer.tokenize(new SourceFile("Test1.java", "'aa"));
-    assertEquals(3, Logger.getErrorCount());
-    tokenizer.tokenize(new SourceFile("Test1.java", "'\\"));
-    assertEquals(5, Logger.getErrorCount());
+    assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "'\\\\"));
+    assertEquals(++count, Logger.getErrorCount());
     tokenizer.tokenize(new SourceFile("Test1.java", "'\\n"));
-    assertEquals(6, Logger.getErrorCount());
+    assertEquals(++count, Logger.getErrorCount());
     tokenizer.tokenize(new SourceFile("Test1.java", "'\\na"));
-    assertEquals(7, Logger.getErrorCount());
-    
+    assertEquals(++count, Logger.getErrorCount());
+
     Logger.clearLogs();
     Logger.resetCounts();
   }
 
   @Test
   public void errors_unclosedStringLiteral() {
-    String source, expected;
-    Tokenizer tokenizer;
+    Logger.clearLogs();
+    Logger.resetCounts();
+
+    int count = 0;
+    Tokenizer tokenizer = new Tokenizer();
+    tokenizer.tokenize(new SourceFile("Test1.java", "\"abc\n\""));
+    ++count; // previous tokenize had two errors
+    assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "\"abc"));
+    assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "\""));
+    assertEquals(++count, Logger.getErrorCount());
 
     Logger.clearLogs();
-    source = "\"abc\n\"";
-    tokenizer = new Tokenizer();
-    tokenizer.tokenize(new SourceFile("Test1.java", source));
-    expected = "Test1.java:1: error: unclosed string literal\n" + "\t\"abc\n" + "\t^\n"
-        + "Test1.java:2: error: unclosed string literal\n" + "\t\"\n" + "\t^\n";
-    assertEquals(expected, Logger.getLogs());
-
-    Logger.clearLogs();
-    source = "\"abc";
-    tokenizer = new Tokenizer();
-    tokenizer.tokenize(new SourceFile("Test1.java", source));
-    expected = "Test1.java:1: error: " + "unclosed string literal\n\t\"abc\n\t^\n";
-    assertEquals(expected, Logger.getLogs());
-
-    Logger.clearLogs();
-    source = "\"";
-    tokenizer = new Tokenizer();
-    tokenizer.tokenize(new SourceFile("Test1.java", source));
-    expected = "Test1.java:1: error: " + "unclosed string literal\n\t\"\n\t^\n";
-    assertEquals(expected, Logger.getLogs());
+    Logger.resetCounts();
   }
   
   @Test
   public void errors_underscoreAtStartOrEndOfNumber() {
-    
+//    Logger.clearLogs();
+//    Logger.resetCounts();
+//
+//    int count = 0;
+//    Tokenizer tokenizer = new Tokenizer();
+//    tokenizer.tokenize(new SourceFile("Test1.java", "_15"));
+//    assertEquals(++count, Logger.getErrorCount());
+//    tokenizer.tokenize(new SourceFile("Test1.java", "15_"));
+//    assertEquals(++count, Logger.getErrorCount());
+//    tokenizer.tokenize(new SourceFile("Test1.java", "_15_"));
+//    assertEquals(++count, Logger.getErrorCount());
+//    tokenizer.tokenize(new SourceFile("Test1.java", "_1_5"));
+//    assertEquals(++count, Logger.getErrorCount());
+//    tokenizer.tokenize(new SourceFile("Test1.java", "1_5_"));
+//    assertEquals(++count, Logger.getErrorCount());
+//    tokenizer.tokenize(new SourceFile("Test1.java", "_1_5_"));
+//    assertEquals(++count, Logger.getErrorCount());
+//
+//    Logger.clearLogs();
+//    Logger.resetCounts();
   }
   
   @Test
   public void errors_binaryOrHexWithoutAnyDigits() {
-    
+//    Logger.clearLogs();
+//    Logger.resetCounts();
+//
+//    Tokenizer tokenizer = new Tokenizer();
+//    tokenizer.tokenize(new SourceFile("Test1.java", "\"abc\n\""));
+//    assertEquals(1, Logger.getErrorCount());
+//    tokenizer.tokenize(new SourceFile("Test1.java", "\"abc"));
+//    assertEquals(2, Logger.getErrorCount());
+//    tokenizer.tokenize(new SourceFile("Test1.java", "\""));
+//    assertEquals(3, Logger.getErrorCount());
+//
+//    Logger.clearLogs();
+//    Logger.resetCounts();
   }
 }
