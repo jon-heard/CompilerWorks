@@ -1,6 +1,3 @@
-
-change over all tests to using the index increment over hardcoded indices
-  ALSO: put source string initialization on next line from declaration
 error: no underscore at end or start of number
 error: binary & hex need at least one digit
 

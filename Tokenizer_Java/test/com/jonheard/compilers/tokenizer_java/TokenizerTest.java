@@ -522,4 +522,14 @@ public class TokenizerTest {
     expected = "Test1.java:1: error: " + "unclosed string literal\n\t\"\n\t^\n";
     assertEquals(expected, Logger.getLogs());
   }
+  
+  @Test
+  public void errors_underscoreAtStartOrEndOfNumber() {
+    
+  }
+  
+  @Test
+  public void errors_binaryOrHexWithoutAnyDigits() {
+    
+  }
 }
