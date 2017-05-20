@@ -104,7 +104,8 @@ public class TokenizerTest {
 
   @Test
   public void charAndString() {
-    String source = "'a' '~' '\\n' '\353' \"hello\" \"\" \"a\\nb\" \"a\\353b\"";
+    String source =
+        "'a' '~' '\\n' '\353' \"hello\" \"\" \"a\\nb\" \"a\\353b\"";
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
     assertEquals(8, tokens.size());
@@ -127,13 +128,13 @@ public class TokenizerTest {
   }
 
   @Test
-  public void integer() {
-    String source = "56 56l " + "0 0L " + "056 056L " + "0x56 0X56l " +
-        "0b1100 0B1010l " + "5_63 56_3L" + "0_5__6 05___6l " +
-        "0x6___5__6 0x6__5____6L" + "0b1__10___0 0B10_10L";
+  public void integers() {
+    String source =
+        "56 56l " + "0 0L " + "056 056L " + "0x56 0X56l " +
+        "0b1100 0B1010l";
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
-    assertEquals(18, tokens.size());
+    assertEquals(10, tokens.size());
     int index = -1;
     assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
     assertEquals("56", tokens.get(index).getText());
@@ -155,6 +156,17 @@ public class TokenizerTest {
     assertEquals("12", tokens.get(index).getText());
     assertEquals(TokenType.LONG, tokens.get(++index).getType());
     assertEquals("10", tokens.get(index).getText());
+  }
+
+  @Test
+  public void integersWithUnderscores() {
+    String source =
+        "5_63 56_3L " + "0_5__6 05___6l " +
+        "0x6___5__6 0x6__5____6L" + "0b1__10___0 0B10_10L";
+    Tokenizer tokenizer = new Tokenizer();
+    List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
+    assertEquals(8, tokens.size());
+    int index = -1;
     assertEquals(TokenType.INTEGER, tokens.get(++index).getType());
     assertEquals("563", tokens.get(index).getText());
     assertEquals(TokenType.LONG, tokens.get(++index).getType());
@@ -174,52 +186,108 @@ public class TokenizerTest {
   }
 
   @Test
-  public void floatingPoint() {
-    String source = "56f 56d 056F 056D " + "0.5f 0.5 5e7F 5e7d 5.1e7f 5.1e7D " + ".5f .5 " +
-        "0x1p3 0x2.p0d 0x.5p1f 0x1.5p2F" + "1e+2 1.5e-1f 0x1p+3 0x2.2p-1f";
+  public void floatingPoints() {
+    String source =
+        "56f 56d 056F 056D " + "0.5f 0.5 5e7F 5e7d 5.1e7f 5.1e7D " +
+        ".5f .5 " + "0x1p3 0x2.p0d 0x.5p1f 0x1.5p2F" +
+        "1e+2 1.5e-1f 0x1p+3 0x2.2p-1f";
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
     assertEquals(20, tokens.size());
-    assertEquals(TokenType.FLOAT, tokens.get(0).getType());
-    assertEquals("56.0", tokens.get(0).getText());
-    assertEquals(TokenType.DOUBLE, tokens.get(1).getType());
-    assertEquals("56.0", tokens.get(1).getText());
-    assertEquals(TokenType.FLOAT, tokens.get(2).getType());
-    assertEquals("56.0", tokens.get(2).getText());
-    assertEquals(TokenType.DOUBLE, tokens.get(3).getType());
-    assertEquals("56.0", tokens.get(3).getText());
-    assertEquals(TokenType.FLOAT, tokens.get(4).getType());
-    assertEquals("0.5", tokens.get(4).getText());
-    assertEquals(TokenType.DOUBLE, tokens.get(5).getType());
-    assertEquals("0.5", tokens.get(5).getText());
-    assertEquals(TokenType.FLOAT, tokens.get(6).getType());
-    assertEquals("5.0E7", tokens.get(6).getText());
-    assertEquals(TokenType.DOUBLE, tokens.get(7).getType());
-    assertEquals("5.0E7", tokens.get(7).getText());
-    assertEquals(TokenType.FLOAT, tokens.get(8).getType());
-    assertEquals("5.1E7", tokens.get(8).getText());
-    assertEquals(TokenType.DOUBLE, tokens.get(9).getType());
-    assertEquals("5.1E7", tokens.get(9).getText());
-    assertEquals(TokenType.FLOAT, tokens.get(10).getType());
-    assertEquals("0.5", tokens.get(10).getText());
-    assertEquals(TokenType.DOUBLE, tokens.get(11).getType());
-    assertEquals("0.5", tokens.get(11).getText());
-    assertEquals(TokenType.DOUBLE, tokens.get(12).getType());
-    assertEquals("8.0", tokens.get(12).getText());
-    assertEquals(TokenType.DOUBLE, tokens.get(13).getType());
-    assertEquals("2.0", tokens.get(13).getText());
-    assertEquals(TokenType.FLOAT, tokens.get(14).getType());
-    assertEquals("0.625", tokens.get(14).getText());
-    assertEquals(TokenType.FLOAT, tokens.get(15).getType());
-    assertEquals("5.25", tokens.get(15).getText());
-    assertEquals(TokenType.DOUBLE, tokens.get(16).getType());
-    assertEquals("100.0", tokens.get(16).getText());
-    assertEquals(TokenType.FLOAT, tokens.get(17).getType());
-    assertEquals("0.15", tokens.get(17).getText());
-    assertEquals(TokenType.DOUBLE, tokens.get(18).getType());
-    assertEquals("8.0", tokens.get(18).getText());
-    assertEquals(TokenType.FLOAT, tokens.get(19).getType());
-    assertEquals("1.0625", tokens.get(19).getText());
+    int index = -1;
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("56.0", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("56.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("56.0", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("56.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("0.5", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("0.5", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("5.0E7", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("5.0E7", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("5.1E7", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("5.1E7", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("0.5", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("0.5", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("8.0", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("2.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("0.625", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("5.25", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("100.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("0.15", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("8.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("1.0625", tokens.get(index).getText());
+  }
+
+  @Test
+  public void floatingPointsWithUnderscores() {
+    String source =
+        "5_6f 5___6d 0_5___6F 0___5_6D " +
+        "0.__5f 0__.5 1e1__1F 1__1e2d 5_.__1e7f 5__._1e7D " +
+        ".5_5f .5__5 " + "0x1__1p1 0x2__.p1__0d 0x.__5p1f 0x1__._5p2F" +
+        "1e+1__1 1.5e-1__1f 0x1p+1__1 0x2_._2p-1__1f";
+    Tokenizer tokenizer = new Tokenizer();
+    List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
+    assertEquals(20, tokens.size());
+    int index = -1;
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("56.0", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("56.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("56.0", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("56.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("0.5", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("0.5", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("9.9999998E10", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("1100.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("5.1E7", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("5.1E7", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("0.55", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("0.55", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("34.0", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("2048.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("0.625", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("5.25", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("1.0E11", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("1.5E-11", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("2048.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("0.0010375977", tokens.get(index).getText());
   }
 
   @Test
@@ -229,6 +297,7 @@ public class TokenizerTest {
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
     assertEquals(46, tokens.size());
+    
     assertEquals(TokenType.PLUS_PLUS, tokens.get(0).getType());
     assertEquals(TokenType.DASH_DASH, tokens.get(1).getType());
     assertEquals(TokenType.PLUS, tokens.get(2).getType());
