@@ -535,6 +535,16 @@ public class TokenizerTest {
     assertEquals(++count, Logger.getErrorCount());
     tokenizer.tokenize(new SourceFile("Test1.java", "1_5_"));
     assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "1_5_l"));
+    assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "1.5_"));
+    assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "1_.5_"));
+    assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "1_.5_f"));
+    assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "1_.5_d"));
+    assertEquals(++count, Logger.getErrorCount());
 
     Logger.clearLogs();
     Logger.resetCounts();
