@@ -18,7 +18,7 @@ public class TokenizerTest {
   }
 
   @Test
-  public void basic() {
+  public void keywords() {
     String source = "public class private";
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
@@ -88,22 +88,29 @@ public class TokenizerTest {
   }
 
   @Test
-  public void identifiersAndOperators() {
-    String source = "public=t+class/test;";
+  public void keywordsIdentifiersAndOperators() {
+    String source = "public=t+_j\nclass/test;\n_12*_5_6";
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
-    assertEquals(8, tokens.size());
+    assertEquals(12, tokens.size());
     int index = -1;
     assertEquals(TokenType._PUBLIC, tokens.get(++index).getType());
     assertEquals(TokenType.EQUAL, tokens.get(++index).getType());
     assertEquals(TokenType.IDENTIFIER, tokens.get(++index).getType());
     assertEquals("t", tokens.get(index).getText());
     assertEquals(TokenType.PLUS, tokens.get(++index).getType());
+    assertEquals(TokenType.IDENTIFIER, tokens.get(++index).getType());
+    assertEquals("_j", tokens.get(index).getText());
     assertEquals(TokenType._CLASS, tokens.get(++index).getType());
     assertEquals(TokenType.SLASH, tokens.get(++index).getType());
     assertEquals(TokenType.IDENTIFIER, tokens.get(++index).getType());
     assertEquals("test", tokens.get(index).getText());
     assertEquals(TokenType.SEMICOLON, tokens.get(++index).getType());
+    assertEquals(TokenType.IDENTIFIER, tokens.get(++index).getType());
+    assertEquals("_12", tokens.get(index).getText());
+    assertEquals(TokenType.STAR, tokens.get(++index).getType());
+    assertEquals(TokenType.IDENTIFIER, tokens.get(++index).getType());
+    assertEquals("_5_6", tokens.get(index).getText());
   }
 
   @Test
@@ -518,27 +525,19 @@ public class TokenizerTest {
   }
   
   @Test
-  public void errors_underscoreAtStartOrEndOfNumber() {
-//    Logger.clearLogs();
-//    Logger.resetCounts();
-//
-//    int count = 0;
-//    Tokenizer tokenizer = new Tokenizer();
-//    tokenizer.tokenize(new SourceFile("Test1.java", "_15"));
-//    assertEquals(++count, Logger.getErrorCount());
-//    tokenizer.tokenize(new SourceFile("Test1.java", "15_"));
-//    assertEquals(++count, Logger.getErrorCount());
-//    tokenizer.tokenize(new SourceFile("Test1.java", "_15_"));
-//    assertEquals(++count, Logger.getErrorCount());
-//    tokenizer.tokenize(new SourceFile("Test1.java", "_1_5"));
-//    assertEquals(++count, Logger.getErrorCount());
-//    tokenizer.tokenize(new SourceFile("Test1.java", "1_5_"));
-//    assertEquals(++count, Logger.getErrorCount());
-//    tokenizer.tokenize(new SourceFile("Test1.java", "_1_5_"));
-//    assertEquals(++count, Logger.getErrorCount());
-//
-//    Logger.clearLogs();
-//    Logger.resetCounts();
+  public void errors_underscoreAtEndOfInteger() {
+    Logger.clearLogs();
+    Logger.resetCounts();
+
+    int count = 0;
+    Tokenizer tokenizer = new Tokenizer();
+    tokenizer.tokenize(new SourceFile("Test1.java", "15_"));
+    assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "1_5_"));
+    assertEquals(++count, Logger.getErrorCount());
+
+    Logger.clearLogs();
+    Logger.resetCounts();
   }
   
   @Test
