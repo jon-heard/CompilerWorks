@@ -599,7 +599,11 @@ public class Tokenizer {
       ++index;
       current = source.getChar(index);
     }
-    
+
+    if (source.getChar(index-1) == '_') {
+      Logger.error("Illegal underscore", source, index-1);
+    }
+
     current = source.getChar(index);
     if (isIntOrFloat == IntOrFloat.FLOAT) {
       if (current == 'f' || current == 'F') {

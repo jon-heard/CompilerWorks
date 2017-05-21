@@ -523,7 +523,7 @@ public class TokenizerTest {
     Logger.clearLogs();
     Logger.resetCounts();
   }
-  
+
   @Test
   public void errors_underscoreAtEndOfInteger() {
     Logger.clearLogs();
@@ -539,7 +539,7 @@ public class TokenizerTest {
     Logger.clearLogs();
     Logger.resetCounts();
   }
-  
+
   @Test
   public void errors_binaryOrHexWithoutAnyDigits() {
 //    Logger.clearLogs();
