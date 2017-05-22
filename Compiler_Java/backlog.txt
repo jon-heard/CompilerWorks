@@ -1,5 +1,3 @@
-error: no underscore at end or start of number
-error: binary & hex need at least one digit
 
 Parser: finish "for"
 Parser: add class generics

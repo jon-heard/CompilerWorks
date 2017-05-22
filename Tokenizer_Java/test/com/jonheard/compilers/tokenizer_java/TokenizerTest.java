@@ -202,10 +202,11 @@ public class TokenizerTest {
     String source =
         "56f 56d 056F 056D " + "0.5f 0.5 5e7F 5e7d 5.1e7f 5.1e7D " +
         ".5f .5 " + "0x1p3 0x2.p0d 0x.5p1f 0x1.5p2F" +
-        "1e+2 1.5e-1f 0x1p+3 0x2.2p-1f";
+        "1e+2 1.5e-1f 0x1p+3 0x2.2p-1f" +
+        "5. 5.f 5.e2 0x5.p1";
     Tokenizer tokenizer = new Tokenizer();
     List<Token> tokens = tokenizer.tokenize(new SourceFile("", source));
-    assertEquals(20, tokens.size());
+    assertEquals(24, tokens.size());
     int index = -1;
     assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
     assertEquals("56.0", tokens.get(index).getText());
@@ -247,6 +248,14 @@ public class TokenizerTest {
     assertEquals("8.0", tokens.get(index).getText());
     assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
     assertEquals("1.0625", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("5.0", tokens.get(index).getText());
+    assertEquals(TokenType.FLOAT, tokens.get(++index).getType());
+    assertEquals("5.0", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("500.0", tokens.get(index).getText());
+    assertEquals(TokenType.DOUBLE, tokens.get(++index).getType());
+    assertEquals("10.0", tokens.get(index).getText());
   }
 
   @Test
@@ -461,6 +470,7 @@ public class TokenizerTest {
     tokenizer.tokenize(new SourceFile("", "1.5p3"));
     assertEquals(++count, Logger.getErrorCount());
     tokenizer.tokenize(new SourceFile("", "0x1.5e3"));
+    System.out.println(Logger.getLogs());
     assertEquals(++count, Logger.getErrorCount());
 
     Logger.clearLogs();
@@ -551,17 +561,36 @@ public class TokenizerTest {
   }
 
   @Test
-  public void errors_binaryOrHexWithoutAnyDigits() {
+  public void errors_hexFloatWithoutExponent() {
+    Logger.clearLogs();
+    Logger.resetCounts();
+  
+    int count = 0;
+    Tokenizer tokenizer = new Tokenizer();
+    tokenizer.tokenize(new SourceFile("Test1.java", "0x1.0"));
+    assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "0x1."));
+    assertEquals(++count, Logger.getErrorCount());
+    tokenizer.tokenize(new SourceFile("Test1.java", "0x.5"));
+    assertEquals(++count, Logger.getErrorCount());
+  
+    Logger.clearLogs();
+    Logger.resetCounts();
+  }
+
+  @Test
+  public void errors_binaryOrHexMissingDigits() {
 //    Logger.clearLogs();
 //    Logger.resetCounts();
 //
+//    int count = 0;
 //    Tokenizer tokenizer = new Tokenizer();
-//    tokenizer.tokenize(new SourceFile("Test1.java", "\"abc\n\""));
-//    assertEquals(1, Logger.getErrorCount());
+//    tokenizer.tokenize(new SourceFile("Test1.java", "0."));
+//    assertEquals(++count, Logger.getErrorCount());
 //    tokenizer.tokenize(new SourceFile("Test1.java", "\"abc"));
-//    assertEquals(2, Logger.getErrorCount());
+//    assertEquals(++count, Logger.getErrorCount());
 //    tokenizer.tokenize(new SourceFile("Test1.java", "\""));
-//    assertEquals(3, Logger.getErrorCount());
+//    assertEquals(++count, Logger.getErrorCount());
 //
 //    Logger.clearLogs();
 //    Logger.resetCounts();

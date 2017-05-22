@@ -526,7 +526,8 @@ public class Tokenizer {
     return source.getSubstring(index, endIndex);
   }
 
-  private enum IntOrFloat { INT, FLOAT, UNKNOWN };
+  private enum IntOrFloat { UNKNOWN, INT, FLOAT };
+  private enum Base { BINARY, OCTAL, DECIMAL, HEX };
   protected Object[] getTokenInfoFromNumber(SourceFile source, int startIndex) {
     Object[] result = new Object[2];
     Set<Character> SpecialNumeric = numericCharSets.get(4); 
@@ -534,8 +535,9 @@ public class Tokenizer {
     int dotIndex = -1;
     int expIndex = -1;
     int intBase8ErrorIndex = -1;
-    int baseIndex = 2;
+    Base base = Base.DECIMAL;
     boolean mayBeBase8 = false;
+    boolean isMalformed = false;
     int index = startIndex;
     char current = source.getChar(index);
 
@@ -549,10 +551,10 @@ public class Tokenizer {
       char char2 = source.getChar(index+1);
       if (char2 == 'b' || char2 == 'B') {
         isIntOrFloat = IntOrFloat.INT;
-        baseIndex = 0;
+        base = Base.BINARY;
         index += 2;
       } else if (char2 == 'x' || char2 == 'X') {
-        baseIndex = 3;
+        base = Base.HEX;
         index += 2;
       } else {
         mayBeBase8 = true;
@@ -560,7 +562,7 @@ public class Tokenizer {
     }
 
     current = source.getChar(index);
-    while (numericCharSets.get(baseIndex).contains(current) || SpecialNumeric.contains(current)) {
+    while (numericCharSets.get(base.ordinal()).contains(current) || SpecialNumeric.contains(current)) {
       if (current == '.') {
         if (dotIndex == -1 && expIndex == -1 && isIntOrFloat != IntOrFloat.INT) {
           isIntOrFloat = IntOrFloat.FLOAT;
@@ -569,7 +571,8 @@ public class Tokenizer {
           break;
         }
       } else if (current == 'e' || current == 'E' && isIntOrFloat != IntOrFloat.INT) {
-        if (baseIndex == 3) { // hex has 'p' for exponent symbol
+        if (base == Base.HEX) { // hex has 'p' for exponent symbol
+          isMalformed = true;
           Logger.error("malformed floating point literal", source, startIndex);
           break;
         } else if (expIndex == -1) {
@@ -581,7 +584,7 @@ public class Tokenizer {
           break;
         }
       } else if (current == 'p' || current == 'P' && isIntOrFloat != IntOrFloat.INT) {
-        if (baseIndex != 3) { // non-hex has 'e' for exponent symbol
+        if (base != Base.HEX) { // non-hex has 'e' for exponent symbol
           Logger.error("malformed floating point literal", source, startIndex);
           break;
         } if (expIndex == -1) {
@@ -589,7 +592,7 @@ public class Tokenizer {
           expIndex = index;
           char char2 = source.getChar(index+1);
           if (char2 == '+' || char2 == '-') { ++index; }
-          baseIndex = 2; // the exponent of a hex float is still in decimal
+          base = Base.DECIMAL; // the exponent of a hex float is still in decimal
         } else {
           break;
         }
@@ -600,6 +603,12 @@ public class Tokenizer {
       current = source.getChar(index);
     }
 
+    // Error: hex float without exponent
+    if (isIntOrFloat == IntOrFloat.FLOAT && base == Base.HEX && expIndex == -1 && !isMalformed) {
+      Logger.error("malformed floating point literal", source, startIndex);
+      isMalformed = true;
+    }
+    // Error: ending in underscore
     if (source.getChar(index-1) == '_') {
       Logger.error("Illegal underscore", source, index-1);
     }
