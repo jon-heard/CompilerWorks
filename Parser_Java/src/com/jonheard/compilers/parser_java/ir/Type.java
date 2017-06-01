@@ -12,10 +12,11 @@ public class Type extends BaseIrType {
     super(parser);
     addChild(new QualifiedId(parser));
     if (parser.passTokenIfType(TokenType.LEFT_TRI)) {
-      do {
-        addChild(new Type(parser));
-      } while(parser.passTokenIfType(TokenType.COMMA));
+      addChild(new List_QualifiedId(parser));
       parser.requireTokenToBeOfType(TokenType.RIGHT_TRI);
+    }
+    else {
+      addChild(new List_QualifiedId(parser, true));
     }
     while (parser.passTokenIfType(TokenType.LEFT_SQUARE)) {
       parser.requireTokenToBeOfType(TokenType.RIGHT_SQUARE);
@@ -73,25 +74,19 @@ public class Type extends BaseIrType {
   public String getHeaderString() {
     return
         "id='" + getId() + "' " +
-        "genericCount='" + (getChildCount()-1) + "' " +
+        "generics='" + getGenerics().toString() + "' " +
         "arrayDimensions='" + getDimensionCount() + "'";
   }
   @Override
-  public int getFirstPrintedChildIndex() { return 1; }
+  public int getFirstPrintedChildIndex() { return 2; }
 
   public String getValue() {
     StringBuilder result = new StringBuilder();
     result.append(getId());
-    int childCount = getChildCount();
-    if (childCount > 1) {
+    List_QualifiedId generics = getGenerics();
+    if (generics.getChildCount() > 0) {
       result.append("<");
-      for (int i = 1; i < childCount; ++i) {
-        Type current = (Type)getChild(i);
-        result.append(current.getValue());
-        if (i < childCount-1) {
-          result.append(", ");
-        }
-      }
+      result.append(generics.toString());
       result.append(">");
     }
     for (int i = 0; i < dimensionCount; ++i) {
@@ -99,18 +94,11 @@ public class Type extends BaseIrType {
     }
     return result.toString();
   }
-  public Collection<Type> getGenericTypes()
-  {
-    ArrayList<Type> result = new ArrayList<>();
-    int childCount = getChildCount();
-    for (int i = 1; i < childCount; ++i) {
-      result.add((Type)getChild(i));
-    }
-    return result;
-  }
-  public QualifiedId getId() {
-    return (QualifiedId)getChild(0);
-  }
+
+  public QualifiedId getId() { return (QualifiedId)getChild(0); }
+
+  public List_QualifiedId getGenerics() { return (List_QualifiedId)getChild(1); }
+
   public int getDimensionCount() { return dimensionCount; }
 
   private int dimensionCount = 0;

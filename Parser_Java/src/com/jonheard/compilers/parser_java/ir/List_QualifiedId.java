@@ -27,7 +27,7 @@ public class List_QualifiedId extends BaseIrType {
     for (QualifiedId id : ids) {
       result.append(prefix);
       result.append(id.getValue());
-      prefix = " ";
+      prefix = ", ";
     }
     return result.toString();
   }
