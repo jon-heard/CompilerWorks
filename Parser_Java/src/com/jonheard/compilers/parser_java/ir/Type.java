@@ -82,7 +82,7 @@ public class Type extends BaseIrType {
 
   public String getValue() {
     StringBuilder result = new StringBuilder();
-    result.append(getId());
+    result.append(getId().getValue());
     List_QualifiedId generics = getGenerics();
     if (generics.getChildCount() > 0) {
       result.append("<");
