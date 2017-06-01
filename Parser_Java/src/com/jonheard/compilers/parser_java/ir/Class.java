@@ -13,6 +13,11 @@ public class Class extends TypeDeclaration {
       parser.getTokenQueue().addFirst(new Token(TokenType.IDENTIFIER, 0, 0, "Object"));
       addChild(new QualifiedId(parser));
     }
+    if (parser.passTokenIfType(TokenType._IMPLEMENTS)) {
+      addChild(new List_QualifiedId(parser));
+    } else {
+      addChild(new List_QualifiedId(parser, true));
+    }
     parser.requireTokenToBeOfType(TokenType.LEFT_CURL);
     while (!parser.passTokenIfType(TokenType.RIGHT_CURL)) {
       addChild(new Member(parser));
@@ -35,10 +40,12 @@ public class Class extends TypeDeclaration {
   public String getHeaderString() {
     return
         super.getHeaderString() + " " +
-        "super='" + getSuper().getValue() + "'";
+        "super='" + getSuper().getValue() + "' " +
+        "interfaces='" + getInterfaces().toString() + "'";
   }
   @Override
-  public int getFirstPrintedChildIndex() { return 3; }
+  public int getFirstPrintedChildIndex() { return 4; }
 
   public QualifiedId getSuper() { return (QualifiedId) getChild(2); }
+  public List_QualifiedId getInterfaces() { return (List_QualifiedId) getChild(3); }
 }
