@@ -11,23 +11,22 @@ import com.jonheard.util.SourceFile;
 
 // Parser - UI class for the Java Parser system
 public class Parser {
-  // Get a printable representation of a parsed compilation unit
-  public String unparse(CompilationUnit source) {
-    // bad input check
-    if (source == null) { throw new IllegalArgumentException("arg1(source): null"); }
-
-    return source.toString();
-  }
   
-  // Parse a list of tokens into a compilation unit
-  public CompilationUnit parse(SourceFile source, List<Token> tokens) {
+  public Parser(SourceFile source, List<Token> tokens) {
     // bad input check
     if (source == null) { throw new IllegalArgumentException("arg1(source): null"); }
     if (tokens == null) { throw new IllegalArgumentException("arg2(tokens): null"); }
 
     this.source = source;
     this.tokenQueue = new RewindableQueue<Token>(tokens);
-    return new CompilationUnit(this);
+  }
+
+  // Get a printable representation of a parsed compilation unit
+  public String unparse(CompilationUnit source) {
+    // bad input check
+    if (source == null) { throw new IllegalArgumentException("arg1(source): null"); }
+
+    return source.toString();
   }
 
   // Get the next token to parse
