@@ -27,12 +27,16 @@ public class ImportTest {
     tokenList.add(new Token(TokenType.SEMICOLON, 0, 0));
     tokenList.add(new Token(TokenType._NULL, 0, 0));
     Parser parser = new Parser(new SourceFile("", ""), tokenList);
+
     assertFalse(Import.getIsNext(parser));
     parser.requireTokenToBeOfType(TokenType._NULL);
     assertTrue(Import.getIsNext(parser));
     Import toTest = new Import(parser);
+
     assertEquals(1, toTest.getChildCount());
     assertTrue(toTest.getChild(0) instanceof QualifiedId);
     assertEquals("i1.i2", toTest.getId().getValue());
+
+    assertTrue(parser.getIsTokenType(TokenType._NULL));
   }
 }

@@ -66,6 +66,7 @@ public class ClassTest {
     tokenList.add(new Token(TokenType.RIGHT_CURL, 0, 0));
     tokenList.add(new Token(TokenType._NULL, 0, 0));
     Parser parser = new Parser(new SourceFile("", ""), tokenList);
+
     assertFalse(Class.getIsNext(parser));
     parser.requireTokenToBeOfType(TokenType._NULL);
     assertTrue(Class.getIsNext(parser));
@@ -80,5 +81,7 @@ public class ClassTest {
     assertEquals("i1.i2 i3.i4", toTest.getInterfaces().toString());
     List<Member> members = toTest.getMembers();
     assertEquals(1, members.size());
+    
+    assertTrue(parser.getIsTokenType(TokenType._NULL));
   }
 }

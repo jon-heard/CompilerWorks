@@ -27,12 +27,16 @@ public class PackageTest {
     tokenList.add(new Token(TokenType.SEMICOLON, 0, 0));
     tokenList.add(new Token(TokenType._NULL, 0, 0));
     Parser parser = new Parser(new SourceFile("", ""), tokenList);
+
     assertFalse(Package.getIsNext(parser));
     parser.requireTokenToBeOfType(TokenType._NULL);
     assertTrue(Package.getIsNext(parser));
     Package toTest = new Package(parser);
+
     assertEquals(1, toTest.getChildCount());
     assertTrue(toTest.getChild(0) instanceof QualifiedId);
     assertEquals("p1.p2", toTest.getId().getValue());
+
+    assertTrue(parser.getIsTokenType(TokenType._NULL));
   }
 }
