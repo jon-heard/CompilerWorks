@@ -63,6 +63,11 @@ public class List_Modifier extends BaseIrType {
     }
     return result.toString();
   }
+  
+  public int getModifierCount() {
+    return modifiers.size();
+  }
+  
   public Collection<String> toStringCollection() { return modifiers; }
   public boolean getIsAbstract()     { return modifiers.contains("abstract"); }
   public boolean getIsFinal()        { return modifiers.contains("final"); }
