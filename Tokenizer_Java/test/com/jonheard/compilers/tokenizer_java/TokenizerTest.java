@@ -470,7 +470,6 @@ public class TokenizerTest {
     tokenizer.tokenize(new SourceFile("", "1.5p3"));
     assertEquals(++count, Logger.getErrorCount());
     tokenizer.tokenize(new SourceFile("", "0x1.5e3"));
-    System.out.println(Logger.getLogs());
     assertEquals(++count, Logger.getErrorCount());
 
     Logger.clearLogs();

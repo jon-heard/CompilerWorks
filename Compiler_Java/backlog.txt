@@ -1,3 +1,4 @@
+tokenizer: finish binaryOrHexMissingDigits
 
 Parser: finish "for"
 Parser: add class generics

@@ -1,9 +1,5 @@
 package com.jonheard.compilers.JvmGenerator_Java;
 
-import com.jonheard.compilers.assembler_jvm.backEnd.ClassRep;
-import com.jonheard.compilers.assembler_jvm.backEnd.FieldRep;
-import com.jonheard.compilers.assembler_jvm.backEnd.MethodRep;
-
 public class JvmGeneratorStringConverter
 {
 	public String generatedToString(JvmGenerator_Java source)
