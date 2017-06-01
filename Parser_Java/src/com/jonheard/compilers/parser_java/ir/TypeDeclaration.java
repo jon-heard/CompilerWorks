@@ -38,11 +38,14 @@ public class TypeDeclaration extends BaseIrType {
         "id='" + getName().getValue() + "' " +
         "modifiers='" + getModifiers().getValue() + "'";
   }
+
   @Override
   public int getFirstPrintedChildIndex() { return 2; }
 
   public Id getName() { return (Id) getChild(1); }
+ 
   public List_Modifier getModifiers() { return (List_Modifier) getChild(0); }
+
   public List<Member> getMembers() {
     List<Member> result = new ArrayList<>();
     int childCount = getChildCount();

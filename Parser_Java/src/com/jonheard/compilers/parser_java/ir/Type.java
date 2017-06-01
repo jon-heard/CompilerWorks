@@ -77,6 +77,7 @@ public class Type extends BaseIrType {
         "generics='" + getGenerics().toString() + "' " +
         "arrayDimensions='" + getDimensionCount() + "'";
   }
+
   @Override
   public int getFirstPrintedChildIndex() { return 2; }
 
