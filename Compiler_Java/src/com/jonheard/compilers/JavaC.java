@@ -98,8 +98,8 @@ public class JavaC {
     }
 
     // Parse
-    Parser parser = new Parser();
-    CompilationUnit parsedSource = parser.parse(source, tokenizedSource);
+    Parser parser = new Parser(source, tokenizedSource);
+    CompilationUnit parsedSource = new CompilationUnit(parser);
     if (stageToEndOn == Stage.PARSE) {
 //      ParserStringConverter converter = new ParserStringConverter();
 //      compilerOutputText.append(converter.parsedToString(parsedSource));
