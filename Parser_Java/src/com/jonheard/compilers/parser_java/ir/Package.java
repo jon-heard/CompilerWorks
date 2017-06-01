@@ -5,7 +5,7 @@ import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
 public class Package extends BaseIrType {
-  Package(Parser parser) {
+  public Package(Parser parser) {
     super(parser);
     parser.requireTokenToBeOfType(TokenType._PACKAGE);
     addChild(new QualifiedId(parser));
