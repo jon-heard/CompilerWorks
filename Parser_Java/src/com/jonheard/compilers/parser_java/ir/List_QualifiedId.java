@@ -32,6 +32,10 @@ public class List_QualifiedId extends BaseIrType {
     return result.toString();
   }
   
+  public QualifiedId getChildAsQualifiedId(int index) {
+    return (QualifiedId)getChild(index);
+  }
+  
   public List<QualifiedId> getValue() {
     ArrayList<QualifiedId> result = new ArrayList<>();
     int childCount = getChildCount();

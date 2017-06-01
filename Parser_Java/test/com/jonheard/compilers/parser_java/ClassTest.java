@@ -78,7 +78,7 @@ public class ClassTest {
     assertTrue(modifiers.getIsStatic());
     assertEquals("c1", toTest.getName().getValue());
     assertEquals("s1.s2", toTest.getSuper().getValue());
-    assertEquals("i1.i2 i3.i4", toTest.getInterfaces().toString());
+    assertEquals("i1.i2, i3.i4", toTest.getInterfaces().toString());
     List<Member> members = toTest.getMembers();
     assertEquals(1, members.size());
     
