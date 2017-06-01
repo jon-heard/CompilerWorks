@@ -1,5 +1,8 @@
 package com.jonheard.compilers.parser_java.ir;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jonheard.compilers.parser_java.Parser;
 import com.jonheard.compilers.tokenizer_java.TokenType;
 
@@ -40,4 +43,12 @@ public class TypeDeclaration extends BaseIrType {
 
   public Id getName() { return (Id) getChild(1); }
   public List_Modifier getModifiers() { return (List_Modifier) getChild(0); }
+  public List<Member> getMembers() {
+    List<Member> result = new ArrayList<>();
+    int childCount = getChildCount();
+    for (int i = getFirstPrintedChildIndex(); i < childCount; ++i) {
+      result.add((Member)getChild(i));
+    }
+    return result;
+  }
 }
